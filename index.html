@@ -426,6 +426,21 @@
             gap: 0.75rem;
         }
 
+        .tree-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: currentColor;
+        }
+        .tree-icon svg {
+            display: block;
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            fill: none;
+        }
+
         [data-theme="light"] .bg-black { background-color: var(--bg-app) !important; }
         [data-theme="light"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
         [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
@@ -628,6 +643,7 @@
             theme: localStorage.getItem('theme') || 'dark',
             treeOpenState: {},
             pageRegistry: {},
+            docsRoot: null,   // detected top-level folder that contains .md files
             docFontScale1: parseFloat(localStorage.getItem('docFontScale1') || '1'),
             docFontScale2: parseFloat(localStorage.getItem('docFontScale2') || '1')
         };
@@ -699,7 +715,11 @@
             sidebarResizeHandle: document.getElementById('sidebar-resize-handle')
         };
 
-        /* ---------------- Font scale ---------------- */
+        const ICONS = {
+            folder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg>`,
+            document: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`
+        };
+
         function applyDocFontScope(columnEl, slotTag) {
             if (!columnEl) return;
             const scale = slotTag === '2' ? state.docFontScale2 : state.docFontScale1;
@@ -764,19 +784,6 @@
             return sel;
         }
 
-        // Extract the FIRST "# " heading from markdown content. Returns null if none.
-        function extractFirstHeading(md) {
-            if (!md) return null;
-            const lines = md.split('\n');
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed.startsWith('# ')) {
-                    return trimmed.slice(2).trim();
-                }
-            }
-            return null;
-        }
-
         async function init() {
             applyTheme(state.theme);
             dom.uiLanguageSelect.value = 'English';
@@ -785,35 +792,13 @@
             await loadPageRegistry();
             await loadLanguage('English');
             await fetchGitHubTree();
-            // Preload all markdown so we can read the first "# " heading of each file.
-            await preloadContentForAllLanguages();
-            // Now assign document names from the first heading (fallback: filename stem).
-            resolveDocumentTitles();
             renderTree(state.pages, dom.pagesTree);
             renderDashboard();
             setupEventListeners();
+            preloadContentForAllLanguages();
             setupSidebarResize();
             setupPinsResize();
             setupTooltipEngine();
-        }
-
-        // Use the first "# " heading of the preferred-language file as the display title.
-        // Falls back to the filename stem if no heading exists.
-        function resolveDocumentTitles() {
-            state.pages.forEach(p => {
-                if (!p.paths) return;
-                const preferredLangs = [state.uiLanguage, 'English'];
-                let heading = null;
-                for (const l of preferredLangs) {
-                    const path = p.paths[l];
-                    if (!path) continue;
-                    const content = state.fileCache[path];
-                    if (!content) continue;
-                    const h = extractFirstHeading(content);
-                    if (h) { heading = h; break; }
-                }
-                p.title = heading || p.fallbackTitle || p.title;
-            });
         }
 
         function setupSidebarResize() {
@@ -924,7 +909,6 @@
             }, true);
         }
 
-        /* ---------------- Theme ---------------- */
         function applyTheme(theme) {
             state.theme = theme;
             document.documentElement.setAttribute('data-theme', theme);
@@ -938,7 +922,6 @@
             }
         }
 
-        /* ---------------- Data loading ---------------- */
         async function loadHyperlinks() {
             try {
                 const res = await fetch('./hyperlinks.json');
@@ -985,61 +968,110 @@
             return rawName;
         }
 
+        /* ---------------- Tree fetch with auto-detected docs root ---------------- */
         async function fetchGitHubTree() {
             try {
                 const res = await fetch('https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB/git/trees/main?recursive=1');
-                if (!res.ok) throw new Error("Could not reach GitHub API");
+                console.log('[tree] status:', res.status, 'ratelimit remaining:', res.headers.get('x-ratelimit-remaining'));
+                if (!res.ok) {
+                    const body = await res.text();
+                    throw new Error(`GitHub API ${res.status}: ${body.slice(0, 200)}`);
+                }
                 const data = await res.json();
 
+                const allMd = (data.tree || []).filter(n => n.type === 'blob' && n.path.endsWith('.md'));
+                console.log('[tree] all .md paths:', allMd.map(n => n.path));
+
+                // Auto-detect the top-level folder that contains the .md files.
+                // Strategy: for each top-level folder that has .md files, count how many.
+                // Use the one with the most. If .md files are at repo root, use '' (root).
+                const counts = {};
+                let rootCount = 0;
+                allMd.forEach(n => {
+                    const parts = n.path.split('/');
+                    if (parts.length === 1) {
+                        rootCount++;
+                    } else {
+                        const top = parts[0];
+                        counts[top] = (counts[top] || 0) + 1;
+                    }
+                });
+
+                let detectedRoot = '';
+                let best = rootCount;
+                Object.keys(counts).forEach(k => {
+                    if (counts[k] > best) {
+                        best = counts[k];
+                        detectedRoot = k;
+                    }
+                });
+
+                // If a detected root exists, we prefix with "root/" in filters.
+                state.docsRoot = detectedRoot ? (detectedRoot + '/') : '';
+                console.log('[tree] detected docs root:', state.docsRoot || '(repo root)', 'with', best, 'md files');
+
                 const pagesMap = {};
-                // Filename stem is used as a fallback title, and as a stable ID base.
-                // The actual displayed title will come from the first "# " heading later.
-                const extractStem = (filename) => {
+                const extractTitle = (filename) => {
                     return filename
                         .replace(/_in[a-zA-Z]+\.md$/, '')
                         .replace(/\.md$/, '');
                 };
 
-                data.tree.forEach(node => {
-                    if (node.type === 'blob' && node.path.startsWith('Pages/') && node.path.endsWith('.md')) {
-                        const pathParts = node.path.split('/');
-                        const filename = pathParts.pop();
-                        const stem = extractStem(filename);
+                const rootPrefix = state.docsRoot; // e.g. "Pages/" or ""
+                allMd.forEach(node => {
+                    if (!node.path.startsWith(rootPrefix)) return;
 
-                        const dirParts = pathParts.slice(1);
-                        if (dirParts.length > 0) {
-                            const lastFolder = dirParts[dirParts.length - 1];
-                            if (lastFolder.toLowerCase() === stem.toLowerCase()) {
-                                dirParts.pop();
-                            }
+                    const relativePath = node.path.slice(rootPrefix.length);
+                    const pathParts = relativePath.split('/');
+                    const filename = pathParts.pop();
+                    const displayTitle = extractTitle(filename);
+
+                    const dirParts = pathParts.slice();
+                    if (dirParts.length > 0) {
+                        const lastFolder = dirParts[dirParts.length - 1];
+                        if (lastFolder.toLowerCase() === displayTitle.toLowerCase()) {
+                            dirParts.pop();
                         }
-
-                        const displayCategoryParts = dirParts.map(p => translateFolder(p));
-                        const category = displayCategoryParts.join(' / ');
-                        // ID is stable: uses raw dir path + filename stem.
-                        const id = (dirParts.length > 0 ? `${dirParts.join('/')}/` : '') + stem;
-
-                        const langMatch = filename.match(/_in([a-zA-Z]+)\.md$/);
-                        const lang = langMatch ? langMatch[1] : 'English';
-
-                        if (!pagesMap[id]) {
-                            pagesMap[id] = {
-                                id,
-                                title: stem,           // provisional; replaced by first heading after preload
-                                fallbackTitle: stem,   // keep the filename stem as fallback
-                                category,
-                                rawCategoryParts: dirParts.slice(),
-                                categoryParts: displayCategoryParts,
-                                paths: {}
-                            };
-                        }
-                        pagesMap[id].paths[lang] = node.path;
                     }
+
+                    const displayCategoryParts = dirParts.map(p => translateFolder(p));
+                    const category = displayCategoryParts.join(' / ');
+                    const id = (dirParts.length > 0 ? `${dirParts.join('/')}/` : '') + displayTitle;
+
+                    const langMatch = filename.match(/_in([a-zA-Z]+)\.md$/);
+                    const lang = langMatch ? langMatch[1] : 'English';
+
+                    if (!pagesMap[id]) {
+                        pagesMap[id] = {
+                            id,
+                            title: displayTitle,
+                            category,
+                            rawCategoryParts: dirParts.slice(),
+                            categoryParts: displayCategoryParts,
+                            paths: {}
+                        };
+                    }
+                    pagesMap[id].paths[lang] = node.path;
                 });
+
                 state.pages = Object.values(pagesMap);
+                console.log('[tree] pages entries:', state.pages.length);
+
+                if (state.pages.length === 0) {
+                    dom.pagesTree.innerHTML =
+                        '<div class="text-neutral-500 text-xs p-3 leading-relaxed">' +
+                        `No .md files found.<br><br>` +
+                        `All .md paths GitHub returned: <code class="text-neutral-300">${allMd.map(n => n.path).join(', ') || '(none)'}</code>` +
+                        '</div>';
+                }
             } catch (e) {
-                console.error(e);
-                dom.dashboardGrid.innerHTML = `<div class="text-red-500">Failed to load repository tree. Check console for details.</div>`;
+                console.error('[tree] fetch failed:', e);
+                dom.pagesTree.innerHTML =
+                    `<div class="text-red-500 text-xs p-3 leading-relaxed">` +
+                    `Failed to load repository tree.<br><br>` +
+                    `<span class="text-neutral-400">${e.message}</span>` +
+                    `</div>`;
+                dom.dashboardGrid.innerHTML = `<div class="text-red-500 text-sm">Failed to load repository tree: ${e.message}</div>`;
             }
         }
 
@@ -1140,9 +1172,15 @@
             return Object.keys(file.paths)[0];
         }
 
-        /* ---------------- Sidebar tree ---------------- */
         function renderTree(files, container) {
             container.innerHTML = '';
+
+            if (!files || files.length === 0) {
+                container.innerHTML =
+                    '<div class="text-neutral-500 text-xs p-3 leading-relaxed">No pages to show.</div>';
+                return;
+            }
+
             const tree = { folders: {}, files: [] };
 
             files.forEach(f => {
@@ -1189,7 +1227,10 @@
 
                     const summary = document.createElement('summary');
                     summary.className = "text-neutral-300 font-medium flex items-center select-none text-xs py-0.5 px-1 rounded";
-                    summary.innerHTML = `<svg width="10" height="10" class="mr-1.5 text-neutral-500 transition-transform duration-200 details-arrow shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg> <span class="truncate">${folderData.displayName || rawFolderName}</span>`;
+                    summary.innerHTML =
+                        `<svg width="10" height="10" class="mr-1.5 text-neutral-500 transition-transform duration-200 details-arrow shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>` +
+                        `<span class="tree-icon mr-1.5 text-neutral-500 group-hover:text-neutral-300">${ICONS.folder}</span>` +
+                        `<span class="truncate">${folderData.displayName || rawFolderName}</span>`;
 
                     const list = document.createElement('div');
                     list.className = "pl-3 ml-1 space-y-0.5 border-l border-neutral-800/60";
@@ -1206,7 +1247,9 @@
 
                     const leftPart = document.createElement('div');
                     leftPart.className = "flex items-center truncate mr-2 flex-1";
-                    leftPart.innerHTML = `<svg width="10" height="10" class="mr-1.5 text-neutral-600 group-hover:text-neutral-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> <span class="truncate">${file.title}</span>`;
+                    leftPart.innerHTML =
+                        `<span class="tree-icon mr-1.5 text-neutral-600 group-hover:text-neutral-400">${ICONS.document}</span>` +
+                        `<span class="truncate">${file.title}</span>`;
 
                     el.appendChild(leftPart);
 
@@ -1272,7 +1315,6 @@
             buildDOM(tree, container);
         }
 
-        /* ---------------- Dashboard ---------------- */
         function renderDashboard() {
             state.currentActiveFile = null;
             state.splitFile1 = null;
@@ -1312,7 +1354,6 @@
             }
         }
 
-        /* ---------------- Single document view ---------------- */
         async function handleFileSelection(pageObj, preferredLang = null) {
             dom.contentScrollArea.classList.remove('split-active');
             dom.dashboardView.classList.add('hidden');
@@ -1372,7 +1413,6 @@
             }
         }
 
-        /* ---------------- Split view ---------------- */
         async function renderSplitView() {
             state.isSplitView = true;
             dom.contentScrollArea.classList.add('split-active');
@@ -1436,7 +1476,6 @@
             renderTree(state.pages, dom.pagesTree);
         }
 
-        /* ---------------- Global search ---------------- */
         async function executeGlobalSearch(query) {
             if (!query) {
                 if (state.isSplitView) {
@@ -1483,7 +1522,6 @@
             }
         }
 
-        /* ---------------- Markdown helpers ---------------- */
         function escapeHtml(str) {
             return str
                 .replace(/&/g, '&amp;')
@@ -1692,7 +1730,6 @@
             return lines.join('\n').trim();
         }
 
-        /* ---------------- Document renderer ---------------- */
         function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null) {
             const effectiveMode = viewModeOverride || state.viewMode;
             const isRaw = effectiveMode === 'Raw';
@@ -2130,7 +2167,6 @@
             setTimeout(() => target.classList.remove(flashClass), 1300);
         }
 
-        /* ---------------- Pins ---------------- */
         function pinTopic(path, topic, text) {
             state.pinnedTopics.push({ path, topic, text });
             renderPins();
@@ -2192,7 +2228,6 @@
             });
         }
 
-        /* ---------------- Event listeners ---------------- */
         function setupEventListeners() {
             window.addEventListener('click', () => dom.contextMenu.classList.add('hidden'));
 
@@ -2303,8 +2338,6 @@
             document.getElementById('ui-language-select').addEventListener('change', async (e) => {
                 await loadLanguage(e.target.value);
                 retranslatePages();
-                // Re-resolve document titles from the new language's first "# " heading.
-                resolveDocumentTitles();
                 renderTree(state.pages, dom.pagesTree);
                 if (state.isSplitView) {
                     renderSplitView();
