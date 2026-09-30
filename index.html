@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheInfoDB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #e5e5e5;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        /* Utility Classes */
+        .panel-stylized {
+            border: 1px solid #262626;
+            background-color: #050505;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 24px -6px rgba(255, 255, 255, 0.08);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .panel-stylized:hover {
+            box-shadow: 0 8px 32px -8px rgba(255, 255, 255, 0.15);
+            border-color: #333;
+        }
+        
+        .panel-raw {
+            margin-bottom: 1.5rem;
+        }
+        
+        .tree-details > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .tree-details > summary::-webkit-details-marker { display: none; }
+        .tree-details > summary:hover { background-color: #1a1a1a; }
+        .tree-details[open] > summary .details-arrow { transform: rotate(90deg); }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .toast.show { opacity: 1; }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #0a0a0a;
+            min-width: 120px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            z-index: 50;
+        }
+        .dropdown-content button {
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+        .dropdown-content button:hover { background-color: #1a1a1a; }
+        .dropdown:focus-within .dropdown-content { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- Left Sidebar -->
+    <aside class="w-72 border-r border-neutral-800 bg-[#030303] flex flex-col h-full">
+        <!-- Header & Global Quick Search -->
+        <div class="p-4 border-b border-neutral-800">
+            <div class="flex items-center justify-between mb-3">
+                <h1 class="text-xl font-bold text-white tracking-tight">TheInfoDB</h1>
+            </div>
+            <div class="relative flex items-center">
+                <input type="text" id="quick-search-input" data-i18n-placeholder="searchPagesPlaceholder" placeholder="Search all pages..." 
+                       class="w-full bg-neutral-900 border border-neutral-700 text-sm text-white rounded px-3 py-1.5 focus:outline-none focus:border-neutral-500 pr-8">
+                <button id="quick-search-clear" class="absolute right-2 text-neutral-500 hover:text-white hidden">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pages Explorer -->
+        <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-1">
+            <div class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 pl-2" data-i18n="pagesTitle">Pages</div>
+            <div id="pages-tree" class="text-sm"></div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-black h-full relative">
+        <!-- Top Bar -->
+        <header class="h-14 border-b border-neutral-800 flex items-center justify-between px-6 bg-[#030303] shrink-0">
+            <div id="breadcrumb" class="text-sm font-medium text-neutral-400">
+                Dashboard
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <select id="view-mode-select" class="bg-transparent border border-neutral-700 text-sm text-white rounded px-2 py-1 outline-none">
+                    <option value="Stylized" data-i18n="viewModeStylized">Stylized</option>
+                    <option value="Raw" data-i18n="viewModeRaw">Raw</option>
+                </select>
+                
+                <select id="ui-language-select" class="bg-transparent border border-neutral-700 text-sm text-white rounded px-2 py-1 outline-none">
+                    <option value="English">English</option>
+                    <option value="German">German</option>
+                </select>
+
+                <button id="toggle-split-view-btn" class="text-sm font-medium text-white px-3 py-1 border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" data-i18n="splitViewBtn">
+                    Split View
+                </button>
+
+                <div class="dropdown relative" tabindex="0">
+                    <button class="text-sm font-medium text-white px-3 py-1 border border-neutral-700 rounded hover:bg-neutral-800" data-i18n="downloadBtn">
+                        Download
+                    </button>
+                    <div class="dropdown-content mt-1">
+                        <button id="dl-doc-txt" data-i18n="downloadTextfile">Textfile</button>
+                        <button id="dl-doc-md" data-i18n="downloadMarkdown">Markdown</button>
+                    </div>
+                </div>
+
+                <button id="toggle-pins-btn" class="text-sm font-medium text-black bg-white px-3 py-1 rounded hover:bg-neutral-200" data-i18n="pinsBtn">
+                    Pins
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Scroller -->
+        <div id="content-scroll-area" class="flex-1 overflow-y-auto p-8">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="max-w-6xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6" data-i18n="dashboardOverview">Overview</h2>
+                <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="text-neutral-500">Loading GitHub Repository...</div>
+                </div>
+            </div>
+
+            <!-- Document / Search Results View -->
+            <div id="document-view" class="max-w-4xl mx-auto hidden transition-all duration-300">
+                <div id="document-layout" class="flex flex-col md:flex-row gap-6 w-full">
+                    <div id="document-content" class="flex-1 w-full"></div>
+                    <div id="document-content-secondary" class="flex-1 w-full hidden border-t md:border-t-0 md:border-l border-neutral-800 pt-6 md:pt-0 md:pl-6"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pins Sidebar -->
+    <aside id="pins-sidebar" class="w-80 border-l border-neutral-800 bg-[#050505] flex flex-col hidden h-full">
+        <div class="h-14 border-b border-neutral-800 flex items-center justify-between px-4 shrink-0">
+            <h2 class="font-semibold text-white" data-i18n="pinnedTopicsTitle">Pinned Topics</h2>
+            <div class="dropdown relative" tabindex="0">
+                <button class="text-sm text-neutral-400 hover:text-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </button>
+                <div class="dropdown-content mt-1 right-0 min-w-[100px]">
+                    <button id="dl-pins-txt" data-i18n="downloadTextfile">Textfile</button>
+                    <button id="dl-pins-md" data-i18n="downloadMarkdown">Markdown</button>
+                </div>
+            </div>
+        </div>
+        <div id="pins-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+            <div id="no-pins-msg" class="text-neutral-500 text-sm text-center mt-10" data-i18n="noPinsMsg">No topics pinned yet.</div>
+        </div>
+    </aside>
+
+    <!-- Interstitial Link Modal -->
+    <div id="link-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
+        <div class="bg-[#111] border border-neutral-800 rounded-lg p-6 max-w-sm w-full shadow-[0_10px_40px_-10px_rgba(255,255,255,0.15)]">
+            <h3 class="text-lg font-bold text-white mb-2" data-i18n="linkModalTitle">External Link</h3>
+            <p class="text-neutral-400 text-sm mb-6" data-i18n="linkModalText">You are leaving this page. Are you sure?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="link-cancel" class="px-4 py-2 text-sm text-white border border-neutral-700 rounded hover:bg-neutral-800" data-i18n="linkModalCancel">Cancel</button>
+                <button id="link-okay" class="px-4 py-2 text-sm text-black bg-white rounded hover:bg-neutral-200" data-i18n="linkModalOkay">Okay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Message</div>
+
+    <script>
+        // --- State Management ---
+        const state = {
+            pages: [],
+            fileCache: {},
+            pinnedTopics: [],
+            currentActiveFile: null,
+            viewMode: 'Stylized', // 'Stylized' or 'Raw'
+            isSplitView: false,
+            pendingLink: '',
+            uiLanguage: 'English',
+            translations: {}
+        };
+
+        const defaultTranslations = {
+            searchPagesPlaceholder: "Search all pages...",
+            pagesTitle: "Pages",
+            dashboardTitle: "Dashboard",
+            viewModeStylized: "Stylized",
+            viewModeRaw: "Raw",
+            splitViewBtn: "Split View",
+            downloadBtn: "Download",
+            downloadTextfile: "Textfile",
+            downloadMarkdown: "Markdown",
+            pinsBtn: "Pins",
+            dashboardOverview: "Overview",
+            noMatchingTopics: "No matching topics found.",
+            pinnedTopicsTitle: "Pinned Topics",
+            noPinsMsg: "No topics pinned yet.",
+            linkModalTitle: "External Link",
+            linkModalText: "You are leaving this page. Are you sure?",
+            linkModalCancel: "Cancel",
+            linkModalOkay: "Okay",
+            toastCopied: "Copied to Clipboard!",
+            toastPinned: "Pinned topic",
+            toastNoFile: "No file selected.",
+            toastNoPins: "No pins to download.",
+            toastJumped: "Jumped to",
+            searchResults: "Search Results:"
+        };
+
+        // --- DOM Elements ---
+        const dom = {
+            qsInput: document.getElementById('quick-search-input'),
+            qsClear: document.getElementById('quick-search-clear'),
+            pagesTree: document.getElementById('pages-tree'),
+            dashboardView: document.getElementById('dashboard-view'),
+            dashboardGrid: document.getElementById('dashboard-grid'),
+            documentView: document.getElementById('document-view'),
+            documentContent: document.getElementById('document-content'),
+            documentContentSecondary: document.getElementById('document-content-secondary'),
+            breadcrumb: document.getElementById('breadcrumb'),
+            viewModeSelect: document.getElementById('view-mode-select'),
+            uiLanguageSelect: document.getElementById('ui-language-select'),
+            toggleSplitViewBtn: document.getElementById('toggle-split-view-btn'),
+            pinsBtn: document.getElementById('toggle-pins-btn'),
+            pinsSidebar: document.getElementById('pins-sidebar'),
+            pinsContainer: document.getElementById('pins-container'),
+            noPinsMsg: document.getElementById('no-pins-msg'),
+            toast: document.getElementById('toast'),
+            linkModal: document.getElementById('link-modal'),
+            linkCancel: document.getElementById('link-cancel'),
+            linkOkay: document.getElementById('link-okay')
+        };
+
+        // --- Initialization ---
+        async function init() {
+            await loadLanguage(state.uiLanguage);
+            await fetchGitHubTree();
+            
+            renderTree(state.pages, dom.pagesTree);
+            renderDashboard();
+            setupEventListeners();
+            
+            // Fire off a background fetch for searchability
+            preloadContentForLanguage(state.uiLanguage);
+        }
+
+        async function fetchGitHubTree() {
+            try {
+                // Using recursive tree API
+                const res = await fetch('https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB/git/trees/main?recursive=1');
+                if (!res.ok) throw new Error("Could not reach GitHub API");
+                const data = await res.json();
+                
+                const pagesMap = {};
+                
+                const formatName = (str) => {
+                    if (!str) return '';
+                    // Adds space before capital letter if preceded by lowercase (e.g. ComputerScience -> Computer Science)
+                    return str.replace(/([a-z])([A-Z])/g, '$1 $2').trim();
+                };
+                
+                data.tree.forEach(node => {
+                    if (node.type === 'blob' && node.path.startsWith('Pages/') && node.path.endsWith('.md')) {
+                        const pathParts = node.path.split('/');
+                        const filename = pathParts.pop(); // e.g., nat_inEnglish.md
+                        const cleanName = filename.replace(/_in[a-zA-Z]+\.md$/, '').replace(/\.md$/, '');
+                        
+                        let title, categoryParts = [];
+                        if (pathParts.length > 1) { // Normal nesting inside 'Pages/'
+                            const lastFolder = pathParts[pathParts.length - 1];
+                            // If the direct parent folder has the same name as the topic (like NAT/nat_inEnglish.md)
+                            if (lastFolder.toLowerCase() === cleanName.toLowerCase()) {
+                                title = pathParts.pop(); // Pop 'NAT'
+                                categoryParts = pathParts.slice(1); // Remove 'Pages'
+                            } else {
+                                title = cleanName;
+                                categoryParts = pathParts.slice(1); // Remove 'Pages'
+                            }
+                        } else {
+                            title = cleanName;
+                        }
+                        
+                        const displayTitle = formatName(title);
+                        const displayCategoryParts = categoryParts.map(formatName);
+                        const category = displayCategoryParts.join(' / ');
+                        
+                        const id = `${category}/${title}`;
+                        const langMatch = filename.match(/_in([a-zA-Z]+)\.md$/);
+                        const lang = langMatch ? langMatch[1] : 'English';
+                        
+                        if (!pagesMap[id]) {
+                            pagesMap[id] = { 
+                                id, 
+                                title: displayTitle, 
+                                category,
+                                categoryParts: displayCategoryParts,
+                                paths: {} 
+                            };
+                        }
+                        pagesMap[id].paths[lang] = node.path;
+                    }
+                });
+                
+                state.pages = Object.values(pagesMap);
+            } catch (e) {
+                console.error(e);
+                dom.dashboardGrid.innerHTML = `<div class="text-red-500">Failed to load repository tree. Check console for details.</div>`;
+            }
+        }
+
+        async function preloadContentForLanguage(lang) {
+            const promises = state.pages.map(async (pageObj) => {
+                const path = pageObj.paths[lang] || pageObj.paths['English'] || Object.values(pageObj.paths)[0];
+                if (path && !state.fileCache[path]) {
+                    try {
+                        const res = await fetch(`https://raw.githubusercontent.com/cmdrFRANKLY1/TheInfoDB/main/${path}`);
+                        if (res.ok) state.fileCache[path] = await res.text();
+                    } catch (e) {}
+                }
+            });
+            await Promise.allSettled(promises);
+        }
+
+        async function loadLanguage(lang) {
+            try {
+                const res = await fetch(`./languages/index/indexLanguage_${lang}.json`);
+                if (res.ok) {
+                    state.translations = await res.json();
+                } else {
+                    state.translations = defaultTranslations;
+                }
+            } catch (e) {
+                state.translations = defaultTranslations;
+            }
+            applyTranslations();
+        }
+
+        function applyTranslations() {
+            const t = state.translations;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) el.setAttribute('placeholder', t[key]);
+            });
+            
+            if (!state.currentActiveFile && dom.dashboardView.classList.contains('hidden') === false) {
+                dom.breadcrumb.textContent = t.dashboardTitle;
+            }
+            if (state.pinnedTopics.length === 0) {
+                dom.noPinsMsg.textContent = t.noPinsMsg;
+            }
+        }
+
+        // --- Utility Functions ---
+        function showToast(msg) {
+            dom.toast.textContent = msg;
+            dom.toast.classList.add('show');
+            setTimeout(() => dom.toast.classList.remove('show'), 2000);
+        }
+
+        function getFileDisplayPath(file) {
+            if (!file) return "";
+            return file.category && file.category !== 'Uncategorized' 
+                ? `${file.category} / ${file.title}` 
+                : file.title;
+        }
+
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // --- Render Functions ---
+        function renderTree(files, container) {
+            container.innerHTML = '';
+            
+            const tree = { folders: {}, files: [] };
+            
+            files.forEach(f => {
+                let current = tree;
+                if (f.categoryParts && f.categoryParts.length > 0) {
+                    f.categoryParts.forEach(part => {
+                        if (!current.folders[part]) current.folders[part] = { folders: {}, files: [] };
+                        current = current.folders[part];
+                    });
+                }
+                current.files.push(f);
+            });
+
+            function buildDOM(node, containerElement) {
+                // Render folders
+                Object.keys(node.folders).sort().forEach(folderName => {
+                    const details = document.createElement('details');
+                    details.className = "tree-details mb-1";
+                    
+                    const summary = document.createElement('summary');
+                    summary.className = "text-neutral-300 font-medium flex items-center select-none";
+                    summary.innerHTML = `<svg width="12" height="12" class="mr-2 text-neutral-500 transition-transform duration-200 details-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg> ${folderName}`;
+                    
+                    const list = document.createElement('div');
+                    list.className = "pl-4 mt-1 border-l border-neutral-800 ml-1.5 space-y-1";
+                    
+                    buildDOM(node.folders[folderName], list);
+                    
+                    details.appendChild(summary);
+                    details.appendChild(list);
+                    containerElement.appendChild(details);
+                });
+                
+                // Render files
+                node.files.sort((a,b) => a.title.localeCompare(b.title)).forEach(file => {
+                    const el = document.createElement('div');
+                    el.className = "text-neutral-400 hover:text-white cursor-pointer py-1 text-sm pl-3 flex items-center group";
+                    el.innerHTML = `<svg width="12" height="12" class="mr-2 text-neutral-600 group-hover:text-neutral-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> <span class="truncate">${file.title}</span>`;
+                    el.onclick = () => openFile(file);
+                    containerElement.appendChild(el);
+                });
+            }
+            
+            buildDOM(tree, container);
+        }
+
+        function renderDashboard() {
+            dom.documentView.classList.add('hidden');
+            dom.dashboardView.classList.remove('hidden');
+            dom.breadcrumb.textContent = state.translations.dashboardTitle || "Dashboard";
+            
+            const shuffled = [...state.pages].sort(() => 0.5 - Math.random());
+            dom.dashboardGrid.innerHTML = '';
+            
+            shuffled.forEach(file => {
+                const card = document.createElement('div');
+                card.className = "border border-neutral-800 p-5 rounded-lg bg-[#050505] hover:bg-neutral-900 cursor-pointer transition-all duration-300 shadow-[0_4px_24px_-6px_rgba(255,255,255,0.08)] hover:shadow-[0_8px_32px_-8px_rgba(255,255,255,0.15)] hover:border-neutral-700";
+                card.innerHTML = `
+                    <div class="text-xs text-neutral-500 mb-2 font-mono">${getFileDisplayPath(file)}</div>
+                    <h3 class="text-lg font-bold text-white">${file.title}</h3>
+                `;
+                card.onclick = () => openFile(file);
+                dom.dashboardGrid.appendChild(card);
+            });
+        }
+
+        // --- Core Actions ---
+        async function fetchContent(path) {
+            if (state.fileCache[path]) return state.fileCache[path];
+            try {
+                const res = await fetch(`https://raw.githubusercontent.com/cmdrFRANKLY1/TheInfoDB/main/${path}`);
+                if (res.ok) {
+                    const text = await res.text();
+                    state.fileCache[path] = text;
+                    return text;
+                }
+                return "Failed to fetch document content.";
+            } catch(e) {
+                return "Network error loading document.";
+            }
+        }
+
+        async function openFile(pageObj) {
+            state.currentActiveFile = pageObj;
+            dom.dashboardView.classList.add('hidden');
+            dom.documentView.classList.remove('hidden');
+            dom.breadcrumb.textContent = getFileDisplayPath(pageObj);
+            
+            if (state.isSplitView) {
+                dom.documentView.classList.remove('max-w-4xl');
+                dom.documentView.classList.add('max-w-7xl', 'w-full');
+                dom.documentContentSecondary.classList.remove('hidden');
+                
+                dom.documentContent.innerHTML = '<div class="text-neutral-500 mt-10">Loading English...</div>';
+                dom.documentContentSecondary.innerHTML = '<div class="text-neutral-500 mt-10">Loading German...</div>';
+
+                const pathEn = pageObj.paths['English'];
+                const pathDe = pageObj.paths['German'];
+
+                let contentEn = "No English content available for this page.";
+                if (pathEn) contentEn = await fetchContent(pathEn);
+                
+                let contentDe = "No German content available for this page.";
+                if (pathDe) contentDe = await fetchContent(pathDe);
+
+                parseAndRenderContent(contentEn, dom.documentContent, pageObj, false, '', 'English');
+                parseAndRenderContent(contentDe, dom.documentContentSecondary, pageObj, false, '', 'German');
+
+            } else {
+                dom.documentView.classList.remove('max-w-7xl', 'w-full');
+                dom.documentView.classList.add('max-w-4xl');
+                dom.documentContentSecondary.classList.add('hidden');
+                dom.documentContent.innerHTML = '<div class="text-neutral-500 mt-10">Loading...</div>';
+                
+                const lang = state.uiLanguage;
+                const path = pageObj.paths[lang] || pageObj.paths['English'] || Object.values(pageObj.paths)[0];
+                
+                if (!path) {
+                    dom.documentContent.innerHTML = '<div class="text-red-500 mt-10">No content available.</div>';
+                    return;
+                }
+
+                const content = await fetchContent(path);
+                parseAndRenderContent(content, dom.documentContent, pageObj, false, '', lang);
+            }
+        }
+
+        function executeSearch(query) {
+            if (!query) {
+                if (state.currentActiveFile) openFile(state.currentActiveFile);
+                else renderDashboard();
+                return;
+            }
+
+            // Force single column view for search results to keep layout clean
+            dom.documentView.classList.remove('max-w-7xl', 'w-full');
+            dom.documentView.classList.add('max-w-4xl');
+            dom.documentContentSecondary.classList.add('hidden');
+
+            dom.dashboardView.classList.add('hidden');
+            dom.documentView.classList.remove('hidden');
+            dom.breadcrumb.textContent = `${state.translations.searchResults || 'Search Results:'} "${query}"`;
+            dom.documentContent.innerHTML = '';
+
+            const lang = state.uiLanguage;
+            let foundAny = false;
+
+            state.pages.forEach(file => {
+                const path = file.paths[lang] || file.paths['English'] || Object.values(file.paths)[0];
+                const content = state.fileCache[path] || '';
+                
+                if (content.toLowerCase().includes(query.toLowerCase())) {
+                    foundAny = true;
+                    parseAndRenderContent(content, dom.documentContent, file, true, query);
+                }
+            });
+
+            if (!foundAny) {
+                dom.documentContent.innerHTML = `<div class="text-neutral-500 text-center mt-10">${state.translations.noMatchingTopics}</div>`;
+            }
+        }
+
+        function parseAndRenderContent(content, container, fileData, isSearch = false, query = '', languageLabel = '') {
+            if (!isSearch) container.innerHTML = '';
+            const tokens = content.split(/(?=^#{1,6}\s)/m);
+            
+            tokens.forEach(token => {
+                if (!token.trim()) return;
+
+                if (isSearch && query && !token.toLowerCase().includes(query.toLowerCase())) return;
+
+                const panel = document.createElement('div');
+                panel.className = state.viewMode === 'Stylized' ? 'panel-stylized' : 'panel-raw';
+                
+                let localTopicTitle = "Overview";
+                const match = token.match(/^(#{1,6})\s+(.*)/);
+                if (match) localTopicTitle = match[2];
+
+                let displayPath = getFileDisplayPath(fileData);
+                if (state.isSplitView && !isSearch && languageLabel) {
+                    displayPath += ` (${languageLabel})`;
+                }
+
+                let html = token
+                    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-4 mb-2 text-white">$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-5 mb-2 pb-1 border-b border-neutral-800 text-white">$1</h2>')
+                    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-2 mb-4 pb-2 border-b border-neutral-800 text-white">$1</h1>')
+                    .replace(/\*\*(.*?)\*\*/gim, '<strong class="text-white">$1</strong>')
+                    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+                    .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" class="text-blue-400 hover:underline external-link">$1</a>')
+                    .replace(/\n/gim, '<br>');
+
+                if (state.viewMode === 'Raw') html = html.replace(/border-b border-neutral-800/g, '');
+
+                const headerBar = document.createElement('div');
+                headerBar.className = "flex justify-between items-start mb-4";
+                
+                const pathEl = document.createElement('div');
+                pathEl.className = "text-xs text-neutral-500 font-mono";
+                pathEl.textContent = displayPath;
+                
+                const actions = document.createElement('div');
+                actions.className = "flex space-x-3";
+                
+                const pinBtn = document.createElement('button');
+                pinBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>';
+                pinBtn.className = "text-neutral-500 hover:text-white";
+                pinBtn.onclick = () => pinTopic(displayPath, localTopicTitle, token.trim());
+                actions.appendChild(pinBtn);
+
+                const copyBtn = document.createElement('button');
+                copyBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                copyBtn.className = "text-neutral-500 hover:text-white";
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(token.trim()).then(() => showToast(state.translations.toastCopied));
+                };
+                actions.appendChild(copyBtn);
+
+                if (isSearch) {
+                    const jumpBtn = document.createElement('button');
+                    jumpBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+                    jumpBtn.className = "text-neutral-500 hover:text-white";
+                    jumpBtn.onclick = () => {
+                        clearSearch(dom.qsInput, dom.qsClear);
+                        showToast(`${state.translations.toastJumped} ${displayPath} / ${localTopicTitle}`);
+                        openFile(fileData);
+                    };
+                    actions.appendChild(jumpBtn);
+                }
+
+                headerBar.appendChild(pathEl);
+                headerBar.appendChild(actions);
+                panel.appendChild(headerBar);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = html;
+                panel.appendChild(contentDiv);
+                
+                container.appendChild(panel);
+            });
+
+            attachLinkListeners(container);
+        }
+
+        function clearSearch(inputEl, clearBtnEl) {
+            inputEl.value = '';
+            clearBtnEl.classList.add('hidden');
+            if (state.currentActiveFile) {
+                openFile(state.currentActiveFile);
+            } else {
+                renderDashboard();
+            }
+        }
+
+        function pinTopic(path, topic, text) {
+            const exists = state.pinnedTopics.find(p => p.path === path && p.topic === topic);
+            if (!exists) {
+                state.pinnedTopics.push({ path, topic, text });
+                renderPins();
+                showToast(state.translations.toastPinned);
+            }
+        }
+
+        function renderPins() {
+            dom.pinsContainer.innerHTML = '';
+            if (state.pinnedTopics.length === 0) {
+                dom.noPinsMsg.style.display = 'block';
+                dom.pinsContainer.appendChild(dom.noPinsMsg);
+                return;
+            }
+            dom.noPinsMsg.style.display = 'none';
+
+            state.pinnedTopics.forEach((pin, index) => {
+                const p = document.createElement('div');
+                p.className = "bg-[#0a0a0a] border border-neutral-800 rounded p-3 relative group transition-all duration-300 shadow-[0_2px_12px_-4px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_16px_-4px_rgba(255,255,255,0.1)] hover:border-neutral-700";
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                removeBtn.className = "absolute top-2 right-2 text-neutral-600 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity";
+                removeBtn.onclick = () => {
+                    state.pinnedTopics.splice(index, 1);
+                    renderPins();
+                };
+
+                const pathEl = document.createElement('div');
+                pathEl.className = "text-[10px] text-neutral-500 font-mono mb-1 truncate pr-4";
+                pathEl.textContent = pin.path;
+
+                const titleEl = document.createElement('div');
+                titleEl.className = "text-sm font-semibold text-white mb-2";
+                titleEl.textContent = pin.topic;
+
+                const preview = document.createElement('div');
+                preview.className = "text-xs text-neutral-400 line-clamp-3 overflow-hidden";
+                preview.textContent = pin.text.replace(/#/g, '').trim();
+
+                p.appendChild(removeBtn);
+                p.appendChild(pathEl);
+                p.appendChild(titleEl);
+                p.appendChild(preview);
+                dom.pinsContainer.appendChild(p);
+            });
+        }
+
+        function attachLinkListeners(container) {
+            container.querySelectorAll('.external-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    state.pendingLink = link.href;
+                    dom.linkModal.classList.remove('hidden');
+                });
+            });
+        }
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+            // Document Download
+            document.getElementById('dl-doc-txt').onclick = () => {
+                if (!state.currentActiveFile) return showToast(state.translations.toastNoFile);
+                const path = state.currentActiveFile.paths[state.uiLanguage] || state.currentActiveFile.paths['English'];
+                downloadFile(`${state.currentActiveFile.title}.txt`, state.fileCache[path]);
+            };
+            document.getElementById('dl-doc-md').onclick = () => {
+                if (!state.currentActiveFile) return showToast(state.translations.toastNoFile);
+                const path = state.currentActiveFile.paths[state.uiLanguage] || state.currentActiveFile.paths['English'];
+                downloadFile(`${state.currentActiveFile.title}.md`, state.fileCache[path]);
+            };
+
+            // Pins Download
+            document.getElementById('dl-pins-txt').onclick = () => {
+                if (state.pinnedTopics.length === 0) return showToast(state.translations.toastNoPins);
+                const content = state.pinnedTopics.map(p => `${p.path} - ${p.topic}\n\n${p.text}`).join('\n\n---\n\n');
+                downloadFile('pinned_topics.txt', content);
+            };
+            document.getElementById('dl-pins-md').onclick = () => {
+                if (state.pinnedTopics.length === 0) return showToast(state.translations.toastNoPins);
+                const content = state.pinnedTopics.map(p => `<!-- ${p.path} -->\n${p.text}`).join('\n\n---\n\n');
+                downloadFile('pinned_topics.md', content);
+            };
+
+            // Sidebar Pins Toggle
+            dom.pinsBtn.onclick = () => {
+                dom.pinsSidebar.classList.toggle('hidden');
+            };
+
+            // Quick Search
+            dom.qsInput.addEventListener('input', (e) => {
+                dom.qsClear.classList.toggle('hidden', e.target.value === '');
+                executeSearch(e.target.value);
+            });
+            dom.qsClear.onclick = () => clearSearch(dom.qsInput, dom.qsClear);
+
+            // Modal
+            dom.linkCancel.onclick = () => {
+                dom.linkModal.classList.add('hidden');
+                state.pendingLink = '';
+            };
+            dom.linkOkay.onclick = () => {
+                dom.linkModal.classList.add('hidden');
+                if (state.pendingLink) window.open(state.pendingLink, '_blank');
+            };
+
+            // UI Options
+            dom.toggleSplitViewBtn.onclick = () => {
+                state.isSplitView = !state.isSplitView;
+                if (state.isSplitView) {
+                    dom.toggleSplitViewBtn.classList.add('bg-white', 'text-black');
+                    dom.toggleSplitViewBtn.classList.remove('text-white', 'hover:bg-neutral-800');
+                } else {
+                    dom.toggleSplitViewBtn.classList.remove('bg-white', 'text-black');
+                    dom.toggleSplitViewBtn.classList.add('text-white', 'hover:bg-neutral-800');
+                }
+                
+                if (state.currentActiveFile && !dom.qsInput.value) {
+                    openFile(state.currentActiveFile);
+                }
+            };
+
+            dom.viewModeSelect.addEventListener('change', (e) => {
+                state.viewMode = e.target.value;
+                if (dom.qsInput.value) executeSearch(dom.qsInput.value);
+                else if (state.currentActiveFile) openFile(state.currentActiveFile);
+            });
+            
+            dom.uiLanguageSelect.addEventListener('change', (e) => {
+                state.uiLanguage = e.target.value;
+                loadLanguage(state.uiLanguage).then(() => {
+                    preloadContentForLanguage(state.uiLanguage).then(() => {
+                        if (state.currentActiveFile) {
+                            openFile(state.currentActiveFile);
+                        } else if (dom.qsInput.value) {
+                            executeSearch(dom.qsInput.value);
+                        }
+                    });
+                });
+            });
+        }
+
+        // Bootstrap
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "PAT": "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml",
+  "NAT": "https://tools.ietf.org/html/rfc2663",
+  "CGNAT": "https://tools.ietf.org/html/rfc6888",
+  "Port Forwarding": "https://tools.ietf.org/html/rfc4787",
+  "IPv4": "https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.xhtml",
+  "IPv6": "https://tools.ietf.org/html/rfc8200",
+  "NAT66": "https://tools.ietf.org/html/rfc6296",
+  "IANA": "https://www.iana.org/",
+  "RFC 1918": "https://tools.ietf.org/html/rfc1918",
+  "RFC 6335": "https://tools.ietf.org/html/rfc6335",
+  "RFC 6598": "https://tools.ietf.org/html/rfc6598"
+}
