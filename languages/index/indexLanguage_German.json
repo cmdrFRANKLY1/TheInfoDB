@@ -1,10 +1,11 @@
 {
 "searchPagesPlaceholder": "Alle Seiten durchsuchen...",
+"searchEverythingPlaceholder": "Alles durchsuchen...",
 "pagesTitle": "Seiten",
 "searchSolutionsPlaceholder": "Lösungen durchsuchen...",
 "solutionsTitle": "Lösungen",
 "dashboardTitle": "Dashboard",
-"viewModeStylized": "Stilisiert",
+"viewModeStylized": "Markdown",
 "viewModeRaw": "Roh",
 "downloadBtn": "Herunterladen",
 "downloadTextfile": "Textdatei",

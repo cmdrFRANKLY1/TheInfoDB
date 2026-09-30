@@ -1,68 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TheInfoDB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+            --font-scale: 1;
+
+            --bg-app: #000;
+            --bg-panel: #030303;
+            --bg-panel-alt: #050505;
+            --bg-panel-hover: #0a0a0a;
+            --bg-subtle: #080808;
+            --bg-neutral-900: #171717;
+            --bg-neutral-800: #262626;
+            --border-color: #262626;
+            --border-subtle: #1a1a1a;
+            --border-hover: #333;
+            --text-primary: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --text-muted: #525252;
+            --text-heading: #fff;
+            --scroll-track: #0a0a0a;
+            --scroll-thumb: #333;
+            --scroll-thumb-hover: #555;
         }
         * { font-family: var(--font-sans); }
         code, pre, kbd, samp { font-family: var(--font-mono); }
 
+        [data-theme="light"] {
+            --bg-app: #ffffff;
+            --bg-panel: #fafafa;
+            --bg-panel-alt: #f5f5f5;
+            --bg-panel-hover: #efefef;
+            --bg-subtle: #f0f0f0;
+            --bg-neutral-900: #f5f5f5;
+            --bg-neutral-800: #e5e5e5;
+            --border-color: #e5e5e5;
+            --border-subtle: #e5e5e5;
+            --border-hover: #d4d4d4;
+            --text-primary: #171717;
+            --text-secondary: #525252;
+            --text-muted: #a3a3a3;
+            --text-heading: #0a0a0a;
+            --scroll-track: #f0f0f0;
+            --scroll-thumb: #ccc;
+            --scroll-thumb-hover: #aaa;
+        }
+
         body {
             font-family: var(--font-sans);
-            background-color: #000;
-            color: #e5e5e5;
+            background-color: var(--bg-app);
+            color: var(--text-primary);
             margin: 0;
             display: flex;
             height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            font-size: calc(16px * var(--font-scale));
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
 
         .panel-stylized {
-            border: 1px solid #262626;
-            background-color: #050505;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-panel-alt);
             border-radius: 0.5rem;
             padding: 1.5rem 1.75rem;
             margin-bottom: 1.5rem;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
         }
-        .panel-stylized:hover { border-color: #333; }
+        .panel-stylized:hover { border-color: var(--border-hover); }
         .panel-stylized:last-child { margin-bottom: 0; }
 
         .subtopic-panel {
-            border: 1px solid #1a1a1a;
-            background-color: #080808;
+            border: 1px solid var(--border-subtle);
+            background-color: var(--bg-subtle);
             border-radius: 0.375rem;
             padding: 1.1rem 1.25rem 1rem;
             margin-top: 1rem;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
         }
         .subtopic-panel:hover {
-            border-color: #2a2a2a;
-            background-color: #0a0a0a;
+            border-color: var(--border-hover);
+            background-color: var(--bg-panel-hover);
         }
 
         .h3-block {
             margin-top: 1rem;
             padding-left: 0.9rem;
-            border-left: 2px solid #1f1f1f;
+            border-left: 2px solid var(--border-subtle);
         }
 
         .panel-raw {
             margin-bottom: 1.5rem;
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .tooltip-term {
+            border-bottom: 1px dotted var(--text-muted);
+            cursor: help;
+            position: relative;
+        }
+        .tooltip-term:hover {
+            color: var(--text-heading);
+            border-bottom-color: var(--text-heading);
+        }
+        #global-tooltip {
+            position: fixed;
+            z-index: 200;
+            background: var(--bg-panel-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border-hover);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 320px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+        }
+        #global-tooltip.show { opacity: 1; }
+        [data-theme="light"] #global-tooltip {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+        }
+
+        .doc-scope {
+            --doc-scale: 1;
+        }
+        .doc-scope .panel-stylized { font-size: calc(1rem * var(--doc-scale)); }
+        .doc-scope .subtopic-panel { font-size: calc(0.875rem * var(--doc-scale)); }
+        .doc-scope .h3-block { font-size: calc(0.875rem * var(--doc-scale)); }
+        .doc-scope .panel-raw { font-size: calc(0.85rem * var(--doc-scale)); }
+        .doc-scope .panel-stylized h1 { font-size: calc(1.5rem * var(--doc-scale)); }
+        .doc-scope .subtopic-panel h2 { font-size: calc(1rem * var(--doc-scale)); }
+        .doc-scope .text-neutral-300,
+        .doc-scope .text-neutral-400,
+        .doc-scope .text-neutral-500 { font-size: calc(0.875rem * var(--doc-scale)); }
+
+        .panel-stylized,
+        .subtopic-panel {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.075), 0 1px 4px rgba(255, 255, 255, 0.09);
+        }
+        .panel-stylized:hover {
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.12), 0 2px 6px rgba(255, 255, 255, 0.1);
+        }
+        .subtopic-panel:hover {
+            box-shadow: 0 4px 22px rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] .panel-stylized,
+        [data-theme="light"] .subtopic-panel {
+            box-shadow: 0 4px 22px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        [data-theme="light"] .panel-stylized:hover {
+            box-shadow: 0 8px 34px rgba(0, 0, 0, 0.24), 0 3px 8px rgba(0, 0, 0, 0.22);
+        }
+        [data-theme="light"] .subtopic-panel:hover {
+            box-shadow: 0 4px 26px rgba(0, 0, 0, 0.22);
+        }
+
+        .pages-panel {
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        [data-theme="light"] .pages-panel {
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .dashboard-card {
+            box-shadow: 0 4px 20px rgba(255,255,255,0.075);
+        }
+        .dashboard-card:hover {
+            box-shadow: 0 8px 30px rgba(255,255,255,0.12);
+        }
+        [data-theme="light"] .dashboard-card {
+            box-shadow: 0 4px 22px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.2);
+        }
+        [data-theme="light"] .dashboard-card:hover {
+            box-shadow: 0 8px 34px rgba(0,0,0,0.24), 0 3px 8px rgba(0,0,0,0.22);
+        }
+
+        .pinned-card {
+            box-shadow: 0 3px 14px rgba(255,255,255,0.06);
+        }
+        [data-theme="light"] .pinned-card {
+            box-shadow: 0 3px 14px rgba(0,0,0,0.15), 0 1px 4px rgba(0,0,0,0.18);
         }
 
         .tree-details > summary {
@@ -72,7 +213,7 @@
             border-radius: 0.25rem;
         }
         .tree-details > summary::-webkit-details-marker { display: none; }
-        .tree-details > summary:hover { background-color: #1a1a1a; }
+        .tree-details > summary:hover { background-color: var(--bg-neutral-900); }
         .tree-details[open] > summary .details-arrow { transform: rotate(90deg); }
 
         .toast {
@@ -80,8 +221,8 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #fff;
-            color: #000;
+            background: var(--text-heading);
+            color: var(--bg-app);
             padding: 8px 16px;
             border-radius: 4px;
             font-weight: 500;
@@ -96,35 +237,36 @@
             display: none;
             position: absolute;
             right: 0;
-            background-color: #0a0a0a;
+            background-color: var(--bg-panel-hover);
             min-width: 120px;
-            border: 1px solid #333;
+            border: 1px solid var(--border-hover);
             border-radius: 4px;
             z-index: 50;
         }
         .dropdown-content button {
-            color: white;
+            color: var(--text-heading);
             padding: 8px 12px;
             text-decoration: none;
             display: block;
             width: 100%;
             text-align: left;
         }
-        .dropdown-content button:hover { background-color: #1a1a1a; }
+        .dropdown-content button:hover { background-color: var(--bg-neutral-900); }
         .dropdown:focus-within .dropdown-content { display: block; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; margin-bottom: 0.75rem; }
-        th, td { border: 1px solid #262626; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.875rem; }
-        th { background-color: #111; color: #fff; }
+        th, td { border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.875rem; }
+        th { background-color: var(--bg-neutral-900); color: var(--text-heading); }
         ul, ol { padding-left: 1.25rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
         li { margin-bottom: 0.25rem; }
 
         .split-column {
             flex: 1;
             min-width: 0;
-            max-height: calc(100vh - 8rem);
+            height: 100%;
             overflow-y: auto;
             padding-right: 0.5rem;
+            padding-bottom: 1rem;
             overscroll-behavior: contain;
         }
         .column-header {
@@ -137,9 +279,22 @@
             font-size: 0.65rem;
             font-weight: 600;
             letter-spacing: 0.1em;
-            border-bottom: 1px solid #1a1a1a;
-            background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-app);
             backdrop-filter: blur(6px);
+        }
+        [data-theme="dark"] .column-header { background: rgba(0,0,0,0.9); }
+        [data-theme="light"] .column-header { background: rgba(255,255,255,0.9); }
+
+        .split-divider {
+            width: 1px;
+            background: var(--border-color);
+            margin: 1rem 0;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+        @media (max-width: 767px) {
+            .split-divider { display: none; }
         }
 
         .hover-actions {
@@ -153,7 +308,18 @@
         .group:hover > .hover-actions,
         .group:hover .hover-actions { opacity: 1; }
 
-        /* ---------- Jump-to menu ---------- */
+        #content-scroll-area.split-active {
+            overflow: hidden;
+            padding: 1.25rem 1.5rem;
+        }
+        #content-scroll-area.split-active #document-view { height: 100%; }
+        #content-scroll-area.split-active #document-layout { height: 100%; }
+
+        @media (min-width: 1600px) {
+            #content-scroll-area { padding-left: 3rem; padding-right: 3rem; }
+            #content-scroll-area.split-active { padding-left: 2rem; padding-right: 2rem; }
+        }
+
         #jump-menu {
             display: none;
             position: absolute;
@@ -163,8 +329,8 @@
             max-width: 480px;
             max-height: 480px;
             overflow-y: auto;
-            background: #0a0a0a;
-            border: 1px solid #333;
+            background: var(--bg-panel-hover);
+            border: 1px solid var(--border-hover);
             border-radius: 6px;
             z-index: 60;
             padding: 6px 0;
@@ -175,7 +341,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: #525252;
+            color: var(--text-muted);
             padding: 6px 12px 4px;
         }
         #jump-menu button {
@@ -185,7 +351,7 @@
             padding: 6px 12px;
             background: transparent;
             border: none;
-            color: #d4d4d4;
+            color: var(--text-primary);
             font-family: inherit;
             font-size: 12px;
             cursor: pointer;
@@ -193,36 +359,133 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        #jump-menu button:hover { background: #1a1a1a; color: #fff; }
-        #jump-menu button.lvl-1 { font-weight: 600; color: #fff; }
+        #jump-menu button:hover { background: var(--bg-neutral-900); color: var(--text-heading); }
+        #jump-menu button.lvl-1 { font-weight: 600; color: var(--text-heading); }
         #jump-menu button.lvl-2 { padding-left: 24px; }
-        #jump-menu button.lvl-3 { padding-left: 36px; color: #a3a3a3; font-size: 11px; }
+        #jump-menu button.lvl-3 { padding-left: 36px; color: var(--text-secondary); font-size: 11px; }
         #jump-menu button .slot-tag {
             font-family: var(--font-mono);
             font-size: 10px;
-            color: #525252;
+            color: var(--text-muted);
             margin-right: 6px;
         }
 
-        /* Brief highlight when jumping */
         @keyframes jumpFlash {
-            0%   { background-color: rgba(255,255,255,0.06); border-color: #525252; }
+            0%   { background-color: rgba(128,128,128,0.18); border-color: var(--text-muted); }
             100% { background-color: transparent; border-color: inherit; }
         }
-        .jump-target {
+        .jump-target, .jump-target-h3 {
             animation: jumpFlash 1.2s ease-out;
         }
-        .jump-target-h3 {
-            animation: jumpFlash 1.2s ease-out;
+
+        .file-actions button {
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            min-height: 18px;
         }
+
+        .doc-action-btn {
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .doc-action-btn > svg {
+            width: 14px;
+            height: 14px;
+            display: block;
+        }
+
+        .toolbar-select {
+            background: transparent;
+            border: 1px solid var(--border-hover);
+            color: var(--text-heading);
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 12px;
+            outline: none;
+            max-width: 130px;
+        }
+        .toolbar-select option { background: var(--bg-panel); color: var(--text-heading); }
+
+        .pins-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        [data-theme="light"] .bg-black { background-color: var(--bg-app) !important; }
+        [data-theme="light"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
+        [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
+        [data-theme="light"] .bg-\[\#0a0a0a\] { background-color: var(--bg-panel-hover) !important; }
+        [data-theme="light"] .bg-\[\#080808\] { background-color: var(--bg-subtle) !important; }
+        [data-theme="light"] .bg-\[\#111\] { background-color: var(--bg-panel-alt) !important; }
+        [data-theme="light"] .bg-neutral-900 { background-color: var(--bg-neutral-900) !important; }
+        [data-theme="light"] .bg-neutral-800 { background-color: var(--bg-neutral-800) !important; }
+        [data-theme="light"] .border-neutral-800 { border-color: var(--border-color) !important; }
+        [data-theme="light"] .border-neutral-700 { border-color: var(--border-hover) !important; }
+        [data-theme="light"] .border-neutral-900 { border-color: var(--border-subtle) !important; }
+        [data-theme="light"] .border-neutral-800\/60 { border-color: rgba(0,0,0,0.08) !important; }
+        [data-theme="light"] .text-white { color: var(--text-heading) !important; }
+        [data-theme="light"] .text-neutral-300 { color: var(--text-primary) !important; }
+        [data-theme="light"] .text-neutral-400 { color: var(--text-secondary) !important; }
+        [data-theme="light"] .text-neutral-500 { color: var(--text-muted) !important; }
+        [data-theme="light"] .text-neutral-600 { color: #737373 !important; }
+        [data-theme="light"] .hover\:bg-neutral-900:hover { background-color: var(--bg-neutral-900) !important; }
+        [data-theme="light"] .hover\:bg-neutral-800:hover { background-color: var(--bg-neutral-800) !important; }
+        [data-theme="light"] .hover\:text-white:hover { color: var(--text-heading) !important; }
+        [data-theme="light"] .hover\:border-neutral-700:hover { border-color: var(--border-hover) !important; }
+        [data-theme="light"] .hover\:text-neutral-400:hover { color: var(--text-secondary) !important; }
+        [data-theme="light"] .bg-white { background-color: #171717 !important; }
+        [data-theme="light"] .bg-white:hover { background-color: #333 !important; }
+        [data-theme="light"] .text-black { color: #fff !important; }
+        [data-theme="light"] .hover\:bg-neutral-200:hover { background-color: #333 !important; }
+        [data-theme="light"] code {
+            background-color: #f0f0f0 !important;
+            border-color: #e5e5e5 !important;
+            color: #171717 !important;
+        }
+        [data-theme="light"] select { color: var(--text-heading) !important; }
+        [data-theme="light"] select option { background: #fff; color: #171717; }
+        [data-theme="light"] input { color: var(--text-heading) !important; }
     </style>
 </head>
 <body>
 
     <aside class="w-72 border-r border-neutral-800 bg-[#030303] flex flex-col h-full shrink-0">
-        <div class="p-4 border-b border-neutral-800 space-y-3">
+        <div class="p-4 border-b border-neutral-800 space-y-3 shrink-0">
             <div class="flex items-center justify-between">
-                <h1 class="text-xl font-bold text-white tracking-tight">TheInfoDB</h1>
+                <div class="flex items-center space-x-2.5">
+                    <button id="theme-toggle-btn" class="p-1.5 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Toggle theme">
+                        <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold text-white tracking-tight">TheInfoDB</h1>
+                </div>
             </div>
             <div class="relative flex items-center">
                 <input type="text" id="quick-search-input" data-i18n-placeholder="searchEverythingPlaceholder" placeholder="Search everything..."
@@ -233,19 +496,25 @@
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
-            <div class="flex items-center justify-between px-1">
-                <div class="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider" data-i18n="pagesTitle">Pages</div>
+        <div id="sidebar-resizable-container" class="p-3 flex flex-col" style="height: 380px; min-height: 120px; max-height: calc(100vh - 200px);">
+            <div class="pages-panel border border-neutral-800 bg-[#050505] rounded-lg p-3 flex flex-col gap-2 flex-1 overflow-hidden min-h-0">
+                <div class="flex items-center justify-between px-1 shrink-0">
+                    <div class="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider" data-i18n="pagesTitle">Pages</div>
+                </div>
+                <div class="relative flex items-center shrink-0">
+                    <input type="text" id="page-search-input" data-i18n-placeholder="searchPagesPlaceholder" placeholder="Search pages..."
+                           class="w-full bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2.5 py-1.5 focus:outline-none focus:border-neutral-500 pr-7">
+                    <button id="page-search-clear" class="absolute right-2 text-neutral-500 hover:text-white hidden">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div id="pages-tree" class="text-xs mt-1 flex-1 overflow-y-auto min-h-0"></div>
             </div>
-            <div class="relative flex items-center">
-                <input type="text" id="page-search-input" data-i18n-placeholder="searchPagesPlaceholder" placeholder="Search pages..."
-                       class="w-full bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2.5 py-1.5 focus:outline-none focus:border-neutral-500 pr-7">
-                <button id="page-search-clear" class="absolute right-2 text-neutral-500 hover:text-white hidden">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div id="pages-tree" class="text-xs mt-1"></div>
         </div>
+        <div id="sidebar-resize-handle" class="h-2 w-full cursor-ns-resize bg-transparent hover:bg-neutral-800 transition-colors flex items-center justify-center shrink-0" title="Drag to resize">
+            <div class="w-8 h-0.5 bg-neutral-700 rounded-full"></div>
+        </div>
+        <div class="flex-1"></div>
     </aside>
 
     <main class="flex-1 flex flex-col bg-black h-full relative overflow-hidden min-w-0">
@@ -255,42 +524,14 @@
             </div>
 
             <div class="flex items-center space-x-3 shrink-0">
-                <select id="view-mode-select" class="bg-transparent border border-neutral-700 text-sm text-white rounded px-2 py-1 outline-none">
-                    <option value="Stylized" data-i18n="viewModeStylized">Stylized</option>
-                    <option value="Raw" data-i18n="viewModeRaw">Raw</option>
-                </select>
-
                 <select id="ui-language-select" class="bg-transparent border border-neutral-700 text-sm text-white rounded px-2 py-1 outline-none">
-                    <option value="English">English</option>
+                    <option value="English" selected>English</option>
                     <option value="German">German</option>
                 </select>
-
-                <!-- Jump To Section Button -->
-                <div class="dropdown relative" id="jump-dropdown" style="display:none;">
-                    <button id="jump-to-btn" class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Jump to section">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="12" x2="15" y2="12"></line>
-                            <line x1="3" y1="18" x2="11" y2="18"></line>
-                            <polyline points="17 14 20 17 23 14"></polyline>
-                        </svg>
-                    </button>
-                    <div id="jump-menu"></div>
-                </div>
 
                 <button id="toggle-split-view-btn" class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Split View">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
                 </button>
-
-                <div class="dropdown relative" tabindex="0">
-                    <button class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800" title="Download">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    </button>
-                    <div class="dropdown-content mt-1">
-                        <button id="dl-doc-txt" data-i18n="downloadTextfile">Textfile</button>
-                        <button id="dl-doc-md" data-i18n="downloadMarkdown">Markdown</button>
-                    </div>
-                </div>
 
                 <button id="toggle-pins-btn" class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Pins">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
@@ -299,16 +540,17 @@
         </header>
 
         <div id="content-scroll-area" class="flex-1 overflow-y-auto p-8">
-            <div id="dashboard-view" class="max-w-6xl mx-auto">
+            <div id="dashboard-view" class="max-w-[1366px] mx-auto">
                 <h2 class="text-2xl font-bold mb-6 text-white" data-i18n="dashboardOverview">Overview</h2>
-                <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     <div class="text-neutral-500">Loading GitHub Repository Tree...</div>
                 </div>
             </div>
 
-            <div id="document-view" class="max-w-4xl mx-auto hidden transition-all duration-300">
+            <div id="document-view" class="w-full max-w-[1600px] mx-auto hidden transition-all duration-300">
                 <div id="document-layout" class="flex flex-col md:flex-row gap-6 w-full">
                     <div id="document-content" class="flex-1 w-full min-w-0"></div>
+                    <div id="split-divider" class="split-divider hidden"></div>
                     <div id="document-content-secondary" class="flex-1 w-full min-w-0 hidden"></div>
                 </div>
             </div>
@@ -328,10 +570,19 @@
                         <button id="dl-pins-md" data-i18n="downloadMarkdown">Markdown</button>
                     </div>
                 </div>
+                <button id="close-pins-btn" class="text-neutral-400 hover:text-white p-1" title="Close Pins">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
         </div>
-        <div id="pins-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            <div id="no-pins-msg" class="text-neutral-500 text-sm text-center mt-10" data-i18n="noPinsMsg">No topics pinned yet.</div>
+
+        <div id="pins-resizable-container" class="flex flex-col flex-1 min-h-0" style="min-height: 120px;">
+            <div id="pins-container" class="pins-scroll-area">
+                <div id="no-pins-msg" class="text-neutral-500 text-sm text-center mt-10" data-i18n="noPinsMsg">No topics pinned yet.</div>
+            </div>
+        </div>
+        <div id="pins-resize-handle" class="h-2 w-full cursor-ns-resize bg-transparent hover:bg-neutral-800 transition-colors flex items-center justify-center shrink-0" title="Drag to resize">
+            <div class="w-8 h-0.5 bg-neutral-700 rounded-full"></div>
         </div>
     </aside>
 
@@ -352,12 +603,14 @@
     </div>
 
     <div id="toast" class="toast">Message</div>
+    <div id="global-tooltip"></div>
 
     <script>
         const state = {
             pages: [],
             fileCache: {},
             hyperlinks: {},
+            tooltips: {},
             pinnedTopics: [],
             currentActiveFile: null,
             splitFile1: null,
@@ -365,11 +618,18 @@
             slot1Language: 'English',
             slot2Language: 'English',
             viewMode: 'Stylized',
+            viewMode1: 'Stylized',
+            viewMode2: 'Stylized',
             isSplitView: false,
             pendingLink: '',
             uiLanguage: 'English',
             translations: {},
-            contextFile: null
+            contextFile: null,
+            theme: localStorage.getItem('theme') || 'dark',
+            treeOpenState: {},
+            pageRegistry: {},
+            docFontScale1: parseFloat(localStorage.getItem('docFontScale1') || '1'),
+            docFontScale2: parseFloat(localStorage.getItem('docFontScale2') || '1')
         };
 
         const defaultTranslations = {
@@ -377,7 +637,7 @@
             searchEverythingPlaceholder: "Search everything...",
             pagesTitle: "Pages",
             dashboardTitle: "Dashboard",
-            viewModeStylized: "Stylized",
+            viewModeStylized: "Markdown",
             viewModeRaw: "Raw",
             downloadTextfile: "Textfile",
             downloadMarkdown: "Markdown",
@@ -395,8 +655,12 @@
             toastNoPins: "No pins to download.",
             searchResults: "Search Results:",
             jumpToTitle: "Jump to section",
-            jumpNoSections: "No sections in this document."
+            jumpNoSections: "No sections in this document.",
+            toastJumped: "Jumped to"
         };
+
+        const FIXED_ENGLISH_KEYS = new Set(['viewModeStylized', 'viewModeRaw']);
+        const SUPPORTED_LANGUAGES = ['English', 'German'];
 
         const dom = {
             qsInput: document.getElementById('quick-search-input'),
@@ -409,36 +673,272 @@
             documentView: document.getElementById('document-view'),
             documentContent: document.getElementById('document-content'),
             documentContentSecondary: document.getElementById('document-content-secondary'),
+            splitDivider: document.getElementById('split-divider'),
+            contentScrollArea: document.getElementById('content-scroll-area'),
             breadcrumb: document.getElementById('breadcrumb'),
-            viewModeSelect: document.getElementById('view-mode-select'),
             uiLanguageSelect: document.getElementById('ui-language-select'),
             toggleSplitViewBtn: document.getElementById('toggle-split-view-btn'),
             pinsBtn: document.getElementById('toggle-pins-btn'),
             pinsSidebar: document.getElementById('pins-sidebar'),
             pinsContainer: document.getElementById('pins-container'),
+            pinsResizableContainer: document.getElementById('pins-resizable-container'),
+            pinsResizeHandle: document.getElementById('pins-resize-handle'),
             noPinsMsg: document.getElementById('no-pins-msg'),
             toast: document.getElementById('toast'),
+            globalTooltip: document.getElementById('global-tooltip'),
             linkModal: document.getElementById('link-modal'),
             linkCancel: document.getElementById('link-cancel'),
             linkOkay: document.getElementById('link-okay'),
             contextMenu: document.getElementById('context-menu'),
             ctxOpenLeft: document.getElementById('ctx-open-left'),
             ctxOpenRight: document.getElementById('ctx-open-right'),
-            jumpDropdown: document.getElementById('jump-dropdown'),
-            jumpBtn: document.getElementById('jump-to-btn'),
-            jumpMenu: document.getElementById('jump-menu')
+            themeToggleBtn: document.getElementById('theme-toggle-btn'),
+            themeIconSun: document.getElementById('theme-icon-sun'),
+            themeIconMoon: document.getElementById('theme-icon-moon'),
+            sidebarResizableContainer: document.getElementById('sidebar-resizable-container'),
+            sidebarResizeHandle: document.getElementById('sidebar-resize-handle')
         };
 
+        /* ---------------- Font scale ---------------- */
+        function applyDocFontScope(columnEl, slotTag) {
+            if (!columnEl) return;
+            const scale = slotTag === '2' ? state.docFontScale2 : state.docFontScale1;
+            columnEl.classList.add('doc-scope');
+            columnEl.style.setProperty('--doc-scale', String(scale));
+        }
+
+        function buildDocFontSizeControl(slotTag) {
+            const size = document.createElement('select');
+            size.className = "toolbar-select";
+            size.title = "Document font size";
+            [['0.85','85%'],['0.9','90%'],['1','100%'],['1.1','110%'],['1.25','125%'],['1.5','150%']].forEach(([v,l]) => {
+                const o = document.createElement('option');
+                o.value = v;
+                o.textContent = l;
+                size.appendChild(o);
+            });
+            size.value = String(slotTag === '2' ? state.docFontScale2 : state.docFontScale1);
+
+            size.addEventListener('change', () => {
+                const val = parseFloat(size.value) || 1;
+                if (slotTag === '2') {
+                    state.docFontScale2 = val;
+                    localStorage.setItem('docFontScale2', String(val));
+                    applyDocFontScope(dom.documentContentSecondary, '2');
+                } else {
+                    state.docFontScale1 = val;
+                    localStorage.setItem('docFontScale1', String(val));
+                    applyDocFontScope(dom.documentContent, '1');
+                }
+            });
+            return size;
+        }
+
+        function buildDocViewModeControl(slotTag) {
+            const sel = document.createElement('select');
+            sel.className = "toolbar-select";
+            sel.title = "View mode";
+            const modes = [
+                ['Stylized', state.translations.viewModeStylized || 'Markdown'],
+                ['Raw', state.translations.viewModeRaw || 'Raw']
+            ];
+            modes.forEach(([v,label]) => {
+                const o = document.createElement('option');
+                o.value = v;
+                o.textContent = label;
+                sel.appendChild(o);
+            });
+            const current = slotTag === '2' ? state.viewMode2 : (state.isSplitView ? state.viewMode1 : state.viewMode);
+            sel.value = current;
+
+            sel.addEventListener('change', () => {
+                if (state.isSplitView) {
+                    if (slotTag === '2') state.viewMode2 = sel.value;
+                    else state.viewMode1 = sel.value;
+                    renderSplitView();
+                } else {
+                    state.viewMode = sel.value;
+                    if (state.currentActiveFile) handleFileSelection(state.currentActiveFile);
+                }
+            });
+            return sel;
+        }
+
+        // Extract the FIRST "# " heading from markdown content. Returns null if none.
+        function extractFirstHeading(md) {
+            if (!md) return null;
+            const lines = md.split('\n');
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('# ')) {
+                    return trimmed.slice(2).trim();
+                }
+            }
+            return null;
+        }
+
         async function init() {
+            applyTheme(state.theme);
+            dom.uiLanguageSelect.value = 'English';
             await loadHyperlinks();
-            await loadLanguage(state.uiLanguage);
+            await loadTooltips();
+            await loadPageRegistry();
+            await loadLanguage('English');
             await fetchGitHubTree();
+            // Preload all markdown so we can read the first "# " heading of each file.
+            await preloadContentForAllLanguages();
+            // Now assign document names from the first heading (fallback: filename stem).
+            resolveDocumentTitles();
             renderTree(state.pages, dom.pagesTree);
             renderDashboard();
             setupEventListeners();
-            preloadContentForAllLanguages();
+            setupSidebarResize();
+            setupPinsResize();
+            setupTooltipEngine();
         }
 
+        // Use the first "# " heading of the preferred-language file as the display title.
+        // Falls back to the filename stem if no heading exists.
+        function resolveDocumentTitles() {
+            state.pages.forEach(p => {
+                if (!p.paths) return;
+                const preferredLangs = [state.uiLanguage, 'English'];
+                let heading = null;
+                for (const l of preferredLangs) {
+                    const path = p.paths[l];
+                    if (!path) continue;
+                    const content = state.fileCache[path];
+                    if (!content) continue;
+                    const h = extractFirstHeading(content);
+                    if (h) { heading = h; break; }
+                }
+                p.title = heading || p.fallbackTitle || p.title;
+            });
+        }
+
+        function setupSidebarResize() {
+            let isResizing = false;
+            let startY = 0;
+            let startHeight = 0;
+
+            dom.sidebarResizeHandle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startY = e.clientY;
+                startHeight = dom.sidebarResizableContainer.getBoundingClientRect().height;
+                document.body.style.cursor = 'ns-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const delta = e.clientY - startY;
+                const newHeight = startHeight + delta;
+                const minH = 120;
+                const maxH = window.innerHeight - 200;
+                if (newHeight >= minH && newHeight <= maxH) {
+                    dom.sidebarResizableContainer.style.height = `${newHeight}px`;
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = 'default';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
+
+        function setupPinsResize() {
+            let isResizing = false;
+            let startY = 0;
+            let startHeight = 0;
+
+            dom.pinsResizeHandle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startY = e.clientY;
+                startHeight = dom.pinsResizableContainer.getBoundingClientRect().height;
+                document.body.style.cursor = 'ns-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const delta = startY - e.clientY;
+                const newHeight = startHeight + delta;
+                const minH = 120;
+                const maxH = window.innerHeight - 120;
+                if (newHeight >= minH && newHeight <= maxH) {
+                    dom.pinsResizableContainer.style.height = `${newHeight}px`;
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = 'default';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
+
+        function setupTooltipEngine() {
+            let hideTimer = null;
+
+            document.addEventListener('mouseover', (e) => {
+                const el = e.target.closest && e.target.closest('.tooltip-term');
+                if (!el) return;
+                const term = el.getAttribute('data-term');
+                const desc = state.tooltips[term];
+                if (!desc) return;
+
+                clearTimeout(hideTimer);
+                dom.globalTooltip.textContent = desc;
+                dom.globalTooltip.classList.add('show');
+
+                const rect = el.getBoundingClientRect();
+                const tipRect = dom.globalTooltip.getBoundingClientRect();
+                let left = rect.left + rect.width / 2 - tipRect.width / 2;
+                let top = rect.top - tipRect.height - 8;
+                if (left < 8) left = 8;
+                if (left + tipRect.width > window.innerWidth - 8) {
+                    left = window.innerWidth - tipRect.width - 8;
+                }
+                if (top < 8) top = rect.bottom + 8;
+                dom.globalTooltip.style.left = `${left}px`;
+                dom.globalTooltip.style.top = `${top}px`;
+            });
+
+            document.addEventListener('mouseout', (e) => {
+                const el = e.target.closest && e.target.closest('.tooltip-term');
+                if (!el) return;
+                hideTimer = setTimeout(() => {
+                    dom.globalTooltip.classList.remove('show');
+                }, 60);
+            });
+
+            window.addEventListener('scroll', () => {
+                dom.globalTooltip.classList.remove('show');
+            }, true);
+        }
+
+        /* ---------------- Theme ---------------- */
+        function applyTheme(theme) {
+            state.theme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (theme === 'light') {
+                dom.themeIconSun.style.display = 'none';
+                dom.themeIconMoon.style.display = 'block';
+            } else {
+                dom.themeIconSun.style.display = 'block';
+                dom.themeIconMoon.style.display = 'none';
+            }
+        }
+
+        /* ---------------- Data loading ---------------- */
         async function loadHyperlinks() {
             try {
                 const res = await fetch('./hyperlinks.json');
@@ -450,6 +950,41 @@
             }
         }
 
+        async function loadTooltips() {
+            try {
+                const res = await fetch('./mouseOverTooltips.json');
+                if (res.ok) {
+                    state.tooltips = await res.json();
+                }
+            } catch (e) {
+                state.tooltips = {};
+            }
+        }
+
+        async function loadPageRegistry() {
+            state.pageRegistry = {};
+            await Promise.allSettled(SUPPORTED_LANGUAGES.map(async (lang) => {
+                try {
+                    const res = await fetch(`./languages/pages/pagesLanguage_${lang}.json`);
+                    if (res.ok) {
+                        state.pageRegistry[lang] = await res.json();
+                    } else {
+                        state.pageRegistry[lang] = {};
+                    }
+                } catch (e) {
+                    state.pageRegistry[lang] = {};
+                }
+            }));
+        }
+
+        function translateFolder(rawName) {
+            const langMap = state.pageRegistry[state.uiLanguage];
+            if (langMap && langMap[rawName]) return langMap[rawName];
+            const enMap = state.pageRegistry['English'];
+            if (enMap && enMap[rawName]) return enMap[rawName];
+            return rawName;
+        }
+
         async function fetchGitHubTree() {
             try {
                 const res = await fetch('https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB/git/trees/main?recursive=1');
@@ -457,31 +992,32 @@
                 const data = await res.json();
 
                 const pagesMap = {};
-                const formatName = (str) => {
-                    if (!str) return '';
-                    return str.replace(/([a-z])([A-Z])/g, '$1 $2').trim();
+                // Filename stem is used as a fallback title, and as a stable ID base.
+                // The actual displayed title will come from the first "# " heading later.
+                const extractStem = (filename) => {
+                    return filename
+                        .replace(/_in[a-zA-Z]+\.md$/, '')
+                        .replace(/\.md$/, '');
                 };
 
                 data.tree.forEach(node => {
                     if (node.type === 'blob' && node.path.startsWith('Pages/') && node.path.endsWith('.md')) {
                         const pathParts = node.path.split('/');
                         const filename = pathParts.pop();
-                        const cleanName = filename.replace(/_in[a-zA-Z]+\.md$/, '').replace(/\.md$/, '');
+                        const stem = extractStem(filename);
 
                         const dirParts = pathParts.slice(1);
-                        let title = cleanName;
-
                         if (dirParts.length > 0) {
                             const lastFolder = dirParts[dirParts.length - 1];
-                            if (lastFolder.toLowerCase() === cleanName.toLowerCase()) {
+                            if (lastFolder.toLowerCase() === stem.toLowerCase()) {
                                 dirParts.pop();
                             }
                         }
 
-                        const displayTitle = formatName(title);
-                        const displayCategoryParts = dirParts.map(formatName);
+                        const displayCategoryParts = dirParts.map(p => translateFolder(p));
                         const category = displayCategoryParts.join(' / ');
-                        const id = displayCategoryParts.length > 0 ? `${category}/${displayTitle}` : displayTitle;
+                        // ID is stable: uses raw dir path + filename stem.
+                        const id = (dirParts.length > 0 ? `${dirParts.join('/')}/` : '') + stem;
 
                         const langMatch = filename.match(/_in([a-zA-Z]+)\.md$/);
                         const lang = langMatch ? langMatch[1] : 'English';
@@ -489,8 +1025,10 @@
                         if (!pagesMap[id]) {
                             pagesMap[id] = {
                                 id,
-                                title: displayTitle,
+                                title: stem,           // provisional; replaced by first heading after preload
+                                fallbackTitle: stem,   // keep the filename stem as fallback
                                 category,
+                                rawCategoryParts: dirParts.slice(),
                                 categoryParts: displayCategoryParts,
                                 paths: {}
                             };
@@ -503,6 +1041,18 @@
                 console.error(e);
                 dom.dashboardGrid.innerHTML = `<div class="text-red-500">Failed to load repository tree. Check console for details.</div>`;
             }
+        }
+
+        function retranslatePages() {
+            state.pages.forEach(p => {
+                if (p.rawCategoryParts && p.rawCategoryParts.length > 0) {
+                    p.categoryParts = p.rawCategoryParts.map(x => translateFolder(x));
+                    p.category = p.categoryParts.join(' / ');
+                } else {
+                    p.categoryParts = [];
+                    p.category = '';
+                }
+            });
         }
 
         async function preloadContentForAllLanguages() {
@@ -523,16 +1073,23 @@
         }
 
         async function loadLanguage(lang) {
+            state.uiLanguage = lang;
+
+            let loaded = {};
             try {
                 const res = await fetch(`./languages/index/indexLanguage_${lang}.json`);
                 if (res.ok) {
-                    state.translations = await res.json();
-                } else {
-                    state.translations = defaultTranslations;
+                    loaded = await res.json();
                 }
             } catch (e) {
-                state.translations = defaultTranslations;
+                loaded = {};
             }
+
+            state.translations = Object.assign({}, defaultTranslations, loaded);
+            FIXED_ENGLISH_KEYS.forEach(key => {
+                state.translations[key] = defaultTranslations[key];
+            });
+
             applyTranslations();
         }
 
@@ -552,7 +1109,6 @@
             if (state.pinnedTopics.length === 0) {
                 dom.noPinsMsg.textContent = t.noPinsMsg;
             }
-            if (dom.jumpBtn) dom.jumpBtn.title = t.jumpToTitle || 'Jump to section';
         }
 
         function showToast(msg) {
@@ -578,11 +1134,13 @@
 
         function pickLang(file) {
             if (!file || !file.paths) return 'English';
+            if (state.uiLanguage === 'German' && file.paths['German']) return 'German';
             if (file.paths[state.uiLanguage]) return state.uiLanguage;
             if (file.paths['English']) return 'English';
             return Object.keys(file.paths)[0];
         }
 
+        /* ---------------- Sidebar tree ---------------- */
         function renderTree(files, container) {
             container.innerHTML = '';
             const tree = { folders: {}, files: [] };
@@ -590,28 +1148,53 @@
             files.forEach(f => {
                 let current = tree;
                 if (f.categoryParts && f.categoryParts.length > 0) {
-                    f.categoryParts.forEach(part => {
-                        if (!current.folders[part]) current.folders[part] = { folders: {}, files: [] };
-                        current = current.folders[part];
+                    const rawParts = (f.rawCategoryParts && f.rawCategoryParts.length)
+                        ? f.rawCategoryParts
+                        : f.categoryParts;
+                    rawParts.forEach((rawPart, idx) => {
+                        const displayPart = (f.categoryParts && f.categoryParts[idx]) || translateFolder(rawPart);
+                        if (!current.folders[rawPart]) {
+                            current.folders[rawPart] = {
+                                folders: {},
+                                files: [],
+                                displayName: displayPart
+                            };
+                        }
+                        current = current.folders[rawPart];
                     });
                 }
                 current.files.push(f);
             });
 
-            function buildDOM(node, containerElement) {
-                Object.keys(node.folders).sort().forEach(folderName => {
+            function buildDOM(node, containerElement, rawPathPrefix = '') {
+                Object.keys(node.folders).sort((a, b) => {
+                    const da = node.folders[a].displayName || a;
+                    const db = node.folders[b].displayName || b;
+                    return da.localeCompare(db);
+                }).forEach(rawFolderName => {
+                    const folderData = node.folders[rawFolderName];
+                    const rawFolderPath = rawPathPrefix ? `${rawPathPrefix}/${rawFolderName}` : rawFolderName;
+
                     const details = document.createElement('details');
                     details.className = "tree-details mb-0.5";
-                    details.open = false; // Loaded fully collapsed by default
+                    if (state.treeOpenState[rawFolderPath] !== undefined) {
+                        details.open = state.treeOpenState[rawFolderPath];
+                    } else {
+                        details.open = rawPathPrefix === '';
+                    }
+
+                    details.addEventListener('toggle', () => {
+                        state.treeOpenState[rawFolderPath] = details.open;
+                    });
 
                     const summary = document.createElement('summary');
                     summary.className = "text-neutral-300 font-medium flex items-center select-none text-xs py-0.5 px-1 rounded";
-                    summary.innerHTML = `<svg width="10" height="10" class="mr-1.5 text-neutral-500 transition-transform duration-200 details-arrow shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg> <span class="truncate">${folderName}</span>`;
+                    summary.innerHTML = `<svg width="10" height="10" class="mr-1.5 text-neutral-500 transition-transform duration-200 details-arrow shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg> <span class="truncate">${folderData.displayName || rawFolderName}</span>`;
 
                     const list = document.createElement('div');
                     list.className = "pl-3 ml-1 space-y-0.5 border-l border-neutral-800/60";
 
-                    buildDOM(node.folders[folderName], list);
+                    buildDOM(folderData, list, rawFolderPath);
                     details.appendChild(summary);
                     details.appendChild(list);
                     containerElement.appendChild(details);
@@ -628,10 +1211,13 @@
                     el.appendChild(leftPart);
 
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.className = "flex items-center space-x-1 shrink-0 " + (state.isSplitView ? "" : "hidden");
+                    actionsDiv.className = "file-actions flex items-center space-x-1 shrink-0 " + (state.isSplitView ? "" : "hidden");
+
+                    const isLeftOpen = state.splitFile1 && state.splitFile1.id === file.id;
+                    const isRightOpen = state.splitFile2 && state.splitFile2.id === file.id;
 
                     const lBtn = document.createElement('button');
-                    lBtn.className = "px-1.5 py-0.5 text-[10px] font-mono bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-300 hover:text-white rounded";
+                    lBtn.className = "px-1 py-0.5 text-[10px] font-mono border rounded " + (isLeftOpen ? "bg-blue-600 border-blue-500 text-white font-bold" : "bg-neutral-900 hover:bg-neutral-800 border-neutral-700 text-neutral-300 hover:text-white");
                     lBtn.textContent = "L";
                     lBtn.onclick = (e) => {
                         e.stopPropagation();
@@ -641,7 +1227,7 @@
                     };
 
                     const rBtn = document.createElement('button');
-                    rBtn.className = "px-1.5 py-0.5 text-[10px] font-mono bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-300 hover:text-white rounded";
+                    rBtn.className = "px-1 py-0.5 text-[10px] font-mono border rounded " + (isRightOpen ? "bg-emerald-600 border-emerald-500 text-white font-bold" : "bg-neutral-900 hover:bg-neutral-800 border-neutral-700 text-neutral-300 hover:text-white");
                     rBtn.textContent = "R";
                     rBtn.onclick = (e) => {
                         e.stopPropagation();
@@ -686,21 +1272,22 @@
             buildDOM(tree, container);
         }
 
+        /* ---------------- Dashboard ---------------- */
         function renderDashboard() {
             state.currentActiveFile = null;
             state.splitFile1 = null;
             state.splitFile2 = null;
+            dom.contentScrollArea.classList.remove('split-active');
             dom.documentView.classList.add('hidden');
             dom.dashboardView.classList.remove('hidden');
             dom.breadcrumb.textContent = state.translations.dashboardTitle || "Dashboard";
-            updateJumpMenuVisibility();
 
             const shuffled = [...state.pages].sort(() => 0.5 - Math.random());
             dom.dashboardGrid.innerHTML = '';
 
             shuffled.forEach(file => {
                 const card = document.createElement('div');
-                card.className = "border border-neutral-800 p-5 rounded-lg bg-[#050505] hover:bg-neutral-900 cursor-pointer transition-all duration-200 hover:border-neutral-700";
+                card.className = "dashboard-card border border-neutral-800 p-5 rounded-lg bg-[#050505] hover:bg-neutral-900 cursor-pointer transition-all duration-200 hover:border-neutral-700";
                 card.innerHTML = `
                     <div class="text-xs text-neutral-500 mb-2 font-mono">${getFileDisplayPath(file)}</div>
                     <h3 class="text-lg font-bold text-white">${file.title}</h3>
@@ -725,11 +1312,14 @@
             }
         }
 
+        /* ---------------- Single document view ---------------- */
         async function handleFileSelection(pageObj, preferredLang = null) {
+            dom.contentScrollArea.classList.remove('split-active');
             dom.dashboardView.classList.add('hidden');
             dom.documentView.classList.remove('hidden');
-            dom.documentView.classList.remove('max-w-7xl', 'w-full');
-            dom.documentView.classList.add('max-w-4xl');
+            dom.documentView.classList.remove('max-w-[1600px]', 'w-full');
+            dom.documentView.classList.add('w-full', 'max-w-[1000px]');
+            dom.splitDivider.classList.add('hidden');
 
             const targetLang = preferredLang || state.uiLanguage;
             const defaultLang = pageObj.paths[targetLang] ? targetLang : pickLang(pageObj);
@@ -750,7 +1340,6 @@
             } else {
                 state.currentActiveFile = pageObj;
                 state.splitFile1 = null;
-                state.splitFile2 = null;
 
                 dom.documentContent.classList.remove('split-column');
                 dom.documentContentSecondary.classList.add('hidden');
@@ -762,24 +1351,40 @@
 
                 if (!path) {
                     dom.documentContent.innerHTML = '<div class="text-red-500 mt-10">No content available.</div>';
-                    updateJumpMenuVisibility();
                     return;
                 }
 
                 const content = await fetchContent(path);
-                parseAndRenderMarkdownDocument(content, dom.documentContent, pageObj, false, '', '1', null, state.slot1Language, (newLang) => {
-                    state.slot1Language = newLang;
-                    handleFileSelection(pageObj, newLang);
-                });
+                applyDocFontScope(dom.documentContent, '1');
+                parseAndRenderMarkdownDocument(
+                    content,
+                    dom.documentContent,
+                    pageObj,
+                    state.viewMode,
+                    false, '', '1',
+                    () => { renderDashboard(); },
+                    state.slot1Language,
+                    (newLang) => {
+                        state.slot1Language = newLang;
+                        handleFileSelection(pageObj, newLang);
+                    }
+                );
             }
         }
 
+        /* ---------------- Split view ---------------- */
         async function renderSplitView() {
-            dom.documentView.classList.remove('max-w-4xl');
-            dom.documentView.classList.add('max-w-7xl', 'w-full');
+            state.isSplitView = true;
+            dom.contentScrollArea.classList.add('split-active');
+            dom.documentView.classList.remove('max-w-[1000px]');
+            dom.documentView.classList.add('w-full', 'max-w-[1600px]');
             dom.documentContentSecondary.classList.remove('hidden');
             dom.documentContent.classList.add('split-column');
             dom.documentContentSecondary.classList.add('split-column');
+            dom.splitDivider.classList.remove('hidden');
+
+            applyDocFontScope(dom.documentContent, '1');
+            applyDocFontScope(dom.documentContentSecondary, '2');
 
             let breadcrumbParts = [];
 
@@ -788,13 +1393,17 @@
                 dom.documentContent.innerHTML = '<div class="text-neutral-500 mt-10">Loading 1...</div>';
                 const path1 = state.splitFile1.paths[state.slot1Language] || state.splitFile1.paths['English'] || Object.values(state.splitFile1.paths)[0];
                 const content1 = path1 ? await fetchContent(path1) : "No content available.";
-                parseAndRenderMarkdownDocument(content1, dom.documentContent, state.splitFile1, false, '', '1', () => {
-                    state.splitFile1 = null;
-                    renderSplitView();
-                }, state.slot1Language, (newLang) => {
-                    state.slot1Language = newLang;
-                    renderSplitView();
-                }, '◀ LEFT', '#60a5fa');
+                parseAndRenderMarkdownDocument(
+                    content1,
+                    dom.documentContent,
+                    state.splitFile1,
+                    state.viewMode1,
+                    false, '', '1',
+                    () => { state.splitFile1 = null; renderSplitView(); },
+                    state.slot1Language,
+                    (newLang) => { state.slot1Language = newLang; renderSplitView(); },
+                    '◀ LEFT', '#60a5fa'
+                );
             } else {
                 dom.documentContent.innerHTML =
                     '<div class="column-header" style="color:#60a5fa;">◀ LEFT</div>' +
@@ -806,13 +1415,17 @@
                 dom.documentContentSecondary.innerHTML = '<div class="text-neutral-500 mt-10">Loading 2...</div>';
                 const path2 = state.splitFile2.paths[state.slot2Language] || state.splitFile2.paths['English'] || Object.values(state.splitFile2.paths)[0];
                 const content2 = path2 ? await fetchContent(path2) : "No content available.";
-                parseAndRenderMarkdownDocument(content2, dom.documentContentSecondary, state.splitFile2, false, '', '2', () => {
-                    state.splitFile2 = null;
-                    renderSplitView();
-                }, state.slot2Language, (newLang) => {
-                    state.slot2Language = newLang;
-                    renderSplitView();
-                }, 'RIGHT ▶', '#34d399');
+                parseAndRenderMarkdownDocument(
+                    content2,
+                    dom.documentContentSecondary,
+                    state.splitFile2,
+                    state.viewMode2,
+                    false, '', '2',
+                    () => { state.splitFile2 = null; renderSplitView(); },
+                    state.slot2Language,
+                    (newLang) => { state.slot2Language = newLang; renderSplitView(); },
+                    'RIGHT ▶', '#34d399'
+                );
             } else {
                 dom.documentContentSecondary.innerHTML =
                     '<div class="column-header" style="color:#34d399;">RIGHT ▶</div>' +
@@ -820,25 +1433,36 @@
             }
 
             dom.breadcrumb.textContent = breadcrumbParts.length > 0 ? breadcrumbParts.join(' | ') : "Split View";
+            renderTree(state.pages, dom.pagesTree);
         }
 
+        /* ---------------- Global search ---------------- */
         async function executeGlobalSearch(query) {
             if (!query) {
-                if (state.currentActiveFile) handleFileSelection(state.currentActiveFile);
-                else renderDashboard();
+                if (state.isSplitView) {
+                    renderSplitView();
+                } else if (state.currentActiveFile) {
+                    handleFileSelection(state.currentActiveFile);
+                } else {
+                    renderDashboard();
+                }
                 return;
             }
 
-            dom.documentView.classList.remove('max-w-7xl', 'w-full');
-            dom.documentView.classList.add('max-w-4xl');
+            dom.contentScrollArea.classList.remove('split-active');
+            dom.documentView.classList.remove('max-w-[1600px]', 'w-full');
+            dom.documentView.classList.add('w-full', 'max-w-[1000px]');
             dom.documentContentSecondary.classList.add('hidden');
             dom.documentContent.classList.remove('split-column');
             dom.documentContentSecondary.classList.remove('split-column');
+            dom.splitDivider.classList.add('hidden');
 
             dom.dashboardView.classList.add('hidden');
             dom.documentView.classList.remove('hidden');
             dom.breadcrumb.textContent = `${state.translations.searchResults || 'Search Results:'} "${query}"`;
             dom.documentContent.innerHTML = '';
+
+            applyDocFontScope(dom.documentContent, '1');
 
             const lang = state.slot1Language;
             const q = query.toLowerCase();
@@ -850,19 +1474,54 @@
                 const content = await fetchContent(path);
                 if (content.toLowerCase().includes(q)) {
                     foundAny = true;
-                    parseAndRenderMarkdownDocument(content, dom.documentContent, file, true, query, '', null, lang, null);
+                    parseAndRenderMarkdownDocument(content, dom.documentContent, file, state.viewMode, true, query, '', null, lang, null);
                 }
             }
 
             if (!foundAny) {
                 dom.documentContent.innerHTML = `<div class="text-neutral-500 text-center mt-10">${state.translations.noMatchingTopics}</div>`;
             }
-            updateJumpMenuVisibility();
+        }
+
+        /* ---------------- Markdown helpers ---------------- */
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function buildTooltipRegex() {
+            const keys = Object.keys(state.tooltips || {});
+            if (keys.length === 0) return null;
+            const escaped = keys
+                .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+                .sort((a, b) => b.length - a.length);
+            return new RegExp(`\\b(${escaped.join('|')})\\b`, 'g');
+        }
+
+        function injectTooltips(html) {
+            if (!html) return html;
+            const rx = buildTooltipRegex();
+            if (!rx) return html;
+
+            const parts = html.split(/(<[^>]+>)/g);
+            return parts.map(part => {
+                if (!part) return part;
+                if (part.startsWith('<')) return part;
+                return part.replace(rx, (match) => {
+                    const exactKey = Object.keys(state.tooltips).find(k => k.toLowerCase() === match.toLowerCase());
+                    if (!exactKey) return match;
+                    return `<span class="tooltip-term" data-term="${exactKey}">${match}</span>`;
+                });
+            }).join('');
         }
 
         function formatMarkdownText(text) {
             if (!text) return '';
-            let formatted = text
+            let escaped = escapeHtml(text);
+            let formatted = escaped
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code class="bg-neutral-900 border border-neutral-800 text-neutral-200 px-1.5 py-0.5 rounded text-xs font-mono">$1</code>')
@@ -894,12 +1553,11 @@
             });
             flushList();
 
-            return out.join('<br>').replace(/(<br>)+(<ul)/g, '$2').replace(/(<\/ul>)(<br>)+/g, '$1');
+            let joined = out.join('<br>').replace(/(<br>)+(<ul)/g, '$2').replace(/(<\/ul>)(<br>)+/g, '$1');
+            joined = injectTooltips(joined);
+            return joined;
         }
 
-        /* =========================================================
-           ADVANCED MARKDOWN PARSER (Tables, HR, Code Blocks)
-           ========================================================= */
         function parseAdvancedMarkdown(content) {
             const lines = content.split('\n');
             let overallTitle = "Document";
@@ -1000,11 +1658,44 @@
             return processed.join('<br>');
         }
 
-        /* =========================================================
-           MARKDOWN PANELLING — with jump anchors
-           ========================================================= */
-        function parseAndRenderMarkdownDocument(content, container, fileData, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null) {
-            const isRaw = state.viewMode === 'Raw';
+        function assembleTopicMarkdown(section) {
+            const lines = [];
+            lines.push(`# ${section.title}`);
+            lines.push('');
+
+            if (section.intro) {
+                const rawIntro = section.intro
+                    .replace(/<br\s*\/?>/gi, '\n')
+                    .replace(/<[^>]+>/g, '')
+                    .replace(/&amp;/g, '&')
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&quot;/g, '"')
+                    .trim();
+                if (rawIntro) {
+                    lines.push(rawIntro);
+                    lines.push('');
+                }
+            }
+
+            (section.subtopics || []).forEach(sub => {
+                const prefix = sub.level === 3 ? '###' : '##';
+                lines.push(`${prefix} ${sub.title}`);
+                lines.push('');
+                const body = (sub.contentLines || []).join('\n').trim();
+                if (body) {
+                    lines.push(body);
+                    lines.push('');
+                }
+            });
+
+            return lines.join('\n').trim();
+        }
+
+        /* ---------------- Document renderer ---------------- */
+        function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null) {
+            const effectiveMode = viewModeOverride || state.viewMode;
+            const isRaw = effectiveMode === 'Raw';
 
             const preservedHeader = columnLabel ? (() => {
                 const h = document.createElement('div');
@@ -1017,6 +1708,83 @@
             if (!isSearch) {
                 container.innerHTML = '';
                 if (preservedHeader) container.appendChild(preservedHeader);
+            }
+
+            if (isRaw) {
+                const overallWrapper = document.createElement('div');
+                overallWrapper.className = 'w-full';
+
+                if (fileData) {
+                    const slotHeader = document.createElement('div');
+                    slotHeader.className = "flex justify-between items-center mb-4 pb-3 border-b border-neutral-900 gap-3";
+
+                    const titleBadge = document.createElement('span');
+                    titleBadge.className = "text-xs font-mono text-neutral-400 truncate min-w-0";
+                    titleBadge.textContent = (slotTag ? `[${slotTag}] ` : "") + getFileDisplayPath(fileData);
+                    slotHeader.appendChild(titleBadge);
+
+                    const rightControls = document.createElement('div');
+                    rightControls.className = "flex items-center space-x-2 shrink-0";
+
+                    rightControls.appendChild(buildDocViewModeControl(slotTag));
+                    rightControls.appendChild(buildDocFontSizeControl(slotTag));
+
+                    const availableLangs = Object.keys(fileData.paths || {});
+                    if (availableLangs.length > 1) {
+                        const docLangSelect = document.createElement('select');
+                        docLangSelect.className = "bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2 py-1 outline-none";
+                        availableLangs.forEach(l => {
+                            const opt = document.createElement('option');
+                            opt.value = l;
+                            opt.textContent = l;
+                            if (l === activeDocLang) opt.selected = true;
+                            docLangSelect.appendChild(opt);
+                        });
+                        docLangSelect.onchange = (e) => {
+                            if (slotTag === '2') {
+                                state.slot2Language = e.target.value;
+                                renderSplitView();
+                            } else if (onDocLangChange) {
+                                onDocLangChange(e.target.value);
+                            }
+                        };
+                        rightControls.appendChild(docLangSelect);
+                    }
+
+                    const dlDropdown = document.createElement('div');
+                    dlDropdown.className = "dropdown relative";
+                    dlDropdown.tabIndex = 0;
+                    dlDropdown.innerHTML = `
+                        <button class="doc-action-btn text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800" title="Download">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </button>
+                        <div class="dropdown-content mt-1">
+                            <button class="dl-txt-btn">Textfile</button>
+                            <button class="dl-md-btn">Markdown</button>
+                        </div>
+                    `;
+                    dlDropdown.querySelector('.dl-txt-btn').onclick = () => downloadFile(`${fileData.title}.txt`, content);
+                    dlDropdown.querySelector('.dl-md-btn').onclick = () => downloadFile(`${fileData.title}.md`, content);
+                    rightControls.appendChild(dlDropdown);
+
+                    if (onClose) {
+                        const closeBtn = document.createElement('button');
+                        closeBtn.className = "doc-action-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
+                        closeBtn.innerHTML = `<span>✕</span>`;
+                        closeBtn.onclick = onClose;
+                        rightControls.appendChild(closeBtn);
+                    }
+
+                    slotHeader.appendChild(rightControls);
+                    overallWrapper.appendChild(slotHeader);
+                }
+
+                const rawBox = document.createElement('div');
+                rawBox.className = 'panel-raw';
+                rawBox.textContent = content;
+                overallWrapper.appendChild(rawBox);
+                container.appendChild(overallWrapper);
+                return;
             }
 
             const overallWrapper = document.createElement('div');
@@ -1034,8 +1802,10 @@
                 const rightControls = document.createElement('div');
                 rightControls.className = "flex items-center space-x-2 shrink-0";
 
+                rightControls.appendChild(buildDocViewModeControl(slotTag));
+                rightControls.appendChild(buildDocFontSizeControl(slotTag));
+
                 const availableLangs = Object.keys(fileData.paths || {});
-                // Only show in-document language dropdown if there are multiple language files available
                 if (availableLangs.length > 1) {
                     const docLangSelect = document.createElement('select');
                     docLangSelect.className = "bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2 py-1 outline-none";
@@ -1057,9 +1827,25 @@
                     rightControls.appendChild(docLangSelect);
                 }
 
+                const dlDropdown = document.createElement('div');
+                dlDropdown.className = "dropdown relative";
+                dlDropdown.tabIndex = 0;
+                dlDropdown.innerHTML = `
+                    <button class="doc-action-btn text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800" title="Download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                    <div class="dropdown-content mt-1">
+                        <button class="dl-txt-btn">Textfile</button>
+                        <button class="dl-md-btn">Markdown</button>
+                    </div>
+                `;
+                dlDropdown.querySelector('.dl-txt-btn').onclick = () => downloadFile(`${fileData.title}.txt`, content);
+                dlDropdown.querySelector('.dl-md-btn').onclick = () => downloadFile(`${fileData.title}.md`, content);
+                rightControls.appendChild(dlDropdown);
+
                 if (onClose) {
                     const closeBtn = document.createElement('button');
-                    closeBtn.className = "text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 text-xs px-2 py-1 rounded border border-neutral-700 flex items-center";
+                    closeBtn.className = "doc-action-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
                     closeBtn.innerHTML = `<span>✕</span>`;
                     closeBtn.onclick = onClose;
                     rightControls.appendChild(closeBtn);
@@ -1084,7 +1870,7 @@
                 }
 
                 const mainSectionDiv = document.createElement('div');
-                mainSectionDiv.className = isRaw ? 'panel-raw' : 'panel-stylized';
+                mainSectionDiv.className = 'panel-stylized';
                 const anchorId = `${slotTag || 'doc'}-h1-${secIdx}`;
                 mainSectionDiv.id = anchorId;
 
@@ -1101,13 +1887,13 @@
                 headerBar.appendChild(titleWrap);
 
                 const actions = document.createElement('div');
-                actions.className = "hover-actions";
+                actions.className = "hover-actions flex items-center gap-2";
 
                 if (isSearch) {
-                    const jumpToResultBtn = document.createElement('button');
-                    jumpToResultBtn.className = "text-neutral-500 hover:text-white flex items-center text-xs space-x-1";
-                    jumpToResultBtn.title = "Jump to section";
-                    jumpToResultBtn.innerHTML = `
+                    const jumpToTopicBtn = document.createElement('button');
+                    jumpToTopicBtn.className = "text-neutral-500 hover:text-white flex items-center text-xs space-x-1";
+                    jumpToTopicBtn.title = "Jump to section";
+                    jumpToTopicBtn.innerHTML = `
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="15" y2="12"></line>
@@ -1115,34 +1901,38 @@
                             <polyline points="17 14 20 17 23 14"></polyline>
                         </svg>
                     `;
-                    jumpToResultBtn.onclick = async () => {
+                    jumpToTopicBtn.onclick = async () => {
                         dom.qsInput.value = '';
                         dom.qsClear.classList.add('hidden');
                         dom.pageSearchInput.value = '';
                         dom.pageSearchClear.classList.add('hidden');
                         renderTree(state.pages, dom.pagesTree);
-
                         await handleFileSelection(fileData);
                         setTimeout(() => {
-                            jumpToAnchor(anchorId, '1');
-                            const breadcrumbStr = `Jumped to ${getFileDisplayPath(fileData)} / ${section.title}`;
-                            showToast(breadcrumbStr);
+                            jumpToAnchor(anchorId, slotTag || '1');
+                            showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title}`);
                         }, 150);
                     };
-                    actions.appendChild(jumpToResultBtn);
+                    actions.appendChild(jumpToTopicBtn);
                 }
 
                 const pinBtn = document.createElement('button');
                 pinBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>';
                 pinBtn.className = "text-neutral-500 hover:text-white";
-                pinBtn.onclick = () => pinTopic(displayPath, section.title, `${section.title}\n\n${section.intro || ''}`);
+                pinBtn.title = "Pin topic (with all subtopics)";
+                pinBtn.onclick = () => {
+                    const fullMd = assembleTopicMarkdown(section);
+                    pinTopic(displayPath, section.title, fullMd);
+                };
                 actions.appendChild(pinBtn);
 
                 const copyBtn = document.createElement('button');
                 copyBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
                 copyBtn.className = "text-neutral-500 hover:text-white";
+                copyBtn.title = "Copy topic (with all subtopics)";
                 copyBtn.onclick = () => {
-                    navigator.clipboard.writeText(`${section.title}\n\n${section.intro || ''}`).then(() => showToast(state.translations.toastCopied));
+                    const fullMd = assembleTopicMarkdown(section);
+                    navigator.clipboard.writeText(fullMd).then(() => showToast(state.translations.toastCopied));
                 };
                 actions.appendChild(copyBtn);
 
@@ -1169,7 +1959,7 @@
 
                     const subAnchorId = `${slotTag || 'doc'}-h${sub.level}-${secIdx}-${subIdx}`;
 
-                    if (sub.level === 3 || isRaw) {
+                    if (sub.level === 3) {
                         const h3Wrap = document.createElement('div');
                         h3Wrap.className = 'h3-block relative group';
                         h3Wrap.id = subAnchorId;
@@ -1183,14 +1973,14 @@
                         h3TopRow.appendChild(h3Title);
 
                         const h3Actions = document.createElement('div');
-                        h3Actions.className = "hover-actions";
+                        h3Actions.className = "hover-actions flex items-center gap-1.5";
 
                         if (isSearch) {
                             const h3JumpBtn = document.createElement('button');
                             h3JumpBtn.className = "text-neutral-500 hover:text-white flex items-center text-xs space-x-1";
                             h3JumpBtn.title = "Jump to subtopic";
                             h3JumpBtn.innerHTML = `
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="3" y1="6" x2="21" y2="6"></line>
                                     <line x1="3" y1="12" x2="15" y2="12"></line>
                                     <line x1="3" y1="18" x2="11" y2="18"></line>
@@ -1203,12 +1993,10 @@
                                 dom.pageSearchInput.value = '';
                                 dom.pageSearchClear.classList.add('hidden');
                                 renderTree(state.pages, dom.pagesTree);
-
                                 await handleFileSelection(fileData);
                                 setTimeout(() => {
-                                    jumpToAnchor(subAnchorId, '1');
-                                    const breadcrumbStr = `Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`;
-                                    showToast(breadcrumbStr);
+                                    jumpToAnchor(subAnchorId, slotTag || '1');
+                                    showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`);
                                 }, 150);
                             };
                             h3Actions.appendChild(h3JumpBtn);
@@ -1217,16 +2005,16 @@
                         const h3PinBtn = document.createElement('button');
                         h3PinBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>';
                         h3PinBtn.className = "text-neutral-500 hover:text-white";
-                        h3PinBtn.onclick = () => pinTopic(displayPath, `${section.title} > ${sub.title}`, `${sub.title}\n\n${rawSubText}`);
+                        h3PinBtn.title = "Pin subtopic";
+                        h3PinBtn.onclick = () => pinTopic(displayPath, `${section.title} > ${sub.title}`, `### ${sub.title}\n\n${rawSubText}`);
                         h3Actions.appendChild(h3PinBtn);
 
                         const h3CopyBtn = document.createElement('button');
                         h3CopyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
                         h3CopyBtn.className = "text-neutral-500 hover:text-white";
                         h3CopyBtn.onclick = () => {
-                            navigator.clipboard.writeText(`${sub.title}\n\n${rawSubText}`).then(() => showToast(state.translations.toastCopied));
+                            navigator.clipboard.writeText(`### ${sub.title}\n\n${rawSubText}`).then(() => showToast(state.translations.toastCopied));
                         };
-                        h3CopyBtn.style.marginLeft = "6px";
                         h3Actions.appendChild(h3CopyBtn);
 
                         h3TopRow.appendChild(h3Actions);
@@ -1240,7 +2028,7 @@
                         mainSectionDiv.appendChild(h3Wrap);
                     } else {
                         const subtopicPanel = document.createElement('div');
-                        subtopicPanel.className = isRaw ? 'mt-4' : 'subtopic-panel group';
+                        subtopicPanel.className = 'subtopic-panel group';
                         subtopicPanel.id = subAnchorId;
 
                         const subHeader = document.createElement('div');
@@ -1252,7 +2040,7 @@
                         subHeader.appendChild(subTitleEl);
 
                         const subActions = document.createElement('div');
-                        subActions.className = "hover-actions";
+                        subActions.className = "hover-actions flex items-center gap-2";
 
                         if (isSearch) {
                             const subJumpBtn = document.createElement('button');
@@ -1272,12 +2060,10 @@
                                 dom.pageSearchInput.value = '';
                                 dom.pageSearchClear.classList.add('hidden');
                                 renderTree(state.pages, dom.pagesTree);
-
                                 await handleFileSelection(fileData);
                                 setTimeout(() => {
-                                    jumpToAnchor(subAnchorId, '1');
-                                    const breadcrumbStr = `Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`;
-                                    showToast(breadcrumbStr);
+                                    jumpToAnchor(subAnchorId, slotTag || '1');
+                                    showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`);
                                 }, 150);
                             };
                             subActions.appendChild(subJumpBtn);
@@ -1286,16 +2072,16 @@
                         const subPinBtn = document.createElement('button');
                         subPinBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>';
                         subPinBtn.className = "text-neutral-500 hover:text-white";
-                        subPinBtn.onclick = () => pinTopic(displayPath, `${section.title} > ${sub.title}`, `${sub.title}\n\n${rawSubText}`);
+                        subPinBtn.title = "Pin subtopic";
+                        subPinBtn.onclick = () => pinTopic(displayPath, `${section.title} > ${sub.title}`, `## ${sub.title}\n\n${rawSubText}`);
                         subActions.appendChild(subPinBtn);
 
                         const subCopyBtn = document.createElement('button');
                         subCopyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
                         subCopyBtn.className = "text-neutral-500 hover:text-white";
                         subCopyBtn.onclick = () => {
-                            navigator.clipboard.writeText(`${sub.title}\n\n${rawSubText}`).then(() => showToast(state.translations.toastCopied));
+                            navigator.clipboard.writeText(`## ${sub.title}\n\n${rawSubText}`).then(() => showToast(state.translations.toastCopied));
                         };
-                        subCopyBtn.style.marginLeft = "6px";
                         subActions.appendChild(subCopyBtn);
 
                         subHeader.appendChild(subActions);
@@ -1317,114 +2103,19 @@
 
             container.appendChild(overallWrapper);
             attachLinkListeners(container);
-            updateJumpMenuVisibility();
-        }
-
-        /* =========================================================
-           JUMP TO SECTION
-           ========================================================= */
-        function updateJumpMenuVisibility() {
-            const docVisible = !dom.documentView.classList.contains('hidden');
-            const hasContent = dom.documentContent.children.length > 0
-                || (state.isSplitView && dom.documentContentSecondary.children.length > 0);
-            if (docVisible && hasContent && !dom.qsInput.value) {
-                dom.jumpDropdown.style.display = 'block';
-                buildJumpMenu();
-            } else {
-                dom.jumpDropdown.style.display = 'none';
-                dom.jumpMenu.classList.remove('open');
-                dom.jumpMenu.innerHTML = '';
-            }
-        }
-
-        function buildJumpMenu() {
-            const menu = dom.jumpMenu;
-            menu.innerHTML = '';
-
-            const collect = (container, slotLabel, slotColor) => {
-                const items = [];
-                const sectionNodes = container.querySelectorAll(':scope > .w-full > .panel-stylized, :scope > .w-full > .panel-raw');
-                sectionNodes.forEach((sec) => {
-                    const h1 = sec.querySelector('h1');
-                    if (h1) items.push({ level: 1, title: h1.textContent, id: sec.id, slot: slotLabel, color: slotColor });
-                    sec.querySelectorAll(':scope > .subtopic-panel, :scope > .h3-block').forEach(sub => {
-                        const h2 = sub.querySelector('h2');
-                        const h3 = sub.querySelector('.text-\[11px\]') || sub.querySelector('h3');
-                        if (h2) items.push({ level: 2, title: h2.textContent, id: sub.id, slot: slotLabel, color: slotColor });
-                        else if (h3) items.push({ level: 3, title: h3.textContent, id: sub.id, slot: slotLabel, color: slotColor });
-                    });
-                });
-                return items;
-            };
-
-            const items = [];
-
-            if (state.isSplitView) {
-                if (state.splitFile1) {
-                    const leftItems = collect(dom.documentContent, '1', '#60a5fa');
-                    if (leftItems.length) {
-                        const groupLabel = document.createElement('div');
-                        groupLabel.className = 'jump-group-label';
-                        groupLabel.style.color = '#60a5fa';
-                        groupLabel.textContent = '[1] ' + getFileDisplayPath(state.splitFile1);
-                        menu.appendChild(groupLabel);
-                        leftItems.forEach(it => items.push(it));
-                    }
-                }
-                if (state.splitFile2) {
-                    const rightItems = collect(dom.documentContentSecondary, '2', '#34d399');
-                    if (rightItems.length) {
-                        const groupLabel = document.createElement('div');
-                        groupLabel.className = 'jump-group-label';
-                        groupLabel.style.color = '#34d399';
-                        groupLabel.textContent = '[2] ' + getFileDisplayPath(state.splitFile2);
-                        menu.appendChild(groupLabel);
-                        rightItems.forEach(it => items.push(it));
-                    }
-                }
-            } else {
-                const docItems = collect(dom.documentContent, null, null);
-                docItems.forEach(it => items.push(it));
-            }
-
-            if (items.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'jump-group-label';
-                empty.textContent = state.translations.jumpNoSections || 'No sections in this document.';
-                menu.appendChild(empty);
-                return;
-            }
-
-            items.forEach(it => {
-                const btn = document.createElement('button');
-                btn.className = it.level === 1 ? 'lvl-1' : it.level === 2 ? 'lvl-2' : 'lvl-3';
-                if (it.slot) {
-                    const tag = document.createElement('span');
-                    tag.className = 'slot-tag';
-                    tag.style.color = it.color;
-                    tag.textContent = `[${it.slot}]`;
-                    btn.appendChild(tag);
-                }
-                btn.appendChild(document.createTextNode(it.title));
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    menu.classList.remove('open');
-                    jumpToAnchor(it.id, it.slot);
-                });
-                menu.appendChild(btn);
-            });
         }
 
         function jumpToAnchor(id, slot) {
             if (!id) return;
-
-            let scrollRoot = document.getElementById('content-scroll-area');
-            if (state.isSplitView) {
-                scrollRoot = slot === '2' ? dom.documentContentSecondary : dom.documentContent;
-            }
-
             const target = document.getElementById(id);
             if (!target) return;
+
+            let scrollRoot;
+            if (state.isSplitView) {
+                scrollRoot = slot === '2' ? dom.documentContentSecondary : dom.documentContent;
+            } else {
+                scrollRoot = dom.contentScrollArea;
+            }
 
             const rootRect = scrollRoot.getBoundingClientRect();
             const targetRect = target.getBoundingClientRect();
@@ -1439,6 +2130,7 @@
             setTimeout(() => target.classList.remove(flashClass), 1300);
         }
 
+        /* ---------------- Pins ---------------- */
         function pinTopic(path, topic, text) {
             state.pinnedTopics.push({ path, topic, text });
             renderPins();
@@ -1456,7 +2148,7 @@
 
             state.pinnedTopics.forEach((pin, index) => {
                 const p = document.createElement('div');
-                p.className = "bg-[#0a0a0a] border border-neutral-800 rounded p-3 relative group hover:border-neutral-700 transition-colors";
+                p.className = "pinned-card bg-[#0a0a0a] border border-neutral-800 rounded p-3 relative group hover:border-neutral-700 transition-colors";
 
                 const removeBtn = document.createElement('button');
                 removeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
@@ -1475,8 +2167,12 @@
                 titleEl.textContent = pin.topic;
 
                 const preview = document.createElement('div');
-                preview.className = "text-xs text-neutral-400 line-clamp-3 overflow-hidden";
-                preview.textContent = pin.text.replace(/#/g, '').trim();
+                preview.className = "text-xs text-neutral-400 overflow-hidden";
+                preview.style.whiteSpace = "pre-wrap";
+                preview.style.wordBreak = "break-word";
+                preview.textContent = pin.text;
+                preview.style.maxHeight = "180px";
+                preview.style.overflow = "hidden";
 
                 p.appendChild(removeBtn);
                 p.appendChild(pathEl);
@@ -1496,20 +2192,13 @@
             });
         }
 
+        /* ---------------- Event listeners ---------------- */
         function setupEventListeners() {
             window.addEventListener('click', () => dom.contextMenu.classList.add('hidden'));
 
-            dom.jumpBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                buildJumpMenu();
-                dom.jumpMenu.classList.toggle('open');
+            dom.themeToggleBtn.addEventListener('click', () => {
+                applyTheme(state.theme === 'dark' ? 'light' : 'dark');
             });
-            window.addEventListener('click', (e) => {
-                if (!dom.jumpDropdown.contains(e.target)) {
-                    dom.jumpMenu.classList.remove('open');
-                }
-            });
-            dom.jumpMenu.addEventListener('click', (e) => e.stopPropagation());
 
             dom.ctxOpenLeft.onclick = () => {
                 if (!state.contextFile) return;
@@ -1519,7 +2208,6 @@
                 state.splitFile1 = state.contextFile;
                 state.slot1Language = pickLang(state.contextFile);
                 renderSplitView();
-                renderTree(state.pages, dom.pagesTree);
             };
 
             dom.ctxOpenRight.onclick = () => {
@@ -1530,22 +2218,6 @@
                 state.splitFile2 = state.contextFile;
                 state.slot2Language = pickLang(state.contextFile);
                 renderSplitView();
-                renderTree(state.pages, dom.pagesTree);
-            };
-
-            document.getElementById('dl-doc-txt').onclick = () => {
-                if (!state.currentActiveFile && !state.splitFile1 && !state.splitFile2) return showToast(state.translations.toastNoFile);
-                const active = state.currentActiveFile || state.splitFile1;
-                const lang = state.slot1Language;
-                const path = active.paths[lang] || active.paths['English'];
-                downloadFile(`${active.title}.txt`, state.fileCache[path]);
-            };
-            document.getElementById('dl-doc-md').onclick = () => {
-                if (!state.currentActiveFile && !state.splitFile1 && !state.splitFile2) return showToast(state.translations.toastNoFile);
-                const active = state.currentActiveFile || state.splitFile1;
-                const lang = state.slot1Language;
-                const path = active.paths[lang] || active.paths['English'];
-                downloadFile(`${active.title}.md`, state.fileCache[path]);
             };
 
             document.getElementById('dl-pins-txt').onclick = () => {
@@ -1563,6 +2235,10 @@
                 dom.pinsSidebar.classList.toggle('hidden');
             };
 
+            document.getElementById('close-pins-btn').onclick = () => {
+                dom.pinsSidebar.classList.add('hidden');
+            };
+
             dom.qsInput.addEventListener('input', (e) => {
                 dom.qsClear.classList.toggle('hidden', e.target.value === '');
                 executeGlobalSearch(e.target.value);
@@ -1570,8 +2246,13 @@
             dom.qsClear.onclick = () => {
                 dom.qsInput.value = '';
                 dom.qsClear.classList.add('hidden');
-                if (state.currentActiveFile) handleFileSelection(state.currentActiveFile);
-                else renderDashboard();
+                if (state.isSplitView) {
+                    renderSplitView();
+                } else if (state.currentActiveFile) {
+                    handleFileSelection(state.currentActiveFile);
+                } else {
+                    renderDashboard();
+                }
             };
 
             dom.pageSearchInput.addEventListener('input', (e) => {
@@ -1610,27 +2291,28 @@
                 } else {
                     dom.toggleSplitViewBtn.classList.remove('bg-neutral-800', 'text-white');
                     dom.toggleSplitViewBtn.classList.add('text-neutral-300');
-                    state.splitFile1 = null;
-                    state.splitFile2 = null;
-                    if (state.currentActiveFile) {
-                        handleFileSelection(state.currentActiveFile);
+                    const prev = state.splitFile1 || state.currentActiveFile;
+                    if (prev) {
+                        handleFileSelection(prev);
                     } else {
                         renderDashboard();
                     }
                 }
-                renderTree(state.pages, dom.pagesTree);
             };
 
-            dom.viewModeSelect.addEventListener('change', (e) => {
-                state.viewMode = e.target.value;
-                if (dom.qsInput.value) executeGlobalSearch(dom.qsInput.value);
-                else if (state.isSplitView) renderSplitView();
-                else if (state.currentActiveFile) handleFileSelection(state.currentActiveFile);
-            });
-
-            document.getElementById('ui-language-select').addEventListener('change', (e) => {
-                state.uiLanguage = e.target.value;
-                loadLanguage(state.uiLanguage);
+            document.getElementById('ui-language-select').addEventListener('change', async (e) => {
+                await loadLanguage(e.target.value);
+                retranslatePages();
+                // Re-resolve document titles from the new language's first "# " heading.
+                resolveDocumentTitles();
+                renderTree(state.pages, dom.pagesTree);
+                if (state.isSplitView) {
+                    renderSplitView();
+                } else if (state.currentActiveFile) {
+                    dom.breadcrumb.textContent = getFileDisplayPath(state.currentActiveFile);
+                } else {
+                    renderDashboard();
+                }
             });
         }
 
