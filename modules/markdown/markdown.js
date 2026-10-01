@@ -231,3 +231,62 @@ export function assembleTopicMarkdown(section) {
 
     return lines.join('\n').trim();
 }
+
+function findTagSection(lines) {
+    const start = lines.findIndex(line => /^#\s+tags\s*$/i.test(line.trim()));
+    if (start === -1) return null;
+
+    let end = start + 1;
+    while (end < lines.length && !/^#{1,6}\s+/.test(lines[end])) end++;
+    return { start, end };
+}
+
+export function normalizeTag(tag) {
+    return String(tag || '')
+        .trim()
+        .replace(/^#/, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+const TAG_COLOR_NAMES = [
+    'address-translation', 'application-architecture', 'arch-linux', 'aur', 'cidr',
+    'cgnat', 'command-line', 'dns64', 'documentation', 'example', 'github',
+    'ip-addressing', 'ipv4', 'ipv6', 'javascript', 'linux', 'markdown',
+    'multicast', 'modules', 'nat', 'nat64', 'networking', 'package-building',
+    'package-management', 'package-manager', 'pacman', 'pat', 'port-forwarding',
+    'routing', 'subnetting', 'template', 'terminal', 'theinfodb', 'yay'
+];
+
+const TAG_COLOR_HUES = new Map(TAG_COLOR_NAMES.map((tag, index) => [
+    tag,
+    Math.round(index * 360 / TAG_COLOR_NAMES.length)
+]));
+
+export function getTagHue(tag) {
+    const normalized = normalizeTag(tag);
+    if (TAG_COLOR_HUES.has(normalized)) return TAG_COLOR_HUES.get(normalized);
+    let hash = 0;
+    for (const character of normalized) hash = (hash * 31 + character.charCodeAt(0)) % 360;
+    return hash;
+}
+
+export function extractTags(markdown) {
+    const lines = String(markdown || '').split(/\r?\n/);
+    const section = findTagSection(lines);
+    if (!section) return [];
+
+    return lines.slice(section.start + 1, section.end)
+        .map(line => line.match(/^\s*[-*+]\s+(.+?)\s*$/)?.[1])
+        .filter(Boolean)
+        .map(normalizeTag)
+        .filter(Boolean);
+}
+
+export function removeTagSection(markdown) {
+    const lines = String(markdown || '').split(/\r?\n/);
+    const section = findTagSection(lines);
+    if (!section) return String(markdown || '');
+    return [...lines.slice(0, section.start), ...lines.slice(section.end)].join('\n').trimEnd();
+}

@@ -161,3 +161,14 @@ On Windows, use `ipconfig /all` to see IPv6 configuration, and `ping -6` for IPv
 IPv6 is the long-term replacement for IPv4. Its 128-bit address space removes the scarcity that drove the creation of NAT, and its simpler header improves router efficiency. Transition is gradual — most networks today run dual-stack IPv4 and IPv6 — but IPv6 adoption continues to grow as IPv4 addresses become harder to obtain.
 
 ---
+
+# Tags
+
+- networking
+- ipv6
+- ip-addressing
+- subnetting
+- routing
+- multicast
+- nat64
+- dns64

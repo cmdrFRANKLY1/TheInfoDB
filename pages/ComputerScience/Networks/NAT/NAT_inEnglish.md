@@ -73,3 +73,14 @@ Because every device can have its own public IPv6 address, the primary motivatio
 ## NAT66
 
 Some network administrators still use a variation called NAT66 for security or network management reasons, though this is less common.
+
+# Tags
+
+- networking
+- nat
+- ipv4
+- ipv6
+- address-translation
+- pat
+- port-forwarding
+- cgnat

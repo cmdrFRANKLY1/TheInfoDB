@@ -9,7 +9,8 @@ import {
     showToast 
 } from '../ui/ui.js';
 import { pickLang, downloadFile, getFileDisplayPath, afterScrollSettles } from '../utils/utils.js';
-import { executeGlobalSearch } from '../search/search.js';
+import { executeGlobalSearch, loadAvailableTags, parseSearchQuery } from '../search/search.js';
+import { getTagHue } from '../markdown/markdown.js';
 import { loadLanguage, retranslatePages } from '../i18n/i18n.js';
 import { loadTooltips } from '../api/api.js';
 
@@ -394,16 +395,155 @@ export function setupEventListeners() {
     dom.pinsBtn.onclick = () => dom.pinsSidebar.classList.toggle('hidden');
     document.getElementById('close-pins-btn').onclick = () => dom.pinsSidebar.classList.add('hidden');
 
-    dom.qsInput.addEventListener('input', (e) => {
-        dom.qsClear.classList.toggle('hidden', e.target.value === '');
-        executeGlobalSearch(e.target.value);
+    let quickSearchTags = [];
+    let quickSearchTagTimer;
+    let availableSearchTags = null;
+
+    const renderQuickSearchTags = () => {
+        dom.qsTags.replaceChildren();
+        quickSearchTags.forEach(tag => {
+            const chip = document.createElement('span');
+            chip.className = 'quick-search-chip';
+            chip.style.setProperty('--tag-hue', String(getTagHue(tag)));
+            chip.appendChild(document.createTextNode(tag));
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'quick-search-chip-remove';
+            removeButton.textContent = '×';
+            removeButton.title = `Remove tag filter ${tag}`;
+            removeButton.setAttribute('aria-label', `Remove tag filter ${tag}`);
+            removeButton.addEventListener('click', () => {
+                quickSearchTags = quickSearchTags.filter(value => value !== tag);
+                renderQuickSearchTags();
+                searchQuickSearch();
+                dom.qsInput.focus();
+            });
+
+            chip.appendChild(removeButton);
+            dom.qsTags.appendChild(chip);
+        });
+    };
+
+    const getQuickSearchQuery = () => [
+        ...quickSearchTags.map(tag => `tag:${tag}`),
+        dom.qsInput.value.trim()
+    ].filter(Boolean).join(' ');
+
+    const searchQuickSearch = () => {
+        const query = getQuickSearchQuery();
+        dom.qsClear.classList.toggle('hidden', query === '');
+        executeGlobalSearch(query);
+    };
+
+    const closeQuickSearchTagMenu = () => {
+        dom.qsTagMenu.classList.add('hidden');
+        dom.qsTagMenuButton.setAttribute('aria-expanded', 'false');
+    };
+
+    const renderQuickSearchTagOptions = () => {
+        const filter = dom.qsTagFilter.value.trim().toLowerCase();
+        const visibleTags = (availableSearchTags || []).filter(tag => tag.includes(filter));
+        dom.qsTagOptions.replaceChildren();
+
+        if (visibleTags.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'text-neutral-500 text-xs px-2 py-3';
+            emptyMessage.textContent = 'No matching tags';
+            dom.qsTagOptions.appendChild(emptyMessage);
+            return;
+        }
+
+        visibleTags.forEach(tag => {
+            const option = document.createElement('button');
+            option.type = 'button';
+            option.className = 'quick-search-tag-option';
+            option.setAttribute('role', 'option');
+            option.setAttribute('aria-selected', String(quickSearchTags.includes(tag)));
+            option.disabled = quickSearchTags.includes(tag);
+
+            const swatch = document.createElement('span');
+            swatch.className = 'quick-search-tag-swatch';
+            swatch.style.setProperty('--tag-hue', String(getTagHue(tag)));
+            option.append(swatch, document.createTextNode(tag));
+            option.addEventListener('click', () => {
+                if (quickSearchTags.includes(tag)) return;
+                quickSearchTags.push(tag);
+                renderQuickSearchTags();
+                closeQuickSearchTagMenu();
+                searchQuickSearch();
+                dom.qsInput.focus();
+            });
+            dom.qsTagOptions.appendChild(option);
+        });
+    };
+
+    dom.qsTagMenuButton.addEventListener('click', async e => {
+        e.stopPropagation();
+        if (!dom.qsTagMenu.classList.contains('hidden')) {
+            closeQuickSearchTagMenu();
+            return;
+        }
+
+        dom.qsTagMenu.classList.remove('hidden');
+        dom.qsTagMenuButton.setAttribute('aria-expanded', 'true');
+        dom.qsTagFilter.value = '';
+        dom.qsTagOptions.innerHTML = '<div class="text-neutral-500 text-xs px-2 py-3">Loading tags...</div>';
+        dom.qsTagFilter.focus();
+        availableSearchTags = await loadAvailableTags();
+        renderQuickSearchTagOptions();
     });
+
+    dom.qsTagFilter.addEventListener('input', renderQuickSearchTagOptions);
+    document.addEventListener('click', e => {
+        if (!dom.qsTagMenu.contains(e.target) && !dom.qsTagMenuButton.contains(e.target)) {
+            closeQuickSearchTagMenu();
+        }
+    });
+
+    const commitQuickSearchTags = () => {
+        const parsed = parseSearchQuery(dom.qsInput.value);
+        if (parsed.tags.length === 0) return false;
+
+        quickSearchTags = [...new Set([...quickSearchTags, ...parsed.tags])];
+        dom.qsInput.value = parsed.text;
+        renderQuickSearchTags();
+        searchQuickSearch();
+        return true;
+    };
+
+    dom.qsInput.addEventListener('input', () => {
+        clearTimeout(quickSearchTagTimer);
+        searchQuickSearch();
+
+        const parsed = parseSearchQuery(dom.qsInput.value);
+        if (parsed.tags.length === 0) return;
+        if (/\s$/.test(dom.qsInput.value)) {
+            commitQuickSearchTags();
+            return;
+        }
+        quickSearchTagTimer = setTimeout(commitQuickSearchTags, 500);
+    });
+
+    dom.qsInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            clearTimeout(quickSearchTagTimer);
+            if (commitQuickSearchTags()) e.preventDefault();
+        } else if (e.key === 'Backspace' && !dom.qsInput.value && quickSearchTags.length > 0) {
+            quickSearchTags.pop();
+            renderQuickSearchTags();
+            searchQuickSearch();
+            e.preventDefault();
+        }
+    });
+
     dom.qsClear.onclick = () => {
+        clearTimeout(quickSearchTagTimer);
+        quickSearchTags = [];
         dom.qsInput.value = '';
+        renderQuickSearchTags();
         dom.qsClear.classList.add('hidden');
-        if (state.isSplitView) renderSplitView();
-        else if (state.currentActiveFile) handleFileSelection(state.currentActiveFile);
-        else renderDashboard();
+        executeGlobalSearch('');
     };
 
     dom.pageSearchInput.addEventListener('input', (e) => {

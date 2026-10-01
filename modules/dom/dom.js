@@ -1,5 +1,10 @@
 export const dom = {
     qsInput: document.getElementById('quick-search-input'),
+    qsTags: document.getElementById('quick-search-tags'),
+    qsTagMenuButton: document.getElementById('quick-search-tag-menu-button'),
+    qsTagMenu: document.getElementById('quick-search-tag-menu'),
+    qsTagFilter: document.getElementById('quick-search-tag-filter'),
+    qsTagOptions: document.getElementById('quick-search-tag-options'),
     qsClear: document.getElementById('quick-search-clear'),
     pageSearchInput: document.getElementById('page-search-input'),
     pageSearchClear: document.getElementById('page-search-clear'),

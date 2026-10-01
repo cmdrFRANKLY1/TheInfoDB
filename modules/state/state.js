@@ -30,7 +30,7 @@ export const state = {
 
 export const defaultTranslations = {
     searchPagesPlaceholder: "Search pages...",
-    searchEverythingPlaceholder: "Search everything...",
+    searchEverythingPlaceholder: "Search everything (tag:linux)...",
     pagesTitle: "Pages",
     dashboardTitle: "Dashboard",
     viewModeStylized: "Markdown",

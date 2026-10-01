@@ -181,3 +181,10 @@ Eine kurze Zusammenfassung der wichtigsten Punkte. Strebe drei bis fünf Sätze 
 ---
 
 Für verwandte Themen siehe die Abschnitte zu `verwandtes-thema-a` und `verwandtes-thema-b`.
+
+# Tags
+
+- template
+- documentation
+- markdown
+- example

@@ -2,7 +2,7 @@ import { state } from '../state/state.js';
 import { dom, ICONS } from '../dom/dom.js';
 import { fetchContent } from '../api/api.js';
 import { translateFolder } from '../i18n/i18n.js';
-import { parseAdvancedMarkdown, processBlockContent, assembleTopicMarkdown, escapeHtml, injectTooltips } from '../markdown/markdown.js';
+import { parseAdvancedMarkdown, processBlockContent, assembleTopicMarkdown, escapeHtml, injectTooltips, getTagHue } from '../markdown/markdown.js';
 import { getFileDisplayPath, downloadFile, pickLang, jumpToAnchor } from '../utils/utils.js';
 import { pinTopic } from '../pins/pins.js';
 import { attachLinkListeners } from '../events/events.js';
@@ -396,7 +396,7 @@ export async function renderSplitView() {
     renderTree(state.pages, dom.pagesTree);
 }
 
-export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null) {
+export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null, documentTags = [], tagHues = {}) {
     // Let the markdown engine know which document language is actively being rendered right now
     state.currentRenderingLang = activeDocLang || 'English';
 
@@ -586,12 +586,26 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
         headerBar.className = "group flex justify-between items-start mb-4 gap-3";
 
         const titleWrap = document.createElement('div');
-        titleWrap.className = "min-w-0";
+        titleWrap.className = isSearch
+            ? "min-w-0 flex flex-wrap items-center gap-2"
+            : "min-w-0";
 
         const headingEl = document.createElement('h1');
         headingEl.className = "text-2xl font-bold text-white tracking-tight truncate";
         headingEl.innerHTML = injectTooltips(escapeHtml(section.title));
         titleWrap.appendChild(headingEl);
+        if (isSearch && documentTags.length > 0) {
+            const tagList = document.createElement('div');
+            tagList.className = 'search-result-tags';
+            documentTags.forEach(tag => {
+                const badge = document.createElement('span');
+                badge.className = 'search-result-tag';
+                badge.style.setProperty('--tag-hue', String(tagHues[tag] ?? getTagHue(tag)));
+                badge.textContent = tag;
+                tagList.appendChild(badge);
+            });
+            titleWrap.appendChild(tagList);
+        }
         headerBar.appendChild(titleWrap);
 
         const actions = document.createElement('div');

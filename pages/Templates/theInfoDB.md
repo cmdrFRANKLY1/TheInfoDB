@@ -164,3 +164,12 @@ Initial Rendering: ui.js takes the processed tree data and renders the Sidebar n
 Event Binding: events.js attaches all dynamic event listeners (search bars, resizers, tooltips).
 
 Background Preloading: A silent background process kicks off to fetch all .md files from GitHub and store them in state.fileCache, ensuring subsequent clicks load instantly.
+
+# Tags
+
+- theinfodb
+- application-architecture
+- javascript
+- markdown
+- modules
+- github

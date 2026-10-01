@@ -148,3 +148,13 @@ On Windows, use `ipconfig` instead of `ip addr`.
 IPv4 is a 32-bit addressing protocol that has powered the internet for decades. Its limits — most notably the exhaustion of available addresses — drove the creation of NAT for short-term relief and IPv6 for the long term. Understanding IPv4 addressing, subnetting, and the header layout remains essential for anyone working with networks.
 
 ---
+
+# Tags
+
+- networking
+- ipv4
+- ip-addressing
+- subnetting
+- cidr
+- routing
+- multicast

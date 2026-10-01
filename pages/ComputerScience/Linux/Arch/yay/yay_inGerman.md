@@ -289,3 +289,13 @@ Yay ist der am weitesten verbreitete AUR-Helper für Arch Linux. Er umhüllt `pa
 ---
 
 Für weitere Arch-Linux-Befehle siehe die Abschnitte zu `pacman` und den Terminal-Werkzeugen.
+
+# Tags
+
+- linux
+- arch-linux
+- yay
+- aur
+- package-management
+- package-building
+- command-line

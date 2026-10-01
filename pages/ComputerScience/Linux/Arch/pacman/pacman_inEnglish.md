@@ -220,3 +220,13 @@ pacman is the core package manager for Arch Linux. It installs, updates, queries
 ---
 
 For AUR package management, see the section on `yay`. For other terminal tools, see the sections on `grep`, `chmod`, and `cd`.
+
+# Tags
+
+- linux
+- arch-linux
+- pacman
+- package-management
+- package-manager
+- command-line
+- terminal

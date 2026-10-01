@@ -220,3 +220,13 @@ pacman ist der zentrale Paketmanager für Arch Linux. Er installiert, aktualisie
 ---
 
 Für die AUR-Paketverwaltung siehe den Abschnitt zu `yay`. Für weitere Terminal-Werkzeuge siehe die Abschnitte zu `grep`, `chmod` und `cd`.
+
+# Tags
+
+- linux
+- arch-linux
+- pacman
+- package-management
+- package-manager
+- command-line
+- terminal

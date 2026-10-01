@@ -202,7 +202,7 @@ export async function fetchContent(path) {
     if (!pendingContentRequests.has(path)) {
         const request = (async () => {
             try {
-                const localResponse = await fetch(`./${path}`);
+                const localResponse = await fetch(`./${path}`, { cache: 'no-cache' });
                 const contentType = localResponse.headers.get('content-type') || '';
                 if (localResponse.ok && !contentType.includes('text/html')) {
                     const text = await localResponse.text();

@@ -161,3 +161,14 @@ Unter Windows verwendet man `ipconfig /all`, um die IPv6-Konfiguration zu sehen,
 IPv6 ist der langfristige Ersatz für IPv4. Sein 128-Bit-Adressraum beseitigt die Knappheit, die zur Entwicklung von NAT geführt hat, und sein einfacherer Header verbessert die Effizienz der Router. Der Übergang ist schrittweise — die meisten Netzwerke betreiben heute Dual-Stack IPv4 und IPv6 — aber die Verbreitung von IPv6 wächst weiter, da IPv4-Adressen schwieriger zu bekommen sind.
 
 ---
+
+# Tags
+
+- networking
+- ipv6
+- ip-addressing
+- subnetting
+- routing
+- multicast
+- nat64
+- dns64

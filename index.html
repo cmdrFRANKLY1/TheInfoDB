@@ -535,6 +535,105 @@
         }
         .doc-action-btn > svg { width: 14px; height: 14px; display: block; }
 
+        .quick-search-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
+            padding: 4px 58px 4px 6px;
+            background: var(--bg-neutral-900);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        .quick-search-box:focus-within { border-color: var(--border-hover); }
+        .quick-search-tags { display: contents; }
+        .quick-search-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            max-width: 100%;
+            padding: 2px 4px 2px 7px;
+            border-radius: 4px;
+            border: 1px solid hsl(var(--tag-hue) 55% 48%);
+            background: hsl(var(--tag-hue) 58% 30%);
+            color: #fff;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        .search-result-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+        .search-result-tag {
+            padding: 1px 5px;
+            border: 1px solid hsl(var(--tag-hue) 55% 48%);
+            border-radius: 3px;
+            background: hsl(var(--tag-hue) 58% 30%);
+            color: #fff;
+            font-size: 9px;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+        [data-theme="light"] .quick-search-chip,
+        [data-theme="light"] .search-result-tag {
+            border-color: hsl(var(--tag-hue) 42% 70%);
+            background: hsl(var(--tag-hue) 65% 92%);
+            color: hsl(var(--tag-hue) 55% 25%);
+        }
+        .quick-search-chip-remove {
+            padding: 0 2px;
+            border: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            line-height: 1;
+            cursor: pointer;
+        }
+        .quick-search-chip-remove:hover { color: var(--text-heading); }
+        .quick-search-tag-picker { position: absolute; top: 50%; right: 30px; transform: translateY(-50%); }
+        .quick-search-tag-menu-button {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 3px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .quick-search-tag-menu-button:hover,
+        .quick-search-tag-menu-button[aria-expanded="true"] { background: var(--bg-neutral-800); color: var(--text-heading); }
+        .quick-search-tag-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: -30px;
+            z-index: 60;
+            width: 230px;
+            max-width: calc(100vw - 32px);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-panel);
+            box-shadow: var(--shadow-toolbar);
+        }
+        .quick-search-tag-filter { width: 100%; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-primary); outline: none; font-size: 12px; }
+        .quick-search-tag-options { max-height: 220px; overflow-y: auto; padding: 4px; }
+        .quick-search-tag-option { display: flex; width: 100%; align-items: center; gap: 8px; padding: 6px 8px; border: 0; border-radius: 4px; background: transparent; color: var(--text-primary); text-align: left; font-size: 12px; cursor: pointer; }
+        .quick-search-tag-option:hover,
+        .quick-search-tag-option:focus-visible { background: var(--bg-neutral-900); outline: none; }
+        .quick-search-tag-swatch { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: hsl(var(--tag-hue) 62% 48%); }
+        .quick-search-input {
+            flex: 1 1 90px;
+            min-width: 64px;
+            width: 100%;
+            padding: 2px 4px;
+            border: 0;
+            outline: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
         .toolbar-select {
             background: var(--bg-neutral-900);
             border: 1px solid var(--border-hover);
@@ -666,7 +765,7 @@
 <body>
 
     <aside class="w-72 border-r border-neutral-800 bg-[#030303] flex flex-col h-full shrink-0">
-        <div class="p-4 border-b border-neutral-800 space-y-3 shrink-0">
+        <div class="p-4 border-b border-neutral-800 space-y-3 shrink-0 relative z-30">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2.5">
                     <button id="theme-toggle-btn" class="p-1.5 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Toggle theme">
@@ -688,12 +787,27 @@
                     <h1 class="text-xl font-bold text-white tracking-tight">TheInfoDB</h1>
                 </div>
             </div>
-            <div class="relative flex items-center">
+            
+            <div id="quick-search-box" class="quick-search-box relative" style="padding-right: 58px;">
+                <div id="quick-search-tags" class="quick-search-tags"></div>
                 <input type="text" id="quick-search-input" data-i18n-placeholder="searchEverythingPlaceholder" placeholder="Search everything..."
-                       class="w-full bg-neutral-900 border border-neutral-700 text-sm text-white rounded px-3 py-1.5 focus:outline-none focus:border-neutral-500 pr-8">
-                <button id="quick-search-clear" class="absolute right-2 text-neutral-500 hover:text-white hidden">
+                       class="quick-search-input">
+                
+                <button id="quick-search-clear" class="absolute right-8 text-neutral-500 hover:text-white hidden">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
+                
+                <div class="quick-search-tag-picker" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%);">
+                    <button id="quick-search-tag-menu-button" type="button" class="quick-search-tag-menu-button" title="Browse tags" aria-label="Browse tags" aria-haspopup="listbox" aria-expanded="false">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div id="quick-search-tag-menu" class="quick-search-tag-menu hidden">
+                        <input id="quick-search-tag-filter" class="quick-search-tag-filter" type="text" placeholder="Filter tags..." aria-label="Filter tags">
+                        <div id="quick-search-tag-options" class="quick-search-tag-options" role="listbox"></div>
+                    </div>
+                </div>
             </div>
         </div>
 

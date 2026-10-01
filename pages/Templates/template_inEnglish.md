@@ -181,3 +181,10 @@ A short recap of the most important points. Aim for three to five sentences that
 ---
 
 For related topics, see the sections on `related-topic-a` and `related-topic-b`.
+
+# Tags
+
+- template
+- documentation
+- markdown
+- example

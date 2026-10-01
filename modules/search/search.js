@@ -1,6 +1,7 @@
 import { state } from '../state/state.js';
 import { dom } from '../dom/dom.js';
 import { fetchContent } from '../api/api.js';
+import { extractTags, getTagHue, normalizeTag, removeTagSection } from '../markdown/markdown.js';
 import { 
     renderSplitView, 
     handleFileSelection, 
@@ -12,12 +13,34 @@ import {
 
 let searchVersion = 0;
 const SEARCH_DEBOUNCE_MS = 160;
+let availableTagsPromise;
+
+export function parseSearchQuery(query) {
+    const tags = [];
+    const text = query.replace(/(^|\s)(?:tag\s*:\s*|#)(?:"([^"]+)"|<([^>]+)>|([^\s]+))/gi, (match, prefix, quoted, bracketed, bare) => {
+        const tag = normalizeTag(quoted || bracketed || bare);
+        if (tag) tags.push(tag);
+        return prefix || ' ';
+    }).replace(/\s+/g, ' ').trim();
+    return { tags, text };
+}
+
+export function loadAvailableTags() {
+    if (!availableTagsPromise) {
+        availableTagsPromise = Promise.all(state.pages.map(async file => {
+            const path = file.paths[state.slot1Language] || file.paths.English || Object.values(file.paths)[0];
+            return path ? extractTags(await fetchContent(path)) : [];
+        })).then(tagLists => [...new Set(tagLists.flat())].sort());
+    }
+    return availableTagsPromise;
+}
 
 export async function executeGlobalSearch(query) {
     const version = ++searchVersion;
+    const search = parseSearchQuery(query);
 
     // If search is cleared, restore the previous view state
-    if (!query) {
+    if (!query.trim()) {
         if (state.isSplitView) {
             renderSplitView();
         } else if (state.currentActiveFile) {
@@ -50,16 +73,26 @@ export async function executeGlobalSearch(query) {
     applyDocFontScope(dom.documentContent, '1');
 
     const lang = state.slot1Language;
-    const q = query.toLowerCase();
+    const q = search.text.toLowerCase();
     const results = await Promise.all(state.pages.map(async file => {
         const path = file.paths[lang] || file.paths['English'] || Object.values(file.paths)[0];
         if (!path) return null;
         const content = await fetchContent(path);
-        return content.toLowerCase().includes(q) ? { file, content } : null;
+        const tags = extractTags(content);
+        const searchableContent = removeTagSection(content);
+        return {
+            file,
+            tags,
+            content: searchableContent,
+            matches: search.tags.every(tag => tags.includes(tag))
+                && (!q || searchableContent.toLowerCase().includes(q))
+        };
     }));
 
     if (version !== searchVersion) return;
-    const matches = results.filter(Boolean);
+    const availableTags = [...new Set(results.filter(Boolean).flatMap(result => result.tags))].sort();
+    const tagHues = Object.fromEntries(availableTags.map(tag => [tag, getTagHue(tag)]));
+    const matches = results.filter(result => result?.matches);
 
     // Show no results message if nothing matched
     if (matches.length === 0) {
@@ -68,7 +101,7 @@ export async function executeGlobalSearch(query) {
     }
 
     dom.documentContent.innerHTML = '';
-    matches.forEach(({ file, content }) => {
-        parseAndRenderMarkdownDocument(content, dom.documentContent, file, state.viewMode, true, query, '', null, lang, null);
+    matches.forEach(({ file, content, tags }) => {
+        parseAndRenderMarkdownDocument(content, dom.documentContent, file, state.viewMode, true, search.text, '', null, lang, null, null, null, tags, tagHues);
     });
 }

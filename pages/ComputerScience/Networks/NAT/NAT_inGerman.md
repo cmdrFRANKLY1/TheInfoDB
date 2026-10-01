@@ -73,3 +73,14 @@ Da jedes Gerät seine eigene öffentliche IPv6-Adresse haben kann, entfällt die
 ## NAT66
 
 Einige Netzwerkadministratoren verwenden dennoch eine Variante namens NAT66 aus Sicherheits- oder Netzwerkverwaltungsgründen, obwohl dies weniger verbreitet ist.
+
+# Tags
+
+- networking
+- nat
+- ipv4
+- ipv6
+- address-translation
+- pat
+- port-forwarding
+- cgnat

@@ -287,3 +287,13 @@ Mixing `pacman -Syu` for repos and `yay -Sua` for AUR separately can lead to par
 Yay is the most widely used AUR helper for Arch Linux. It wraps `pacman`, adds AUR support, and provides a consistent interface for installing, searching, updating, and removing packages across both official and community repositories. Install it from the AUR, run it as a regular user, and keep the diff menu on for safety.
 
 ---
+
+# Tags
+
+- linux
+- arch-linux
+- yay
+- aur
+- package-management
+- package-building
+- command-line
