@@ -21,7 +21,7 @@ export function buildTooltipRegex() {
     const escaped = keys
         .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
         .sort((a, b) => b.length - a.length);
-    return new RegExp(`\\b(${escaped.join('|')})\\b`, 'g');
+    return new RegExp(`(?<![\\p{L}\\p{N}_])(${escaped.join('|')})(?![\\p{L}\\p{N}_])`, 'giu');
 }
 
 /**
