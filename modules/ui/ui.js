@@ -2,7 +2,7 @@ import { state } from '../state/state.js';
 import { dom, ICONS } from '../dom/dom.js';
 import { fetchContent } from '../api/api.js';
 import { translateFolder } from '../i18n/i18n.js';
-import { parseAdvancedMarkdown, processBlockContent, assembleTopicMarkdown } from '../markdown/markdown.js';
+import { parseAdvancedMarkdown, processBlockContent, assembleTopicMarkdown, escapeHtml, injectTooltips } from '../markdown/markdown.js';
 import { getFileDisplayPath, downloadFile, pickLang, jumpToAnchor } from '../utils/utils.js';
 import { pinTopic } from '../pins/pins.js';
 import { attachLinkListeners } from '../events/events.js';
@@ -590,7 +590,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
         const headingEl = document.createElement('h1');
         headingEl.className = "text-2xl font-bold text-white tracking-tight truncate";
-        headingEl.textContent = section.title;
+        headingEl.innerHTML = injectTooltips(escapeHtml(section.title));
         titleWrap.appendChild(headingEl);
         headerBar.appendChild(titleWrap);
 
@@ -678,7 +678,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
                 const h3Title = document.createElement('div');
                 h3Title.className = "text-[11px] font-semibold text-neutral-300 uppercase tracking-wider";
-                h3Title.textContent = sub.title;
+                h3Title.innerHTML = injectTooltips(escapeHtml(sub.title));
                 h3TopRow.appendChild(h3Title);
 
                 const h3Actions = document.createElement('div');
@@ -746,7 +746,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
                 const subTitleEl = document.createElement('h2');
                 subTitleEl.className = "text-base font-semibold text-white";
-                subTitleEl.textContent = sub.title;
+                subTitleEl.innerHTML = injectTooltips(escapeHtml(sub.title));
                 subHeader.appendChild(subTitleEl);
 
                 const subActions = document.createElement('div');

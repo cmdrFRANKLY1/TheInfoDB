@@ -106,6 +106,8 @@
   "checkupdates": "Befehl aus pacman-contrib, der Paketaktualisierungen prüft, ohne die System-Paketdatenbank zu aktualisieren.",
   "vercmp": "Arch-Linux-Werkzeug, das zwei Paketversionsangaben nach den Versionsregeln von pacman vergleicht.",
   "yay-bin": "AUR-Paket mit einer vorgebauten Binärdatei des AUR-Helfers yay.",
+  "Arch User Repository": "1. Arch User Repository\nEine von der Community gepflegte Sammlung von PKGBUILD-Bauskripten für Arch Linux. Benutzer prüfen und bauen diese Pakete lokal, statt sie aus den offiziellen Repositories zu installieren.\n\n2. Arch\nEine Linux-Distribution mit Rolling Releases, dem Paketmanager pacman und einer systemweiten Konfiguration durch die Benutzer.\n\n3. User\nBenutzerkonto eines Mehrbenutzer-Betriebssystems, identifiziert durch Benutzernamen und numerische UID.\n\n4. Repository\nGepflegte Sammlung von Paketen und Metadaten, aus der ein Paketmanager suchen und installieren kann.",
+  "Arch": "Eine Linux-Distribution mit Rolling Releases, dem Paketmanager pacman und einer systemweiten Konfiguration durch die Benutzer.",
   "AUR-Helper": "Werkzeug zum Automatisieren von Suche, Bau und Installation von Paketen aus dem Arch User Repository.",
   "AUR tab completion": "Shell-Vervollständigung, die beim Tippen eines Befehls Paketnamen aus dem AUR vorschlägt.",
   "AUR-Tab-Vervollständigung": "Shell-Vervollständigung, die beim Tippen eines Befehls Paketnamen aus dem AUR vorschlägt.",
