@@ -1,4 +1,4 @@
-# IPv4 1
+# IPv4
 
 Internet Protocol Version 4 (IPv4) ist die vierte Version des Internetprotokolls und die erste, die flächendeckend eingesetzt wurde. Sie ist das Adressierungssystem, auf dem der Großteil des Internets bis heute läuft, und verwendet 32-Bit-Adressen, um jedes Gerät in einem Netzwerk zu identifizieren.
 

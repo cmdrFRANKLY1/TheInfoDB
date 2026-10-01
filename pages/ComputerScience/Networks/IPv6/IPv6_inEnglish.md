@@ -1,4 +1,4 @@
-# IPv6 1
+# IPv6
 
 Internet Protocol version 6 (IPv6) is the most recent version of the Internet Protocol. It was designed to replace IPv4 and solve the address exhaustion problem by using 128-bit addresses, enough for every device on Earth to have its own globally unique public address.
 
