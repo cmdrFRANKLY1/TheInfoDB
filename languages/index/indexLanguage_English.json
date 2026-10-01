@@ -1,7 +1,7 @@
 {
 "searchPagesPlaceholder": "Search all pages...",
 "pagesTitle": "Pages",
-"searchSolutionsPlaceholder": "Search solutions...",
+"searchInDocumentPlaceholder": "Search...",
 "solutionsTitle": "Solutions",
 "dashboardTitle": "Dashboard",
 "viewModeStylized": "Markdown",
@@ -23,5 +23,6 @@
 "toastNoFile": "No file selected.",
 "toastNoPins": "No pins to download.",
 "toastJumped": "Jumped to",
-"searchResults": "Search Results:"
+"searchResults": "Search Results:",
+"clickToClose": "Click to Close"
 }

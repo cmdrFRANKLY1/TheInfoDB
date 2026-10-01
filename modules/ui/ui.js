@@ -419,7 +419,6 @@ export function applyHighlights(container, query) {
             if (parent.tagName === 'MARK' && parent.classList.contains('doc-search-highlight')) {
                 return NodeFilter.FILTER_REJECT;
             }
-            // Ignore text inside toolbars, scripts, or styles
             if (parent.closest('.doc-toolbar') || parent.closest('script') || parent.closest('style')) {
                 return NodeFilter.FILTER_REJECT;
             }
@@ -467,7 +466,7 @@ export function applyHighlights(container, query) {
     });
 }
 
-function buildInDocSearch(container) {
+export function buildInDocSearch(container) {
     const wrap = document.createElement('div');
     wrap.className = "relative flex items-center flex-1 max-w-[240px] mr-4 min-w-0";
     
@@ -478,25 +477,40 @@ function buildInDocSearch(container) {
     const input = document.createElement('input');
     input.type = "text";
     input.placeholder = state.translations?.searchSolutionsPlaceholder || "Find in document...";
-    input.className = "w-full bg-neutral-900/50 hover:bg-neutral-900 border border-neutral-700/50 hover:border-neutral-700 text-xs text-neutral-200 rounded-md pl-8 pr-2 py-1.5 focus:outline-none focus:border-neutral-500 transition-colors";
+    input.className = "w-full bg-neutral-900/50 hover:bg-neutral-900 border border-neutral-700/50 hover:border-neutral-700 text-xs text-neutral-200 rounded-md pl-8 pr-7 py-1.5 focus:outline-none focus:border-neutral-500 transition-colors";
     
+    const clearBtn = document.createElement('button');
+    clearBtn.type = "button";
+    clearBtn.className = "absolute right-2 text-neutral-500 hover:text-white hidden flex items-center justify-center";
+    clearBtn.title = "Clear search";
+    clearBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
     let debounceTimer;
     input.addEventListener('input', (e) => {
+        const val = e.target.value;
+        clearBtn.classList.toggle('hidden', val.trim() === '');
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            applyHighlights(container, e.target.value);
+            applyHighlights(container, val);
         }, 250);
+    });
+
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        clearBtn.classList.add('hidden');
+        clearHighlights(container);
+        input.focus();
     });
 
     wrap.appendChild(icon);
     wrap.appendChild(input);
+    wrap.appendChild(clearBtn);
     return wrap;
 }
 
 function enhanceTableCells(containerDiv, docPath, sectionTitle) {
     const cells = containerDiv.querySelectorAll('td, th');
     cells.forEach(cell => {
-        // Wrap cell contents to manage positioning safely
         const contentWrap = document.createElement('div');
         contentWrap.className = 'group relative flex items-center justify-between w-full h-full min-h-[20px]';
         
@@ -543,7 +557,6 @@ function enhanceTableCells(containerDiv, docPath, sectionTitle) {
 }
 
 export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null, documentTags = [], tagHues = {}) {
-    // Let the markdown engine know which document language is actively being rendered right now
     state.currentRenderingLang = activeDocLang || 'English';
 
     const effectiveMode = viewModeOverride || state.viewMode;
@@ -566,7 +579,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
         const overallWrapper = document.createElement('div');
         overallWrapper.className = 'w-full';
 
-        if (fileData) {
+        if (fileData && !isSearch) {
             const slotHeader = document.createElement('div');
             slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
@@ -625,8 +638,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
             }
 
             slotHeader.appendChild(rightControls);
-            if (isSearch) overallWrapper.appendChild(slotHeader);
-            else setDocumentToolbar(slotHeader, slotTag);
+            setDocumentToolbar(slotHeader, slotTag);
         }
 
         const rawBox = document.createElement('div');
@@ -640,7 +652,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
     const overallWrapper = document.createElement('div');
     overallWrapper.className = 'w-full';
 
-    if (fileData) {
+    if (fileData && !isSearch) {
         const slotHeader = document.createElement('div');
         slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
@@ -699,8 +711,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
         }
 
         slotHeader.appendChild(rightControls);
-        if (isSearch) overallWrapper.appendChild(slotHeader);
-        else setDocumentToolbar(slotHeader, slotTag);
+        setDocumentToolbar(slotHeader, slotTag);
     }
 
     const mainSections = parseAdvancedMarkdown(content);

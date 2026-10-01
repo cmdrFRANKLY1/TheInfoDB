@@ -319,8 +319,16 @@
             padding: 0.6rem 1rem;
             box-shadow: var(--shadow-toolbar);
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            z-index: 50;
         }
         .doc-toolbar { background: var(--toolbar-overlay); }
+        .doc-toolbar .dropdown {
+            position: relative;
+            z-index: 50;
+        }
+        .doc-toolbar .dropdown-content {
+            z-index: 60;
+        }
 
         #document-toolbar-row {
             gap: 1.5rem;
@@ -691,6 +699,16 @@
         [data-theme="light"] select { color: var(--text-heading) !important; }
         [data-theme="light"] select option { background: #fff; color: #171717; }
         [data-theme="light"] input { color: var(--text-heading) !important; }
+        [data-theme="light"] .doc-toolbar input {
+            background-color: var(--bg-neutral-900) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-heading) !important;
+        }
+        [data-theme="light"] .doc-toolbar input:hover,
+        [data-theme="light"] .doc-toolbar input:focus {
+            background-color: var(--bg-neutral-800) !important;
+            border-color: var(--border-hover) !important;
+        }
     </style>
 </head>
 <body>
