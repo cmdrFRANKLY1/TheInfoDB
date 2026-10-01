@@ -402,7 +402,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
         if (fileData) {
             const slotHeader = document.createElement('div');
-            slotHeader.className = "flex justify-between items-center mb-4 pb-3 border-b border-neutral-900 gap-3";
+            slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
             const titleBadge = document.createElement('span');
             titleBadge.className = "text-xs font-mono text-neutral-400 truncate min-w-0";
@@ -478,7 +478,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
     if (fileData) {
         const slotHeader = document.createElement('div');
-        slotHeader.className = "flex justify-between items-center mb-4 pb-3 border-b border-neutral-900 gap-3";
+        slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
         const titleBadge = document.createElement('span');
         titleBadge.className = "text-xs font-mono text-neutral-400 truncate min-w-0";

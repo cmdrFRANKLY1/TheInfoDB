@@ -253,6 +253,7 @@
             padding-bottom: 1rem;
             overscroll-behavior: contain;
         }
+
         .column-header {
             position: sticky;
             top: 0;
@@ -269,6 +270,24 @@
         }
         [data-theme="dark"] .column-header { background: rgba(0,0,0,0.9); }
         [data-theme="light"] .column-header { background: rgba(255,255,255,0.9); }
+
+        /* Document Toolbar Sticky Settings */
+        .doc-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.6rem 1rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        [data-theme="dark"] .doc-toolbar { background: rgba(5, 5, 5, 0.85); }
+        [data-theme="light"] .doc-toolbar { 
+            background: rgba(245, 245, 245, 0.85); 
+            box-shadow: 0 6px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+        }
 
         .split-divider {
             width: 1px;
@@ -398,6 +417,7 @@
     </style>
 </head>
 <body>
+
     <aside class="w-72 border-r border-neutral-800 bg-[#030303] flex flex-col h-full shrink-0">
         <div class="p-4 border-b border-neutral-800 space-y-3 shrink-0">
             <div class="flex items-center justify-between">
