@@ -1,14 +1,12 @@
 # pacman
-```
 pacman is the package manager for Arch Linux. It tracks installed packages with dependency support, handles package groups, and synchronizes with remote repositories to install, update, and remove software. It was created by Judd Vinet and first released in 2002, and it remains the core tool for managing software on Arch-based systems.
-```
----
+
 
 # What pacman Is
-```
+
 pacman is a library-based package manager written in C. It uses a simple binary package format and maintains a text-based package database that can be hand-edited if necessary. It is designed to be fast, simple, and lightweight.
-```
----
+
+
 ## Package Manager
 
 A package is an archive containing the compiled files of an application, its metadata (name, version, dependencies), and installation directives used by pacman. pacman installs, upgrades, and removes these packages, handling dependencies automatically.

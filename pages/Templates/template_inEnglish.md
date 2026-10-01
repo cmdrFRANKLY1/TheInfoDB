@@ -1,52 +1,48 @@
 # Topic Name
-```
-A one-paragraph description of the topic. This appears as the intro text of the first panel, directly under the big `# Topic Name` heading. Keep it short and factual — one or two sentences work best.
-```
+
+An introductory paragraph describing the topic. This appears as the introduction text of the first panel, directly below the large heading `# Topic Name`. Keep it short and factual — one or two sentences are enough.
 
 # Overview
-```
-A higher-level overview of what the topic is about, why it matters, and where it fits in the broader context. Use this section to set the stage before diving into details.
-```
+
+A high-level overview of what the topic is about, why it matters, and where it fits in the bigger picture. Use this section to set the stage before going into detail.
 
 ## What It Is
 
-```
-Explain the core concept in plain language. Avoid jargon where possible; when you must use a technical term, define it on first use.
-```
+Explain the core concept in plain language. Avoid jargon where possible; if you must use a technical term, define it the first time it appears.
 
 ## Why It Matters
 
-Describe the practical relevance. Who uses it, when, and why. This helps a reader decide whether to keep reading.
+Describe the practical relevance. Who uses it, when, and why. This helps the reader decide whether to keep reading.
 
-## Key Characteristics
+## Key Features
 
-- Property one
-- Property two
-- Property three
+- Feature one
+- Feature two
+- Feature three
 
 # How It Works
 
-Explain the mechanism or process step by step. Use numbered lists for sequential steps and dash lists for unordered sets.
+Explain the mechanism or flow step by step. Use numbered lists for sequential steps and bulleted lists for unordered sets.
 
 ## The Basic Flow
 
 1. First step — describe what happens.
 2. Second step — describe what happens next.
-3. Third step — describe the outcome.
+3. Third step — describe the result.
 
 ## Important Details
 
-Expand on any part of the flow that needs clarification. Add paragraphs as needed.
+Go deeper into the parts of the flow that need clarification. Add paragraphs as needed.
 
 ## A Simple Example
 
-Walk through a concrete, minimal example that ties the concepts together.
+Walk through a concrete, minimal example that brings the concepts together.
 
-    input -> process -> output
+    input -> processing -> output
 
 # Components
 
-Break down the topic into its main parts. Each `##` becomes a subtopic panel inside this top-level section.
+Break the topic down into its main parts. Each `##` becomes a subtopic panel within this top-level section.
 
 ## Component One
 
@@ -81,15 +77,15 @@ If the topic involves commands, list them in a table with the command on the lef
 
 # Examples
 
-Practical, copy-paste-ready examples for the most common tasks.
+Practical, ready-to-use examples for the most common tasks.
 
 ## Scenario One
 
 | Scenario | Command |
 | :--- | :--- |
 | Typical use case | `command-a input.txt` |
-| Alternate use case | `command-b --flag input.txt` |
-| Batch operation | `command-a *.txt` |
+| Alternative use case | `command-b --flag input.txt` |
+| Batch processing | `command-a *.txt` |
 
 ## Scenario Two
 
@@ -103,17 +99,17 @@ Practical, copy-paste-ready examples for the most common tasks.
 
 | Scenario | Command |
 | :--- | :--- |
-| Do A then B | `command-a && command-b` |
-| Do A, saving output | `command-a > out.txt` |
-| Do A, piping to B | `command-a \| command-b` |
+| A first, then B | `command-a && command-b` |
+| Run A, save output | `command-a > output.txt` |
+| Run A, pipe to B | `command-a \| command-b` |
 
 # Configuration
 
-If the topic has a config file, describe where it lives and what the main settings do.
+If the topic has a configuration file, describe where it lives and what the key settings do.
 
-## Config Location
+## Configuration Location
 
-The configuration file is typically found at:
+The configuration file is typically located at:
 
     ~/.config/appname/config.json
 
@@ -131,13 +127,13 @@ Explain how to make changes permanent, if applicable.
 
 # Comparisons
 
-Use this section when the topic is often compared with an alternative.
+Use this section when the topic is commonly compared with an alternative.
 
 ## How It Differs
 
-| Feature | This Topic | Alternative |
+| Aspect | This Topic | Alternative |
 | :--- | :--- | :--- |
-| Core purpose | Main use case | Other use case |
+| Core purpose | Main use case | Different use case |
 | Learning curve | Description | Description |
 | Performance | Description | Description |
 
@@ -154,7 +150,7 @@ Use this section when the topic is often compared with an alternative.
 
 # Common Pitfalls
 
-Describe the mistakes people commonly make and how to avoid them.
+Describe the mistakes commonly made and how to avoid them.
 
 ## Pitfall One
 
@@ -164,9 +160,9 @@ Explanation of the pitfall and how to avoid it.
 
 Explanation of the pitfall and how to avoid it.
 
-# Safety and Security
+# Security
 
-If the topic has security implications, cover them here.
+If the topic has security implications, address them here.
 
 ## General Advice
 
@@ -180,7 +176,7 @@ If the topic has security implications, cover them here.
 
 # Summary
 
-A short recap of the most important points. Aim for three to five sentences that capture the essence of the topic.
+A brief summary of the key points. Aim for three to five sentences that capture the essence of the topic.
 
 ---
 

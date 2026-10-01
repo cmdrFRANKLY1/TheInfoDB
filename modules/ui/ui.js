@@ -477,7 +477,7 @@ function buildInDocSearch(container) {
     
     const input = document.createElement('input');
     input.type = "text";
-    input.placeholder = state.translations?.searchInDocumentPlaceholder || "Find in document...";
+    input.placeholder = state.translations?.searchSolutionsPlaceholder || "Find in document...";
     input.className = "w-full bg-neutral-900/50 hover:bg-neutral-900 border border-neutral-700/50 hover:border-neutral-700 text-xs text-neutral-200 rounded-md pl-8 pr-2 py-1.5 focus:outline-none focus:border-neutral-500 transition-colors";
     
     let debounceTimer;
@@ -491,6 +491,55 @@ function buildInDocSearch(container) {
     wrap.appendChild(icon);
     wrap.appendChild(input);
     return wrap;
+}
+
+function enhanceTableCells(containerDiv, docPath, sectionTitle) {
+    const cells = containerDiv.querySelectorAll('td, th');
+    cells.forEach(cell => {
+        // Wrap cell contents to manage positioning safely
+        const contentWrap = document.createElement('div');
+        contentWrap.className = 'group relative flex items-center justify-between w-full h-full min-h-[20px]';
+        
+        const textSpan = document.createElement('span');
+        textSpan.className = 'flex-1 pr-4 break-words';
+        while(cell.firstChild) {
+            textSpan.appendChild(cell.firstChild);
+        }
+        
+        const rawText = textSpan.textContent.trim();
+        
+        const actions = document.createElement('div');
+        actions.className = 'absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 bg-neutral-900 rounded px-1 shadow-sm';
+        
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'text-neutral-500 hover:text-white p-0.5';
+        pinBtn.title = 'Pin cell value';
+        pinBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>';
+        pinBtn.onclick = (e) => {
+            e.stopPropagation();
+            pinTopic(docPath, sectionTitle, `[Cell] ${rawText}`); 
+        };
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'text-neutral-500 hover:text-white p-0.5';
+        copyBtn.title = 'Copy cell value';
+        copyBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        copyBtn.onclick = (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(rawText).then(() => showToast(state.translations?.toastCopied || 'Copied!'));
+        };
+
+        actions.appendChild(pinBtn);
+        actions.appendChild(copyBtn);
+        
+        contentWrap.appendChild(textSpan);
+        if (rawText) { 
+            contentWrap.appendChild(actions);
+        }
+        
+        cell.style.padding = '4px 8px'; 
+        cell.appendChild(contentWrap);
+    });
 }
 
 export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null, documentTags = [], tagHues = {}) {
@@ -758,6 +807,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                 const introDiv = document.createElement('div');
                 introDiv.className = "text-neutral-300 text-sm leading-relaxed mb-2";
                 introDiv.innerHTML = section.intro;
+                enhanceTableCells(introDiv, displayPath, section.title);
                 mainSectionDiv.appendChild(introDiv);
             }
         }
@@ -835,10 +885,13 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                 h3TopRow.appendChild(h3Actions);
                 h3Wrap.appendChild(h3TopRow);
 
-                const h3Body = document.createElement('div');
-                h3Body.className = "text-neutral-300 text-sm leading-relaxed";
-                h3Body.innerHTML = subText;
-                h3Wrap.appendChild(h3Body);
+                if (subText) {
+                    const h3Body = document.createElement('div');
+                    h3Body.className = "text-neutral-300 text-sm leading-relaxed";
+                    h3Body.innerHTML = subText;
+                    enhanceTableCells(h3Body, displayPath, `${section.title} > ${sub.title}`);
+                    h3Wrap.appendChild(h3Body);
+                }
 
                 mainSectionDiv.appendChild(h3Wrap);
             } else {
@@ -907,6 +960,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                     const subContentDiv = document.createElement('div');
                     subContentDiv.className = "text-neutral-300 text-sm leading-relaxed";
                     subContentDiv.innerHTML = subText;
+                    enhanceTableCells(subContentDiv, displayPath, `${section.title} > ${sub.title}`);
                     subtopicPanel.appendChild(subContentDiv);
                 }
 
