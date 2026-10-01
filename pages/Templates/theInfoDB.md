@@ -1,10 +1,10 @@
-TheInfoDB - Application Architecture & Module Structure
+# TheInfoDB - Application Architecture & Module Structure
 
 This document outlines the architecture, file structure, and module responsibilities of TheInfoDB, a vanilla JavaScript client-side application designed to fetch, parse, and display Markdown documentation directly from a GitHub repository.
 
 Following a major refactoring, the application utilizes native ES6 Modules to enforce a strict separation of concerns, making the codebase highly maintainable, scalable, and easy to debug.
 
-📁 Directory Structure
+# 📁 Directory Structure
 
 / (Project Root)
 ├── index.html                       # Main HTML layout and Tailwind/custom CSS
@@ -41,15 +41,15 @@ Following a major refactoring, the application utilizes native ES6 Modules to en
         └── utils.js                 # Reusable helper functions
 
 
-🧩 Module Breakdown
+# 🧩 Module Breakdown
 
-1. main.js (The Orchestrator)
+## 1. main.js (The Orchestrator)
 
 The entry point of the application. It does not contain business logic itself. Instead, it imports initialization functions from other modules and executes them in the correct sequence to bootstrap the application.
 
 Key Responsibilities: Applying the initial theme, loading configurations, triggering the GitHub tree fetch, and attaching global event listeners.
 
-2. state.js (The Single Source of Truth)
+## 2. state.js (The Single Source of Truth)
 
 Contains the global state object and configuration constants (like supported languages and fixed keys).
 
@@ -57,13 +57,13 @@ Key Responsibilities: Storing the current active files (for single and split vie
 
 Note: Other modules import this object by reference, meaning mutations to state are globally reflected.
 
-3. dom.js (The Element Cache)
+## 3. dom.js (The Element Cache)
 
 Acts as a registry for DOM elements. Instead of scattering document.getElementById calls throughout the codebase, they are executed once here and exported in a dom object.
 
 Key Responsibilities: Providing structured access to UI elements and exporting raw SVG strings (ICONS) used for dynamic rendering.
 
-4. api.js (The Network Layer)
+## 4. api.js (The Network Layer)
 
 Handles all external HTTP requests via the fetch API.
 
@@ -77,7 +77,7 @@ Preloading documents in the background (preloadContentForAllLanguages).
 
 Loading local JSON configuration files for translations, hyperlinks, and tooltips.
 
-5. markdown.js (The Parsing Engine)
+## 5. markdown.js (The Parsing Engine)
 
 A custom, zero-dependency Markdown parser tailored for TheInfoDB's specific formatting needs.
 
@@ -91,7 +91,7 @@ Generating HTML tables from Markdown syntax.
 
 Injecting span wrappers around text that matches dictionary keys for global tooltips.
 
-6. ui.js (The Rendering Engine)
+## 6. ui.js (The Rendering Engine)
 
 The largest module, responsible for generating DOM structures dynamically based on application state.
 
@@ -105,7 +105,7 @@ Managing Single View vs. Split View DOM transitions (handleFileSelection, render
 
 Injecting parsed HTML from markdown.js into the view containers.
 
-7. events.js (The Interaction Controller)
+## 7. events.js (The Interaction Controller)
 
 Centralizes the setup for user interactions that don't belong strictly to one rendering function.
 
@@ -117,7 +117,7 @@ The Global Tooltip engine (calculating mouse coordinates and displaying popups).
 
 Binding click events for theme toggling, context menus, modal dialogs, and external link warnings.
 
-8. i18n.js (The Localization Manager)
+## 8. i18n.js (The Localization Manager)
 
 Manages the user interface language and category string translations.
 
@@ -129,25 +129,25 @@ Applying translated strings to static HTML elements via data-i18n attributes.
 
 Translating dynamic folder names in the sidebar navigation (translateFolder).
 
-9. search.js (The Search Subsystem)
+## 9. search.js (The Search Subsystem)
 
 Handles querying the loaded document cache.
 
 Key Responsibilities: Interating through cached Markdown content to find query matches, then delegating to ui.js to render the filtered view, highlighting relevant sections.
 
-10. pins.js (The Pinning Subsystem)
+## 10. pins.js (The Pinning Subsystem)
 
 Manages the "Pinned Topics" feature, allowing users to save specific sections of Markdown for quick reference.
 
 Key Responsibilities: Adding topics to the pinned state array and re-rendering the pinned sidebar panel.
 
-11. utils.js (The Helpers)
+## 11. utils.js (The Helpers)
 
 A collection of pure functions and isolated utilities used by various other modules.
 
 Key Responsibilities: Browser file downloading (downloadFile), breadcrumb path generation, language fallback logic (pickLang), and smooth scrolling to specific anchor tags.
 
-🔄 Initialization Flow (Lifecycle)
+# 🔄 Initialization Flow (Lifecycle)
 
 When the browser loads index.html, the following sequence occurs via main.js:
 
