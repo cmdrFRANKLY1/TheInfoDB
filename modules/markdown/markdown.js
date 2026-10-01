@@ -15,7 +15,8 @@ export function escapeHtml(str) {
  * Dynamically builds a regular expression based on the loaded tooltips state.
  */
 export function buildTooltipRegex() {
-    const keys = Object.keys(state.tooltips || {});
+    const langDict = state.tooltips[state.currentRenderingLang] || {};
+    const keys = Object.keys(langDict);
     if (keys.length === 0) return null;
     const escaped = keys
         .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -30,15 +31,17 @@ export function injectTooltips(html) {
     if (!html) return html;
     const rx = buildTooltipRegex();
     if (!rx) return html;
+    const langDict = state.tooltips[state.currentRenderingLang] || {};
 
     const parts = html.split(/(<[^>]+>)/g);
     return parts.map(part => {
         if (!part) return part;
         if (part.startsWith('<')) return part;
         return part.replace(rx, (match) => {
-            const exactKey = Object.keys(state.tooltips).find(k => k.toLowerCase() === match.toLowerCase());
+            const exactKey = Object.keys(langDict).find(k => k.toLowerCase() === match.toLowerCase());
             if (!exactKey) return match;
-            return `<span class="tooltip-term" data-term="${exactKey}">${match}</span>`;
+            // Embed the language so the mouseover event knows which dictionary to check
+            return `<span class="tooltip-term" data-term="${exactKey}" data-lang="${state.currentRenderingLang}">${match}</span>`;
         });
     }).join('');
 }

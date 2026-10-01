@@ -380,6 +380,9 @@ export async function renderSplitView() {
 }
 
 export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null) {
+    // Let the markdown engine know which document language is actively being rendered right now
+    state.currentRenderingLang = activeDocLang || 'English';
+
     const effectiveMode = viewModeOverride || state.viewMode;
     const isRaw = effectiveMode === 'Raw';
 

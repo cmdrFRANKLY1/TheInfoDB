@@ -2,7 +2,10 @@ export const state = {
     pages: [],
     fileCache: {},
     hyperlinks: {},
+    hyperlinkPaths: [], // Stores dynamically discovered config files
     tooltips: {},
+    tooltipPaths: [], // Stores dynamically discovered tooltip files
+    currentRenderingLang: 'English',
     pinnedTopics: [],
     currentActiveFile: null,
     splitFile1: null,

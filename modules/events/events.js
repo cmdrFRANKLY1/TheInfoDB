@@ -11,6 +11,7 @@ import {
 import { pickLang, downloadFile, getFileDisplayPath } from '../utils/utils.js';
 import { executeGlobalSearch } from '../search/search.js';
 import { loadLanguage, retranslatePages } from '../i18n/i18n.js';
+import { loadTooltips } from '../api/api.js';
 
 export function setupSidebarResize() {
     let isResizing = false;
@@ -87,7 +88,11 @@ export function setupTooltipEngine() {
         const el = e.target.closest && e.target.closest('.tooltip-term');
         if (!el) return;
         const term = el.getAttribute('data-term');
-        const desc = state.tooltips[term];
+        const lang = el.getAttribute('data-lang') || 'English';
+        
+        // Lookup the definition using the language embedded in the span
+        const langDict = state.tooltips[lang] || {};
+        const desc = langDict[term];
         if (!desc) return;
 
         clearTimeout(hideTimer);
@@ -249,8 +254,10 @@ export function setupEventListeners() {
     // UI Language Select
     document.getElementById('ui-language-select').addEventListener('change', async (e) => {
         await loadLanguage(e.target.value);
+        // Tooltips are now preloaded for all languages, no need to reload them here!
         retranslatePages();
         renderTree(state.pages, dom.pagesTree);
+        
         if (state.isSplitView) {
             renderSplitView();
         } else if (state.currentActiveFile) {

@@ -1,28 +1,66 @@
 import { state, SUPPORTED_LANGUAGES } from '../state/state.js';
 import { dom } from '../dom/dom.js';
-// Note: We are importing translateFolder anticipating the i18n module
 import { translateFolder } from '../i18n/i18n.js';
 
 export async function loadHyperlinks() {
-    try {
-        const res = await fetch('./hyperlinks.json');
-        if (res.ok) {
-            state.hyperlinks = await res.json();
-        }
-    } catch (e) {
-        state.hyperlinks = {};
+    state.hyperlinks = {};
+    
+    // If the tree fetch failed or found no files, fallback to default
+    if (!state.hyperlinkPaths || state.hyperlinkPaths.length === 0) {
+        try {
+            const res = await fetch('./modules/hyperlinks/hyperlinks.json');
+            if (res.ok) Object.assign(state.hyperlinks, await res.json());
+        } catch (e) {}
+        return;
     }
+
+    // Fetch all discovered JSON files dynamically and merge them
+    await Promise.allSettled(state.hyperlinkPaths.map(async (path) => {
+        try {
+            const res = await fetch(`./${path}`);
+            if (res.ok) {
+                const data = await res.json();
+                Object.assign(state.hyperlinks, data);
+            }
+        } catch(e) {
+            console.warn(`Failed to load hyperlink file: ${path}`);
+        }
+    }));
 }
 
 export async function loadTooltips() {
-    try {
-        const res = await fetch('./mouseOverTooltips.json');
-        if (res.ok) {
-            state.tooltips = await res.json();
-        }
-    } catch (e) {
-        state.tooltips = {};
+    state.tooltips = {};
+    // Pre-initialize empty objects for all supported languages
+    SUPPORTED_LANGUAGES.forEach(lang => state.tooltips[lang] = {});
+
+    // If the tree fetch failed or found no files, fallback to default
+    if (!state.tooltipPaths || state.tooltipPaths.length === 0) {
+        await Promise.allSettled(SUPPORTED_LANGUAGES.map(async (lang) => {
+            try {
+                const res = await fetch(`./modules/tooltips/mouseOverTooltips_in${lang}.json`);
+                if (res.ok) Object.assign(state.tooltips[lang], await res.json());
+            } catch (e) {}
+        }));
+        return;
     }
+
+    // Fetch all applicable JSON files dynamically for ALL languages and merge them
+    await Promise.allSettled(SUPPORTED_LANGUAGES.map(async (lang) => {
+        const langSuffix = `_in${lang}.json`;
+        const languageSpecificPaths = state.tooltipPaths.filter(path => path.endsWith(langSuffix));
+
+        await Promise.allSettled(languageSpecificPaths.map(async (path) => {
+            try {
+                const res = await fetch(`./${path}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    Object.assign(state.tooltips[lang], data);
+                }
+            } catch(e) {
+                console.warn(`Failed to load tooltip file: ${path}`);
+            }
+        }));
+    }));
 }
 
 export async function loadPageRegistry() {
@@ -41,14 +79,6 @@ export async function loadPageRegistry() {
     }));
 }
 
-/* ---------------- Tree fetch ----------------
-   Detects the docs root (any top-level folder containing .md files),
-   strips that prefix, then splits each .md path into:
-     - folder parts (everything before the filename)
-     - filename stem (the display title)
-   If the last folder part matches the filename stem (case-insensitive),
-   it is collapsed so "IPv4/IPv4_inEnglish.md" becomes just "IPv4".
-*/
 export async function fetchGitHubTree() {
     try {
         const res = await fetch('https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB/git/trees/main?recursive=1');
@@ -59,8 +89,17 @@ export async function fetchGitHubTree() {
         }
         const data = await res.json();
 
-        const allMd = (data.tree || []).filter(n => n.type === 'blob' && n.path.endsWith('.md'));
-        console.log('[tree] all .md paths:', allMd.map(n => n.path));
+        // Dynamically extract all hyperlink config files from the tree
+        const hyperlinkNodes = (data.tree || []).filter(n => n.type === 'blob' && n.path.startsWith('modules/hyperlinks/') && n.path.endsWith('.json'));
+        state.hyperlinkPaths = hyperlinkNodes.map(n => n.path);
+        
+        // Dynamically extract all tooltip config files from the tree
+        const tooltipNodes = (data.tree || []).filter(n => n.type === 'blob' && n.path.startsWith('modules/tooltips/') && n.path.endsWith('.json'));
+        state.tooltipPaths = tooltipNodes.map(n => n.path);
+
+        // Discover markdown files
+        const allMd = (data.tree || []).filter(n => n.type === 'blob' && n.path.endsWith('.md') && !n.path.startsWith('modules/'));
+        console.log('[tree] all content .md paths:', allMd.map(n => n.path));
 
         if (allMd.length === 0) {
             dom.pagesTree.innerHTML =
@@ -112,7 +151,6 @@ export async function fetchGitHubTree() {
             const displayTitle = extractTitle(filename);
 
             const dirParts = pathParts.slice();
-            // Collapse trailing folder whose name matches the file stem (case-insensitive).
             while (dirParts.length > 0) {
                 const last = dirParts[dirParts.length - 1];
                 if (last.toLowerCase() === displayTitle.toLowerCase()) {
@@ -143,8 +181,6 @@ export async function fetchGitHubTree() {
         });
 
         state.pages = Object.values(pagesMap);
-        console.log('[tree] pages entries:', state.pages.length);
-        console.log('[tree] entries:', state.pages.map(p => ({ id: p.id, title: p.title, category: p.category, paths: Object.keys(p.paths) })));
 
         if (state.pages.length === 0) {
             dom.pagesTree.innerHTML =
