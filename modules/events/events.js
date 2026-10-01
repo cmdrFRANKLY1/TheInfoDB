@@ -407,12 +407,16 @@ export function setupEventListeners() {
             chip.style.setProperty('--tag-hue', String(getTagHue(tag)));
             chip.appendChild(document.createTextNode(tag));
 
+            const closeText = state.translations?.clickToClose || "Click to Close";
+            const tooltipText = `${tag}\n${closeText}`;
+            chip.title = tooltipText;
+
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'quick-search-chip-remove';
             removeButton.textContent = '×';
-            removeButton.title = `Remove tag filter ${tag}`;
-            removeButton.setAttribute('aria-label', `Remove tag filter ${tag}`);
+            removeButton.title = tooltipText;
+            removeButton.setAttribute('aria-label', tooltipText);
             removeButton.addEventListener('click', () => {
                 quickSearchTags = quickSearchTags.filter(value => value !== tag);
                 renderQuickSearchTags();
@@ -467,8 +471,8 @@ export function setupEventListeners() {
             swatch.style.setProperty('--tag-hue', String(getTagHue(tag)));
             option.append(swatch, document.createTextNode(tag));
             option.addEventListener('click', () => {
-                if (quickSearchTags.includes(tag)) return;
-                quickSearchTags.push(tag);
+                // Enforce single tag
+                quickSearchTags = [tag];
                 renderQuickSearchTags();
                 closeQuickSearchTagMenu();
                 searchQuickSearch();
@@ -505,7 +509,8 @@ export function setupEventListeners() {
         const parsed = parseSearchQuery(dom.qsInput.value);
         if (parsed.tags.length === 0) return false;
 
-        quickSearchTags = [...new Set([...quickSearchTags, ...parsed.tags])];
+        // Enforce single tag: overwrite with the newly typed tag
+        quickSearchTags = [parsed.tags[parsed.tags.length - 1]];
         dom.qsInput.value = parsed.text;
         renderQuickSearchTags();
         searchQuickSearch();

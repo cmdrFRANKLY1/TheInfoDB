@@ -1,14 +1,18 @@
 # Topic Name
-
+```
 A one-paragraph description of the topic. This appears as the intro text of the first panel, directly under the big `# Topic Name` heading. Keep it short and factual — one or two sentences work best.
+```
 
 # Overview
-
+```
 A higher-level overview of what the topic is about, why it matters, and where it fits in the broader context. Use this section to set the stage before diving into details.
+```
 
 ## What It Is
 
+```
 Explain the core concept in plain language. Avoid jargon where possible; when you must use a technical term, define it on first use.
+```
 
 ## Why It Matters
 

@@ -2,7 +2,7 @@
 "searchPagesPlaceholder": "Alle Seiten durchsuchen...",
 "searchEverythingPlaceholder": "Alles durchsuchen (tag:linux)...",
 "pagesTitle": "Seiten",
-"searchSolutionsPlaceholder": "Lösungen durchsuchen...",
+"searchInDocumentPlaceholder": "Suche...",
 "solutionsTitle": "Lösungen",
 "dashboardTitle": "Dashboard",
 "viewModeStylized": "Markdown",
@@ -24,5 +24,6 @@
 "toastNoFile": "Keine Datei ausgewählt.",
 "toastNoPins": "Keine Pins zum Herunterladen.",
 "toastJumped": "Gesprungen zu",
-"searchResults": "Suchergebnisse:"
+"searchResults": "Suchergebnisse:",
+"clickToClose": "Zum Schließen klicken"
 }

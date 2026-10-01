@@ -396,6 +396,103 @@ export async function renderSplitView() {
     renderTree(state.pages, dom.pagesTree);
 }
 
+export function clearHighlights(container) {
+    const marks = container.querySelectorAll('mark.doc-search-highlight');
+    marks.forEach(mark => {
+        const parent = mark.parentNode;
+        if (parent) {
+            parent.replaceChild(document.createTextNode(mark.textContent), mark);
+            parent.normalize();
+        }
+    });
+}
+
+export function applyHighlights(container, query) {
+    clearHighlights(container);
+    if (!query || !query.trim()) return;
+    const lowerQuery = query.trim().toLowerCase();
+
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+        acceptNode: function(node) {
+            const parent = node.parentNode;
+            if (!parent) return NodeFilter.FILTER_REJECT;
+            if (parent.tagName === 'MARK' && parent.classList.contains('doc-search-highlight')) {
+                return NodeFilter.FILTER_REJECT;
+            }
+            // Ignore text inside toolbars, scripts, or styles
+            if (parent.closest('.doc-toolbar') || parent.closest('script') || parent.closest('style')) {
+                return NodeFilter.FILTER_REJECT;
+            }
+            return NodeFilter.FILTER_ACCEPT;
+        }
+    });
+
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+        if (node.nodeValue.toLowerCase().includes(lowerQuery)) {
+            nodes.push(node);
+        }
+    }
+
+    nodes.forEach(textNode => {
+        const val = textNode.nodeValue;
+        const lowerVal = val.toLowerCase();
+        let index = lowerVal.indexOf(lowerQuery);
+
+        if (index !== -1) {
+            const fragment = document.createDocumentFragment();
+            let lastIdx = 0;
+            while (index !== -1) {
+                fragment.appendChild(document.createTextNode(val.substring(lastIdx, index)));
+                
+                const mark = document.createElement('mark');
+                mark.className = 'doc-search-highlight';
+                mark.style.backgroundColor = 'rgba(234, 179, 8, 0.4)';
+                mark.style.color = '#fef08a';
+                mark.style.borderRadius = '2px';
+                mark.style.padding = '0 2px';
+                mark.textContent = val.substring(index, index + lowerQuery.length);
+                
+                fragment.appendChild(mark);
+
+                lastIdx = index + lowerQuery.length;
+                index = lowerVal.indexOf(lowerQuery, lastIdx);
+            }
+            fragment.appendChild(document.createTextNode(val.substring(lastIdx)));
+            if (textNode.parentNode) {
+                textNode.parentNode.replaceChild(fragment, textNode);
+            }
+        }
+    });
+}
+
+function buildInDocSearch(container) {
+    const wrap = document.createElement('div');
+    wrap.className = "relative flex items-center flex-1 max-w-[240px] mr-4 min-w-0";
+    
+    const icon = document.createElement('div');
+    icon.className = "absolute left-2.5 text-neutral-500 flex items-center pointer-events-none";
+    icon.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+    
+    const input = document.createElement('input');
+    input.type = "text";
+    input.placeholder = state.translations?.searchInDocumentPlaceholder || "Find in document...";
+    input.className = "w-full bg-neutral-900/50 hover:bg-neutral-900 border border-neutral-700/50 hover:border-neutral-700 text-xs text-neutral-200 rounded-md pl-8 pr-2 py-1.5 focus:outline-none focus:border-neutral-500 transition-colors";
+    
+    let debounceTimer;
+    input.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            applyHighlights(container, e.target.value);
+        }, 250);
+    });
+
+    wrap.appendChild(icon);
+    wrap.appendChild(input);
+    return wrap;
+}
+
 export function parseAndRenderMarkdownDocument(content, container, fileData, viewModeOverride = null, isSearch = false, query = '', slotTag = '', onClose = null, activeDocLang = 'English', onDocLangChange = null, columnLabel = null, columnColor = null, documentTags = [], tagHues = {}) {
     // Let the markdown engine know which document language is actively being rendered right now
     state.currentRenderingLang = activeDocLang || 'English';
@@ -424,10 +521,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
             const slotHeader = document.createElement('div');
             slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
-            const titleBadge = document.createElement('span');
-            titleBadge.className = "text-xs font-mono text-neutral-400 truncate min-w-0";
-            titleBadge.textContent = (slotTag ? `[${slotTag}] ` : "") + getFileDisplayPath(fileData);
-            slotHeader.appendChild(titleBadge);
+            slotHeader.appendChild(buildInDocSearch(overallWrapper));
 
             const rightControls = document.createElement('div');
             rightControls.className = "flex items-center space-x-2 shrink-0";
@@ -501,10 +595,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
         const slotHeader = document.createElement('div');
         slotHeader.className = "doc-toolbar flex justify-between items-center mb-5 gap-3";
 
-        const titleBadge = document.createElement('span');
-        titleBadge.className = "text-xs font-mono text-neutral-400 truncate min-w-0";
-        titleBadge.textContent = (slotTag ? `[${slotTag}] ` : "") + getFileDisplayPath(fileData);
-        slotHeader.appendChild(titleBadge);
+        slotHeader.appendChild(buildInDocSearch(overallWrapper));
 
         const rightControls = document.createElement('div');
         rightControls.className = "flex items-center space-x-2 shrink-0";
