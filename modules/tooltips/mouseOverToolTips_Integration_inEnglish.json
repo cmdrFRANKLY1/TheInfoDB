@@ -39,5 +39,6 @@
   "Ausfallsicherheit": "Failure safety: the ability of a system to continue operating or recover gracefully when components fail.",
   "Skalierbarkeit": "Scalability: the ability of a system to handle a growing amount of work by adding resources.",
   "Interoperabilität": "Interoperability: the ability of different systems, devices, or applications to exchange and make use of information.",
-  "Standardisierung": "Standardization: the process of implementing and developing technical standards to ensure compatibility and consistency across systems."
+  "Standardisierung": "Standardization: the process of implementing and developing technical standards to ensure compatibility and consistency across systems.",
+  "bytes": "Plural of byte: a unit of digital information, usually consisting of eight bits."
 }

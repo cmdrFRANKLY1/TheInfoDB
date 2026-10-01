@@ -32,12 +32,13 @@
   "Gateway": "Netzwerkknoten, der als Übergang von einem Netzwerk zu einem anderen dient und häufig zwischen verschiedenen Protokollen oder Adressierungsschemata vermittelt.",
   "Router": "Netzwerkgerät, das Datenpakete zwischen Netzwerken weiterleitet und anhand von Routingtabellen den geeigneten Pfad bestimmt.",
   "Switch": "Netzwerkgerät, das Geräte innerhalb eines LANs verbindet und Daten nur an den Port weiterleitet, an dem das Zielgerät angeschlossen ist.",
-  "Firewall": "A network security system that monitors and controls incoming and outgoing traffic based on predetermined security rules.",
+  "Firewall": "Netzwerksicherheitssystem, das ein- und ausgehenden Datenverkehr anhand festgelegter Regeln überwacht und steuert.",
   "VPN": "Virtual Private Network: erweitert ein privates Netzwerk über ein öffentliches Netzwerk und ermöglicht Verschlüsselung sowie sicheren Fernzugriff.",
   "Backup": "Kopie von Daten, die getrennt gespeichert wird, damit sie bei Verlust oder Beschädigung des Originals wiederhergestellt werden kann.",
   "Redundanz": "Doppelte Auslegung kritischer Komponenten oder Funktionen zur Erhöhung der Zuverlässigkeit, sodass der Betrieb bei Ausfall eines Teils fortgesetzt werden kann.",
   "Ausfallsicherheit": "Fähigkeit eines Systems, bei Ausfällen von Komponenten weiterzuarbeiten oder sich kontrolliert davon zu erholen.",
   "Skalierbarkeit": "Fähigkeit eines Systems, eine wachsende Arbeitslast durch Hinzufügen von Ressourcen zu bewältigen.",
   "Interoperabilität": "Fähigkeit verschiedener Systeme, Geräte oder Anwendungen, Informationen auszutauschen und diese zu nutzen.",
-  "Standardisierung": "Prozess der Einführung und Entwicklung technischer Standards zur Sicherstellung von Kompatibilität und Konsistenz zwischen Systemen."
+  "Standardisierung": "Prozess der Einführung und Entwicklung technischer Standards zur Sicherstellung von Kompatibilität und Konsistenz zwischen Systemen.",
+  "bytes": "Mehrzahl von Byte: Einheit digitaler Information, die üblicherweise aus acht Bit besteht."
 }
