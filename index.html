@@ -140,13 +140,9 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.45);
         }
         #global-tooltip.show { opacity: 1; }
-        [data-theme="light"] #global-tooltip {
-            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-        }
+        [data-theme="light"] #global-tooltip { box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
 
-        .doc-scope {
-            --doc-scale: 1;
-        }
+        .doc-scope { --doc-scale: 1; }
         .doc-scope .panel-stylized { font-size: calc(1rem * var(--doc-scale)); }
         .doc-scope .subtopic-panel { font-size: calc(0.875rem * var(--doc-scale)); }
         .doc-scope .h3-block { font-size: calc(0.875rem * var(--doc-scale)); }
@@ -164,9 +160,7 @@
         .panel-stylized:hover {
             box-shadow: 0 8px 30px rgba(255, 255, 255, 0.12), 0 2px 6px rgba(255, 255, 255, 0.1);
         }
-        .subtopic-panel:hover {
-            box-shadow: 0 4px 22px rgba(255, 255, 255, 0.1);
-        }
+        .subtopic-panel:hover { box-shadow: 0 4px 22px rgba(255, 255, 255, 0.1); }
 
         [data-theme="light"] .panel-stylized,
         [data-theme="light"] .subtopic-panel {
@@ -175,23 +169,15 @@
         [data-theme="light"] .panel-stylized:hover {
             box-shadow: 0 8px 34px rgba(0, 0, 0, 0.24), 0 3px 8px rgba(0, 0, 0, 0.22);
         }
-        [data-theme="light"] .subtopic-panel:hover {
-            box-shadow: 0 4px 26px rgba(0, 0, 0, 0.22);
-        }
+        [data-theme="light"] .subtopic-panel:hover { box-shadow: 0 4px 26px rgba(0, 0, 0, 0.22); }
 
-        .pages-panel {
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(0, 0, 0, 0.4);
-        }
+        .pages-panel { box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(0, 0, 0, 0.4); }
         [data-theme="light"] .pages-panel {
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.06);
         }
 
-        .dashboard-card {
-            box-shadow: 0 4px 20px rgba(255,255,255,0.075);
-        }
-        .dashboard-card:hover {
-            box-shadow: 0 8px 30px rgba(255,255,255,0.12);
-        }
+        .dashboard-card { box-shadow: 0 4px 20px rgba(255,255,255,0.075); }
+        .dashboard-card:hover { box-shadow: 0 8px 30px rgba(255,255,255,0.12); }
         [data-theme="light"] .dashboard-card {
             box-shadow: 0 4px 22px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.2);
         }
@@ -199,9 +185,7 @@
             box-shadow: 0 8px 34px rgba(0,0,0,0.24), 0 3px 8px rgba(0,0,0,0.22);
         }
 
-        .pinned-card {
-            box-shadow: 0 3px 14px rgba(255,255,255,0.06);
-        }
+        .pinned-card { box-shadow: 0 3px 14px rgba(255,255,255,0.06); }
         [data-theme="light"] .pinned-card {
             box-shadow: 0 3px 14px rgba(0,0,0,0.15), 0 1px 4px rgba(0,0,0,0.18);
         }
@@ -293,9 +277,7 @@
             flex-shrink: 0;
             align-self: stretch;
         }
-        @media (max-width: 767px) {
-            .split-divider { display: none; }
-        }
+        @media (max-width: 767px) { .split-divider { display: none; } }
 
         .hover-actions {
             opacity: 0;
@@ -320,64 +302,6 @@
             #content-scroll-area.split-active { padding-left: 2rem; padding-right: 2rem; }
         }
 
-        #jump-menu {
-            display: none;
-            position: absolute;
-            top: calc(100% + 6px);
-            right: 0;
-            min-width: 320px;
-            max-width: 480px;
-            max-height: 480px;
-            overflow-y: auto;
-            background: var(--bg-panel-hover);
-            border: 1px solid var(--border-hover);
-            border-radius: 6px;
-            z-index: 60;
-            padding: 6px 0;
-        }
-        #jump-menu.open { display: block; }
-        #jump-menu .jump-group-label {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            padding: 6px 12px 4px;
-        }
-        #jump-menu button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 6px 12px;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #jump-menu button:hover { background: var(--bg-neutral-900); color: var(--text-heading); }
-        #jump-menu button.lvl-1 { font-weight: 600; color: var(--text-heading); }
-        #jump-menu button.lvl-2 { padding-left: 24px; }
-        #jump-menu button.lvl-3 { padding-left: 36px; color: var(--text-secondary); font-size: 11px; }
-        #jump-menu button .slot-tag {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-right: 6px;
-        }
-
-        @keyframes jumpFlash {
-            0%   { background-color: rgba(128,128,128,0.18); border-color: var(--text-muted); }
-            100% { background-color: transparent; border-color: inherit; }
-        }
-        .jump-target, .jump-target-h3 {
-            animation: jumpFlash 1.2s ease-out;
-        }
-
         .file-actions button {
             line-height: 1;
             display: inline-flex;
@@ -398,11 +322,7 @@
             flex-shrink: 0;
             box-sizing: border-box;
         }
-        .doc-action-btn > svg {
-            width: 14px;
-            height: 14px;
-            display: block;
-        }
+        .doc-action-btn > svg { width: 14px; height: 14px; display: block; }
 
         .toolbar-select {
             background: transparent;
@@ -643,7 +563,7 @@
             theme: localStorage.getItem('theme') || 'dark',
             treeOpenState: {},
             pageRegistry: {},
-            docsRoot: null,   // detected top-level folder that contains .md files
+            docsRoot: null,
             docFontScale1: parseFloat(localStorage.getItem('docFontScale1') || '1'),
             docFontScale2: parseFloat(localStorage.getItem('docFontScale2') || '1')
         };
@@ -968,7 +888,14 @@
             return rawName;
         }
 
-        /* ---------------- Tree fetch with auto-detected docs root ---------------- */
+        /* ---------------- Tree fetch ----------------
+           Detects the docs root (any top-level folder containing .md files),
+           strips that prefix, then splits each .md path into:
+             - folder parts (everything before the filename)
+             - filename stem (the display title)
+           If the last folder part matches the filename stem (case-insensitive),
+           it is collapsed so "IPv4/IPv4_inEnglish.md" becomes just "IPv4".
+        */
         async function fetchGitHubTree() {
             try {
                 const res = await fetch('https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB/git/trees/main?recursive=1');
@@ -982,9 +909,15 @@
                 const allMd = (data.tree || []).filter(n => n.type === 'blob' && n.path.endsWith('.md'));
                 console.log('[tree] all .md paths:', allMd.map(n => n.path));
 
-                // Auto-detect the top-level folder that contains the .md files.
-                // Strategy: for each top-level folder that has .md files, count how many.
-                // Use the one with the most. If .md files are at repo root, use '' (root).
+                if (allMd.length === 0) {
+                    dom.pagesTree.innerHTML =
+                        '<div class="text-neutral-500 text-xs p-3 leading-relaxed">' +
+                        'No .md files found in the repository.' +
+                        '</div>';
+                    return;
+                }
+
+                // Detect docs root: whichever top-level folder holds the most .md files.
                 const counts = {};
                 let rootCount = 0;
                 allMd.forEach(n => {
@@ -1006,7 +939,6 @@
                     }
                 });
 
-                // If a detected root exists, we prefix with "root/" in filters.
                 state.docsRoot = detectedRoot ? (detectedRoot + '/') : '';
                 console.log('[tree] detected docs root:', state.docsRoot || '(repo root)', 'with', best, 'md files');
 
@@ -1017,7 +949,7 @@
                         .replace(/\.md$/, '');
                 };
 
-                const rootPrefix = state.docsRoot; // e.g. "Pages/" or ""
+                const rootPrefix = state.docsRoot;
                 allMd.forEach(node => {
                     if (!node.path.startsWith(rootPrefix)) return;
 
@@ -1027,10 +959,15 @@
                     const displayTitle = extractTitle(filename);
 
                     const dirParts = pathParts.slice();
-                    if (dirParts.length > 0) {
-                        const lastFolder = dirParts[dirParts.length - 1];
-                        if (lastFolder.toLowerCase() === displayTitle.toLowerCase()) {
+                    // Collapse trailing folder whose name matches the file stem (case-insensitive).
+                    // "IPv4/IPv4_inEnglish.md"  -> dirParts = []  (title "IPv4" sits at Networks level)
+                    // "Networks/NAT/NAT_inEnglish.md" -> dirParts = ["Networks"] after popping "NAT"
+                    while (dirParts.length > 0) {
+                        const last = dirParts[dirParts.length - 1];
+                        if (last.toLowerCase() === displayTitle.toLowerCase()) {
                             dirParts.pop();
+                        } else {
+                            break;
                         }
                     }
 
@@ -1056,12 +993,12 @@
 
                 state.pages = Object.values(pagesMap);
                 console.log('[tree] pages entries:', state.pages.length);
+                console.log('[tree] entries:', state.pages.map(p => ({ id: p.id, title: p.title, category: p.category, paths: Object.keys(p.paths) })));
 
                 if (state.pages.length === 0) {
                     dom.pagesTree.innerHTML =
                         '<div class="text-neutral-500 text-xs p-3 leading-relaxed">' +
-                        `No .md files found.<br><br>` +
-                        `All .md paths GitHub returned: <code class="text-neutral-300">${allMd.map(n => n.path).join(', ') || '(none)'}</code>` +
+                        `Found ${allMd.length} .md file(s), but none under root "<code class="text-neutral-300">${state.docsRoot || "(repo root)"}</code>."` +
                         '</div>';
                 }
             } catch (e) {
