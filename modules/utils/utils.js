@@ -33,6 +33,28 @@ export function pickLang(file) {
     return Object.keys(file.paths)[0];
 }
 
+export function afterScrollSettles(scroller, callback) {
+    let quietTimer;
+    let completed = false;
+
+    const finish = () => {
+        if (completed) return;
+        completed = true;
+        clearTimeout(quietTimer);
+        scroller.removeEventListener('scroll', onScroll);
+        scroller.removeEventListener('scrollend', finish);
+        callback();
+    };
+    const onScroll = () => {
+        clearTimeout(quietTimer);
+        quietTimer = setTimeout(finish, 120);
+    };
+
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    scroller.addEventListener('scrollend', finish, { once: true });
+    quietTimer = setTimeout(finish, 120);
+}
+
 /**
  * Smoothly scrolls the correct view pane to a specified DOM element anchor.
  */
@@ -51,16 +73,25 @@ export function jumpToAnchor(id, slot) {
 
     const rootRect = scrollRoot.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    const offset = targetRect.top - rootRect.top + scrollRoot.scrollTop - 12;
+    const toolbarSlot = state.isSplitView
+        ? (slot === '2' ? dom.documentToolbarSecondary : dom.documentToolbarPrimary)
+        : dom.documentToolbarPrimary;
+    const toolbar = toolbarSlot.querySelector('.doc-toolbar');
+    const toolbarBottom = toolbar ? toolbar.getBoundingClientRect().bottom - rootRect.top : 0;
+    const offset = targetRect.top - rootRect.top + scrollRoot.scrollTop - toolbarBottom - 12;
+
+    afterScrollSettles(scrollRoot, () => {
+        if (!target.isConnected) return;
+        const flashClass = target.classList.contains('h3-block') ? 'jump-target-h3' : 'jump-target';
+        clearTimeout(target.__jumpHighlightTimer);
+        target.classList.remove('jump-target', 'jump-target-h3');
+        void target.offsetWidth;
+        target.classList.add(flashClass);
+        target.__jumpHighlightTimer = setTimeout(() => {
+            target.classList.remove(flashClass);
+            target.__jumpHighlightTimer = null;
+        }, 2000);
+    });
 
     scrollRoot.scrollTo({ top: offset, behavior: 'smooth' });
-
-    // Flash the targeted section to highlight it briefly
-    const flashClass = target.classList.contains('h3-block') ? 'jump-target-h3' : 'jump-target';
-    target.classList.remove('jump-target', 'jump-target-h3');
-    void target.offsetWidth; // Trigger reflow to restart animation
-    target.classList.add(flashClass);
-    
-    // Clean up the flash class after the animation completes
-    setTimeout(() => target.classList.remove(flashClass), 1300);
 }

@@ -1,0 +1,8 @@
+{
+  "systemd": "Modernes Init-System und Dienstmanager, das von den meisten Linux-Distributionen verwendet wird.",
+  "uefi": "Unified Extensible Firmware Interface: moderne Firmware-Schnittstelle, die das ältere BIOS ersetzt.",
+  "bios": "Basic Input/Output System: ältere Firmware-Schnittstelle auf älteren PCs.",
+  "mbr": "Master Boot Record: erster Sektor eines Datenträgers beim Legacy-BIOS-Start, der einen Bootloader-Stub und die Partitionstabelle enthält.",
+  "gpt": "GUID Partition Table: modernes Partitionsschema für UEFI, das Datenträger mit mehr als 2 TB unterstützt.",
+  "lvm": "Logical Volume Manager: System zur Speicherverwaltung, das physische Volumes zu logischen Volumes abstrahiert."
+}

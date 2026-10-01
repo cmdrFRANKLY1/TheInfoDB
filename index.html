@@ -12,45 +12,83 @@
             --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
             --font-scale: 1;
 
-            --bg-app: #000;
-            --bg-panel: #030303;
-            --bg-panel-alt: #050505;
-            --bg-panel-hover: #0a0a0a;
-            --bg-subtle: #080808;
-            --bg-neutral-900: #171717;
-            --bg-neutral-800: #262626;
-            --border-color: #262626;
-            --border-subtle: #1a1a1a;
-            --border-hover: #333;
-            --text-primary: #e5e5e5;
-            --text-secondary: #a3a3a3;
-            --text-muted: #525252;
-            --text-heading: #fff;
-            --scroll-track: #0a0a0a;
-            --scroll-thumb: #333;
-            --scroll-thumb-hover: #555;
+            --bg-app: #101416;
+            --bg-panel: #151a1d;
+            --bg-panel-alt: #191f23;
+            --bg-panel-hover: #20272b;
+            --bg-subtle: #1c2226;
+            --bg-neutral-900: #22292d;
+            --bg-neutral-800: #2b3439;
+            --border-color: #30383d;
+            --border-subtle: #262d31;
+            --border-hover: #414b51;
+            --text-primary: #dce4e8;
+            --text-secondary: #a5b0b7;
+            --text-muted: #77858d;
+            --text-heading: #f5f7f8;
+            --scroll-track: #121719;
+            --scroll-thumb: #3a454b;
+            --scroll-thumb-hover: #536168;
+
+            --shadow-base: 0 2px 10px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(255, 255, 255, 0.025);
+            --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(255, 255, 255, 0.035);
+            --shadow-inset: inset 0 2px 6px rgba(0, 0, 0, 0.32), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-toolbar: 0 4px 14px rgba(0, 0, 0, 0.28);
+            --toolbar-overlay: rgba(16, 20, 22, 0.94);
+
+            /* Subtle jump highlight */
+            --flash-rgb: 250, 204, 21;
+            --flash-ring: rgba(250, 204, 21, 0.08);
+            --flash-glow: rgba(250, 204, 21, 0.12);
+            --flash-glow-soft: rgba(250, 204, 21, 0.05);
+            --flash-tint: transparent;
+            --flash-tint-soft: transparent;
+            --flash-border: var(--border-subtle);
+            --flash-h3-bg: transparent;
+            --flash-h3-bg-soft: transparent;
+            --flash-h3-inset: rgba(250, 204, 21, 0.08);
+            --flash-h3-inset-soft: rgba(250, 204, 21, 0.04);
         }
         * { font-family: var(--font-sans); }
         code, pre, kbd, samp { font-family: var(--font-mono); }
 
         [data-theme="light"] {
-            --bg-app: #ffffff;
-            --bg-panel: #fafafa;
-            --bg-panel-alt: #f5f5f5;
-            --bg-panel-hover: #efefef;
-            --bg-subtle: #f0f0f0;
-            --bg-neutral-900: #f5f5f5;
-            --bg-neutral-800: #e5e5e5;
-            --border-color: #e5e5e5;
-            --border-subtle: #e5e5e5;
-            --border-hover: #d4d4d4;
-            --text-primary: #171717;
-            --text-secondary: #525252;
-            --text-muted: #a3a3a3;
-            --text-heading: #0a0a0a;
-            --scroll-track: #f0f0f0;
-            --scroll-thumb: #ccc;
-            --scroll-thumb-hover: #aaa;
+            --bg-app: #eef2f4;
+            --bg-panel: #f8fafb;
+            --bg-panel-alt: #ffffff;
+            --bg-panel-hover: #f1f5f6;
+            --bg-subtle: #f6f8f9;
+            --bg-neutral-900: #e9eef1;
+            --bg-neutral-800: #dde5e9;
+            --border-color: #d7e0e5;
+            --border-subtle: #e3e9ed;
+            --border-hover: #c2cfd5;
+            --text-primary: #26333a;
+            --text-secondary: #52616a;
+            --text-muted: #7d8b93;
+            --text-heading: #142127;
+            --scroll-track: #edf1f3;
+            --scroll-thumb: #c2cdd2;
+            --scroll-thumb-hover: #9eabb2;
+
+            --shadow-base: 0 2px 10px rgba(26, 42, 52, 0.07), 0 1px 3px rgba(26, 42, 52, 0.04);
+            --shadow-hover: 0 5px 16px rgba(26, 42, 52, 0.12), 0 1px 3px rgba(26, 42, 52, 0.05);
+            --shadow-inset: inset 0 1px 4px rgba(32, 48, 58, 0.045);
+            --shadow-toolbar: 0 3px 12px rgba(32, 48, 58, 0.1);
+            --toolbar-overlay: rgba(248, 250, 251, 0.94);
+
+            /* Subtle jump highlight */
+            --flash-rgb: 37, 99, 235;
+            --flash-ring: rgba(37, 99, 235, 0.08);
+            --flash-glow: rgba(37, 99, 235, 0.11);
+            --flash-glow-soft: rgba(37, 99, 235, 0.045);
+            --flash-tint: transparent;
+            --flash-tint-soft: transparent;
+            --flash-border: var(--border-subtle);
+            --flash-h3-bg: transparent;
+            --flash-h3-bg-soft: transparent;
+            --flash-h3-inset: rgba(37, 99, 235, 0.07);
+            --flash-h3-inset-soft: rgba(37, 99, 235, 0.035);
         }
 
         body {
@@ -137,10 +175,9 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.12s ease;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+            box-shadow: var(--shadow-toolbar);
         }
         #global-tooltip.show { opacity: 1; }
-        [data-theme="light"] #global-tooltip { box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
 
         .doc-scope { --doc-scale: 1; }
         .doc-scope .panel-stylized { font-size: calc(1rem * var(--doc-scale)); }
@@ -155,40 +192,17 @@
 
         .panel-stylized,
         .subtopic-panel {
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.075), 0 1px 4px rgba(255, 255, 255, 0.09);
+            box-shadow: var(--shadow-base);
         }
         .panel-stylized:hover {
-            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.12), 0 2px 6px rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-hover);
         }
-        .subtopic-panel:hover { box-shadow: 0 4px 22px rgba(255, 255, 255, 0.1); }
+        .subtopic-panel:hover,
+        .dashboard-card:hover { box-shadow: var(--shadow-hover); }
 
-        [data-theme="light"] .panel-stylized,
-        [data-theme="light"] .subtopic-panel {
-            box-shadow: 0 4px 22px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-        [data-theme="light"] .panel-stylized:hover {
-            box-shadow: 0 8px 34px rgba(0, 0, 0, 0.24), 0 3px 8px rgba(0, 0, 0, 0.22);
-        }
-        [data-theme="light"] .subtopic-panel:hover { box-shadow: 0 4px 26px rgba(0, 0, 0, 0.22); }
-
-        .pages-panel { box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(0, 0, 0, 0.4); }
-        [data-theme="light"] .pages-panel {
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.06);
-        }
-
-        .dashboard-card { box-shadow: 0 4px 20px rgba(255,255,255,0.075); }
-        .dashboard-card:hover { box-shadow: 0 8px 30px rgba(255,255,255,0.12); }
-        [data-theme="light"] .dashboard-card {
-            box-shadow: 0 4px 22px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.2);
-        }
-        [data-theme="light"] .dashboard-card:hover {
-            box-shadow: 0 8px 34px rgba(0,0,0,0.24), 0 3px 8px rgba(0,0,0,0.22);
-        }
-
-        .pinned-card { box-shadow: 0 3px 14px rgba(255,255,255,0.06); }
-        [data-theme="light"] .pinned-card {
-            box-shadow: 0 3px 14px rgba(0,0,0,0.15), 0 1px 4px rgba(0,0,0,0.18);
-        }
+        .pages-panel { box-shadow: var(--shadow-inset); }
+        .dashboard-card,
+        .pinned-card { box-shadow: var(--shadow-base); }
 
         .tree-details > summary {
             list-style: none;
@@ -268,26 +282,32 @@
             background: var(--bg-app);
             backdrop-filter: blur(6px);
         }
-        [data-theme="dark"] .column-header { background: rgba(0,0,0,0.9); }
-        [data-theme="light"] .column-header { background: rgba(255,255,255,0.9); }
+        .column-header { background: var(--toolbar-overlay); }
 
         /* Document Toolbar Sticky Settings */
         .doc-toolbar {
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            position: relative;
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
             padding: 0.6rem 1rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-toolbar);
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        [data-theme="dark"] .doc-toolbar { background: rgba(5, 5, 5, 0.85); }
-        [data-theme="light"] .doc-toolbar { 
-            background: rgba(245, 245, 245, 0.85); 
-            box-shadow: 0 6px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+        .doc-toolbar { background: var(--toolbar-overlay); }
+
+        #document-toolbar-row {
+            gap: 1.5rem;
+            padding: 1.25rem 1.5rem 0;
+            flex-shrink: 0;
         }
+        #document-toolbar-row:not(.hidden) { display: flex; }
+        .document-toolbar-slot { flex: 1; min-width: 0; }
+        #document-toolbar-row .doc-toolbar { width: 100%; margin-bottom: 0; }
+        #document-toolbar-secondary,
+        #document-toolbar-divider { display: none; }
+        #document-toolbar-row.split-active #document-toolbar-secondary,
+        #document-toolbar-row.split-active #document-toolbar-divider { display: block; }
 
         .split-divider {
             width: 1px;
@@ -296,7 +316,175 @@
             flex-shrink: 0;
             align-self: stretch;
         }
-        @media (max-width: 767px) { .split-divider { display: none; } }
+        @media (max-width: 767px) {
+            .split-divider,
+            #document-toolbar-row.split-active #document-toolbar-divider { display: none; }
+            #document-toolbar-row:not(.hidden) { flex-direction: column; }
+        }
+
+        /* ============================================================
+           Jump Flash Animations
+           ============================================================
+           Panels and h3 blocks get a highly visible pulse when the user
+           jumps to them. Colors are theme-aware via CSS variables set
+           on :root and [data-theme="light"].
+           ============================================================ */
+
+        /* Establish a stacking context up-front so the flash paints above siblings */
+        .panel-stylized,
+        .subtopic-panel,
+        .h3-block {
+            position: relative;
+        }
+
+        /* --- Panel flash --- */
+        @keyframes flash-panel {
+            0% {
+                box-shadow:
+                    0 0 0 0 rgba(var(--flash-rgb), 0),
+                    0 0 0 0 rgba(var(--flash-rgb), 0);
+                border-color: var(--border-color);
+                background-color: var(--bg-panel-alt);
+            }
+            12% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            42% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            62% {
+                box-shadow:
+                    0 0 0 2px var(--flash-ring),
+                    0 0 22px 6px var(--flash-glow),
+                    0 0 50px 14px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint-soft);
+            }
+            80% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            100% {
+                box-shadow:
+                    0 0 0 0 rgba(var(--flash-rgb), 0),
+                    0 0 0 0 rgba(var(--flash-rgb), 0);
+                border-color: var(--border-color);
+                background-color: var(--bg-panel-alt);
+            }
+        }
+
+        /* Subtopic panels start from --bg-subtle, so we override the
+           base background in the keyframes to avoid a jump on frame 0. */
+        @keyframes flash-subtopic {
+            0% {
+                box-shadow:
+                    0 0 0 0 rgba(var(--flash-rgb), 0),
+                    0 0 0 0 rgba(var(--flash-rgb), 0);
+                border-color: var(--border-subtle);
+                background-color: var(--bg-subtle);
+            }
+            12% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            42% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            62% {
+                box-shadow:
+                    0 0 0 2px var(--flash-ring),
+                    0 0 22px 6px var(--flash-glow),
+                    0 0 50px 14px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint-soft);
+            }
+            80% {
+                box-shadow:
+                    0 0 0 3px var(--flash-ring),
+                    0 0 32px 10px var(--flash-glow),
+                    0 0 70px 20px var(--flash-glow-soft);
+                border-color: var(--flash-border);
+                background-color: var(--flash-tint);
+            }
+            100% {
+                box-shadow:
+                    0 0 0 0 rgba(var(--flash-rgb), 0),
+                    0 0 0 0 rgba(var(--flash-rgb), 0);
+                border-color: var(--border-subtle);
+                background-color: var(--bg-subtle);
+            }
+        }
+
+        .jump-target {
+            animation: flash-panel 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
+            z-index: 10;
+        }
+        .subtopic-panel.jump-target {
+            animation: flash-subtopic 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
+        }
+
+        /* --- H3 flash --- */
+        @keyframes flash-h3 {
+            0% {
+                background-color: transparent;
+                border-left-color: var(--border-subtle);
+                box-shadow: none;
+            }
+            12% {
+                background-color: var(--flash-h3-bg);
+                border-left-color: var(--flash-border);
+                box-shadow: inset 0 0 16px var(--flash-h3-inset);
+            }
+            42% {
+                background-color: var(--flash-h3-bg);
+                border-left-color: var(--flash-border);
+                box-shadow: inset 0 0 16px var(--flash-h3-inset);
+            }
+            62% {
+                background-color: var(--flash-h3-bg-soft);
+                border-left-color: var(--flash-border);
+                box-shadow: inset 0 0 8px var(--flash-h3-inset-soft);
+            }
+            80% {
+                background-color: var(--flash-h3-bg);
+                border-left-color: var(--flash-border);
+                box-shadow: inset 0 0 16px var(--flash-h3-inset);
+            }
+            100% {
+                background-color: transparent;
+                border-left-color: var(--border-subtle);
+                box-shadow: none;
+            }
+        }
+
+        .jump-target-h3 {
+            animation: flash-h3 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
+            border-radius: 4px;
+            position: relative;
+        }
 
         .hover-actions {
             opacity: 0;
@@ -309,6 +497,9 @@
         .group:hover > .hover-actions,
         .group:hover .hover-actions { opacity: 1; }
 
+        #content-scroll-area {
+            padding: 1.25rem 1.5rem;
+        }
         #content-scroll-area.split-active {
             overflow: hidden;
             padding: 1.25rem 1.5rem;
@@ -344,7 +535,7 @@
         .doc-action-btn > svg { width: 14px; height: 14px; display: block; }
 
         .toolbar-select {
-            background: transparent;
+            background: var(--bg-neutral-900);
             border: 1px solid var(--border-hover);
             color: var(--text-heading);
             border-radius: 4px;
@@ -354,6 +545,45 @@
             max-width: 130px;
         }
         .toolbar-select option { background: var(--bg-panel); color: var(--text-heading); }
+        #ui-language-select,
+        #toggle-split-view-btn.control-surface,
+        .doc-toolbar .toolbar-select,
+        .doc-toolbar .doc-close-btn {
+            background-color: var(--bg-neutral-900);
+        }
+        .doc-toolbar .doc-close-btn:hover,
+        #toggle-split-view-btn.control-surface:hover { background-color: var(--bg-neutral-800); }
+        #toggle-split-view-btn.control-surface.bg-neutral-800 {
+            background-color: var(--bg-neutral-900) !important;
+        }
+
+        #theme-toggle-btn,
+        #ui-language-select,
+        #toggle-split-view-btn,
+        #toggle-pins-btn,
+        .doc-toolbar .doc-action-btn,
+        .doc-toolbar .toolbar-select,
+        .hover-actions button {
+            background-color: var(--bg-neutral-900);
+            border-color: var(--border-color);
+        }
+        #theme-toggle-btn:hover,
+        #ui-language-select:hover,
+        #toggle-split-view-btn:hover,
+        #toggle-pins-btn:hover,
+        .doc-toolbar .doc-action-btn:hover,
+        .doc-toolbar .toolbar-select:hover,
+        .hover-actions button:hover {
+            background-color: var(--bg-neutral-800);
+            border-color: var(--border-hover);
+        }
+        .dropdown-content {
+            background-color: var(--bg-panel);
+            border-color: var(--border-color);
+            box-shadow: var(--shadow-toolbar);
+        }
+        .dropdown-content button { background-color: transparent; }
+        .dropdown-content button:hover { background-color: var(--bg-neutral-900); }
 
         .pins-scroll-area {
             flex: 1;
@@ -380,6 +610,21 @@
             fill: none;
         }
 
+        [data-theme="dark"] .bg-black { background-color: var(--bg-app) !important; }
+        [data-theme="dark"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
+        [data-theme="dark"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
+        [data-theme="dark"] .bg-\[\#0a0a0a\] { background-color: var(--bg-panel-hover) !important; }
+        [data-theme="dark"] .bg-\[\#080808\] { background-color: var(--bg-subtle) !important; }
+        [data-theme="dark"] .bg-neutral-900 { background-color: var(--bg-neutral-900) !important; }
+        [data-theme="dark"] .bg-neutral-800 { background-color: var(--bg-neutral-800) !important; }
+        [data-theme="dark"] .border-neutral-800 { border-color: var(--border-color) !important; }
+        [data-theme="dark"] .border-neutral-700 { border-color: var(--border-hover) !important; }
+        [data-theme="dark"] .text-white { color: var(--text-heading) !important; }
+        [data-theme="dark"] .text-neutral-300 { color: var(--text-primary) !important; }
+        [data-theme="dark"] .text-neutral-400 { color: var(--text-secondary) !important; }
+        [data-theme="dark"] .text-neutral-500 { color: var(--text-muted) !important; }
+        [data-theme="dark"] .hover\:bg-neutral-900:hover { background-color: var(--bg-neutral-900) !important; }
+        [data-theme="dark"] .hover\:bg-neutral-800:hover { background-color: var(--bg-neutral-800) !important; }
         [data-theme="light"] .bg-black { background-color: var(--bg-app) !important; }
         [data-theme="light"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
         [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
@@ -407,10 +652,11 @@
         [data-theme="light"] .text-black { color: #fff !important; }
         [data-theme="light"] .hover\:bg-neutral-200:hover { background-color: #333 !important; }
         [data-theme="light"] code {
-            background-color: #f0f0f0 !important;
-            border-color: #e5e5e5 !important;
-            color: #171717 !important;
+            background-color: var(--bg-neutral-900) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-heading) !important;
         }
+        [data-theme="light"] .text-blue-400 { color: #1d4ed8 !important; }
         [data-theme="light"] select { color: var(--text-heading) !important; }
         [data-theme="light"] select option { background: #fff; color: #171717; }
         [data-theme="light"] input { color: var(--text-heading) !important; }
@@ -483,7 +729,7 @@
                     <option value="German">German</option>
                 </select>
 
-                <button id="toggle-split-view-btn" class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Split View">
+                <button id="toggle-split-view-btn" class="control-surface p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Split View">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
                 </button>
 
@@ -493,7 +739,13 @@
             </div>
         </header>
 
-        <div id="content-scroll-area" class="flex-1 overflow-y-auto p-8">
+        <div id="document-toolbar-row" class="hidden w-full">
+            <div id="document-toolbar-primary" class="document-toolbar-slot"></div>
+            <div id="document-toolbar-divider" class="split-divider"></div>
+            <div id="document-toolbar-secondary" class="document-toolbar-slot"></div>
+        </div>
+
+        <div id="content-scroll-area" class="flex-1 overflow-y-auto">
             <div id="dashboard-view" class="max-w-[1366px] mx-auto">
                 <h2 class="text-2xl font-bold mb-6 text-white" data-i18n="dashboardOverview">Overview</h2>
                 <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

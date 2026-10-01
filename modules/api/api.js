@@ -2,30 +2,33 @@ import { state, SUPPORTED_LANGUAGES } from '../state/state.js';
 import { dom } from '../dom/dom.js';
 import { translateFolder } from '../i18n/i18n.js';
 
+const pendingContentRequests = new Map();
+
 export async function loadHyperlinks() {
     state.hyperlinks = {};
-    
-    // If the tree fetch failed or found no files, fallback to default
-    if (!state.hyperlinkPaths || state.hyperlinkPaths.length === 0) {
-        try {
-            const res = await fetch('./modules/hyperlinks/hyperlinks.json');
-            if (res.ok) Object.assign(state.hyperlinks, await res.json());
-        } catch (e) {}
-        return;
-    }
 
-    // Fetch all discovered JSON files dynamically and merge them
-    await Promise.allSettled(state.hyperlinkPaths.map(async (path) => {
+    const fallbackPaths = [
+        'modules/hyperlinks/hyperlinks_networking.json',
+        'modules/hyperlinks/hyperlinks_linux.json',
+        'modules/hyperlinks/hyperlinks_computing.json'
+    ];
+    const paths = state.hyperlinkPaths.length > 0 ? state.hyperlinkPaths : fallbackPaths;
+    const loadPaths = pathsToLoad => Promise.allSettled(pathsToLoad.map(async (path) => {
         try {
             const res = await fetch(`./${path}`);
             if (res.ok) {
                 const data = await res.json();
                 Object.assign(state.hyperlinks, data);
             }
-        } catch(e) {
+        } catch {
             console.warn(`Failed to load hyperlink file: ${path}`);
         }
     }));
+
+    await loadPaths(paths);
+    if (Object.keys(state.hyperlinks).length === 0 && paths !== fallbackPaths) {
+        await loadPaths(fallbackPaths);
+    }
 }
 
 export async function loadTooltips() {
@@ -33,23 +36,12 @@ export async function loadTooltips() {
     // Pre-initialize empty objects for all supported languages
     SUPPORTED_LANGUAGES.forEach(lang => state.tooltips[lang] = {});
 
-    // If the tree fetch failed or found no files, fallback to default
-    if (!state.tooltipPaths || state.tooltipPaths.length === 0) {
-        await Promise.allSettled(SUPPORTED_LANGUAGES.map(async (lang) => {
-            try {
-                const res = await fetch(`./modules/tooltips/mouseOverTooltips_in${lang}.json`);
-                if (res.ok) Object.assign(state.tooltips[lang], await res.json());
-            } catch (e) {}
-        }));
-        return;
-    }
-
-    // Fetch all applicable JSON files dynamically for ALL languages and merge them
-    await Promise.allSettled(SUPPORTED_LANGUAGES.map(async (lang) => {
-        const langSuffix = `_in${lang}.json`;
-        const languageSpecificPaths = state.tooltipPaths.filter(path => path.endsWith(langSuffix));
-
-        await Promise.allSettled(languageSpecificPaths.map(async (path) => {
+    const fallbackPaths = ['Linux', 'Windows', 'Networking', 'Security', 'DevOps', 'Programming', 'Integration', 'Computing']
+        .flatMap(topic => SUPPORTED_LANGUAGES.map(lang => `modules/tooltips/mouseOverToolTips_${topic}_in${lang}.json`));
+    const paths = state.tooltipPaths.length > 0 ? state.tooltipPaths : fallbackPaths;
+    const loadPaths = pathsToLoad => Promise.allSettled(SUPPORTED_LANGUAGES.map(async lang => {
+        const languagePaths = pathsToLoad.filter(path => path.endsWith(`_in${lang}.json`));
+        await Promise.allSettled(languagePaths.map(async path => {
             try {
                 const res = await fetch(`./${path}`);
                 if (res.ok) {
@@ -61,6 +53,12 @@ export async function loadTooltips() {
             }
         }));
     }));
+
+    await loadPaths(paths);
+    if (paths !== fallbackPaths) {
+        const missingLanguages = SUPPORTED_LANGUAGES.filter(lang => Object.keys(state.tooltips[lang]).length === 0);
+        await Promise.all(missingLanguages.map(lang => loadPaths(fallbackPaths.filter(path => path.endsWith(`_in${lang}.json`)))));
+    }
 }
 
 export async function loadPageRegistry() {
@@ -199,34 +197,31 @@ export async function fetchGitHubTree() {
     }
 }
 
-export async function preloadContentForAllLanguages() {
-    const promises = [];
-    state.pages.forEach(pageObj => {
-        Object.values(pageObj.paths).forEach(path => {
-            if (path && !state.fileCache[path]) {
-                promises.push(
-                    fetch(`https://raw.githubusercontent.com/cmdrFRANKLY1/TheInfoDB/main/${path}`)
-                        .then(res => res.ok ? res.text() : null)
-                        .then(text => { if (text) state.fileCache[path] = text; })
-                        .catch(() => {})
-                );
-            }
-        });
-    });
-    await Promise.allSettled(promises);
-}
-
 export async function fetchContent(path) {
     if (state.fileCache[path]) return state.fileCache[path];
-    try {
-        const res = await fetch(`https://raw.githubusercontent.com/cmdrFRANKLY1/TheInfoDB/main/${path}`);
-        if (res.ok) {
-            const text = await res.text();
-            state.fileCache[path] = text;
-            return text;
-        }
-        return "Failed to fetch document content.";
-    } catch(e) {
-        return "Network error loading document.";
+    if (!pendingContentRequests.has(path)) {
+        const request = (async () => {
+            try {
+                const localResponse = await fetch(`./${path}`);
+                const contentType = localResponse.headers.get('content-type') || '';
+                if (localResponse.ok && !contentType.includes('text/html')) {
+                    const text = await localResponse.text();
+                    state.fileCache[path] = text;
+                    return text;
+                }
+            } catch {}
+
+            try {
+                const remoteResponse = await fetch(`https://raw.githubusercontent.com/cmdrFRANKLY1/TheInfoDB/main/${path}`);
+                if (!remoteResponse.ok) return 'Failed to fetch document content.';
+                const text = await remoteResponse.text();
+                state.fileCache[path] = text;
+                return text;
+            } catch {
+                return 'Network error loading document.';
+            }
+        })().finally(() => pendingContentRequests.delete(path));
+        pendingContentRequests.set(path, request);
     }
+    return pendingContentRequests.get(path);
 }

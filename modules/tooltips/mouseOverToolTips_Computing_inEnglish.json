@@ -1,0 +1,8 @@
+{
+  "systemd": "A modern init system and service manager used by most Linux distributions.",
+  "uefi": "Unified Extensible Firmware Interface: the modern firmware interface that replaced legacy BIOS.",
+  "bios": "Basic Input/Output System: the legacy firmware interface on older PCs.",
+  "mbr": "Master Boot Record: the first sector of a disk in legacy BIOS booting, containing the bootloader stub and partition table.",
+  "gpt": "GUID Partition Table: the modern partition table format used with UEFI, supporting disks larger than 2 TB.",
+  "lvm": "Logical Volume Manager: a system for managing disk storage by abstracting physical volumes into logical ones."
+}

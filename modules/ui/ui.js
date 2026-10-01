@@ -7,6 +7,19 @@ import { getFileDisplayPath, downloadFile, pickLang, jumpToAnchor } from '../uti
 import { pinTopic } from '../pins/pins.js';
 import { attachLinkListeners } from '../events/events.js';
 
+export function clearDocumentToolbars() {
+    dom.documentToolbarPrimary.replaceChildren();
+    dom.documentToolbarSecondary.replaceChildren();
+    dom.documentToolbarRow.classList.remove('split-active');
+    dom.documentToolbarRow.classList.add('hidden');
+}
+
+function setDocumentToolbar(toolbar, slotTag) {
+    const target = slotTag === '2' ? dom.documentToolbarSecondary : dom.documentToolbarPrimary;
+    target.replaceChildren(toolbar);
+    dom.documentToolbarRow.classList.remove('hidden');
+}
+
 export function applyDocFontScope(columnEl, slotTag) {
     if (!columnEl) return;
     const scale = slotTag === '2' ? state.docFontScale2 : state.docFontScale1;
@@ -234,6 +247,7 @@ export function renderTree(files, container) {
 }
 
 export function renderDashboard() {
+    clearDocumentToolbars();
     state.currentActiveFile = null;
     state.splitFile1 = null;
     state.splitFile2 = null;
@@ -284,6 +298,7 @@ export async function handleFileSelection(pageObj, preferredLang = null) {
     } else {
         state.currentActiveFile = pageObj;
         state.splitFile1 = null;
+        clearDocumentToolbars();
 
         dom.documentContent.classList.remove('split-column');
         dom.documentContentSecondary.classList.add('hidden');
@@ -317,6 +332,8 @@ export async function handleFileSelection(pageObj, preferredLang = null) {
 }
 
 export async function renderSplitView() {
+    clearDocumentToolbars();
+    dom.documentToolbarRow.classList.add('split-active');
     state.isSplitView = true;
     dom.contentScrollArea.classList.add('split-active');
     dom.documentView.classList.remove('max-w-[1000px]');
@@ -421,7 +438,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
             const availableLangs = Object.keys(fileData.paths || {});
             if (availableLangs.length > 1) {
                 const docLangSelect = document.createElement('select');
-                docLangSelect.className = "bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2 py-1 outline-none";
+                docLangSelect.className = "toolbar-select";
                 availableLangs.forEach(l => {
                     const opt = document.createElement('option');
                     opt.value = l;
@@ -458,14 +475,15 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
             if (onClose) {
                 const closeBtn = document.createElement('button');
-                closeBtn.className = "doc-action-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
+                closeBtn.className = "doc-action-btn doc-close-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
                 closeBtn.innerHTML = `<span>✕</span>`;
                 closeBtn.onclick = onClose;
                 rightControls.appendChild(closeBtn);
             }
 
             slotHeader.appendChild(rightControls);
-            overallWrapper.appendChild(slotHeader);
+            if (isSearch) overallWrapper.appendChild(slotHeader);
+            else setDocumentToolbar(slotHeader, slotTag);
         }
 
         const rawBox = document.createElement('div');
@@ -497,7 +515,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
         const availableLangs = Object.keys(fileData.paths || {});
         if (availableLangs.length > 1) {
             const docLangSelect = document.createElement('select');
-            docLangSelect.className = "bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2 py-1 outline-none";
+            docLangSelect.className = "toolbar-select";
             availableLangs.forEach(l => {
                 const opt = document.createElement('option');
                 opt.value = l;
@@ -534,14 +552,15 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
 
         if (onClose) {
             const closeBtn = document.createElement('button');
-            closeBtn.className = "doc-action-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
+            closeBtn.className = "doc-action-btn doc-close-btn text-neutral-400 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded";
             closeBtn.innerHTML = `<span>✕</span>`;
             closeBtn.onclick = onClose;
             rightControls.appendChild(closeBtn);
         }
 
         slotHeader.appendChild(rightControls);
-        overallWrapper.appendChild(slotHeader);
+        if (isSearch) overallWrapper.appendChild(slotHeader);
+        else setDocumentToolbar(slotHeader, slotTag);
     }
 
     const mainSections = parseAdvancedMarkdown(content);
@@ -591,6 +610,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                 </svg>
             `;
             jumpToTopicBtn.onclick = async () => {
+                const targetSlot = state.isSplitView && state.splitFile1 && !state.splitFile2 ? '2' : '1';
                 dom.qsInput.value = '';
                 dom.qsClear.classList.add('hidden');
                 dom.pageSearchInput.value = '';
@@ -598,7 +618,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                 renderTree(state.pages, dom.pagesTree);
                 await handleFileSelection(fileData);
                 setTimeout(() => {
-                    jumpToAnchor(anchorId, slotTag || '1');
+                    jumpToAnchor(`${targetSlot}-h1-${secIdx}`, targetSlot);
                     showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title}`);
                 }, 150);
             };
@@ -677,6 +697,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                         </svg>
                     `;
                     h3JumpBtn.onclick = async () => {
+                        const targetSlot = state.isSplitView && state.splitFile1 && !state.splitFile2 ? '2' : '1';
                         dom.qsInput.value = '';
                         dom.qsClear.classList.add('hidden');
                         dom.pageSearchInput.value = '';
@@ -684,7 +705,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                         renderTree(state.pages, dom.pagesTree);
                         await handleFileSelection(fileData);
                         setTimeout(() => {
-                            jumpToAnchor(subAnchorId, slotTag || '1');
+                            jumpToAnchor(`${targetSlot}-h${sub.level}-${secIdx}-${subIdx}`, targetSlot);
                             showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`);
                         }, 150);
                     };
@@ -744,6 +765,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                         </svg>
                     `;
                     subJumpBtn.onclick = async () => {
+                        const targetSlot = state.isSplitView && state.splitFile1 && !state.splitFile2 ? '2' : '1';
                         dom.qsInput.value = '';
                         dom.qsClear.classList.add('hidden');
                         dom.pageSearchInput.value = '';
@@ -751,7 +773,7 @@ export function parseAndRenderMarkdownDocument(content, container, fileData, vie
                         renderTree(state.pages, dom.pagesTree);
                         await handleFileSelection(fileData);
                         setTimeout(() => {
-                            jumpToAnchor(subAnchorId, slotTag || '1');
+                            jumpToAnchor(`${targetSlot}-h${sub.level}-${secIdx}-${subIdx}`, targetSlot);
                             showToast(`Jumped to ${getFileDisplayPath(fileData)} / ${section.title} / ${sub.title}`);
                         }, 150);
                     };
