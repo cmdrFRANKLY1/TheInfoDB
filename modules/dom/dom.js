@@ -1,0 +1,41 @@
+export const dom = {
+    qsInput: document.getElementById('quick-search-input'),
+    qsClear: document.getElementById('quick-search-clear'),
+    pageSearchInput: document.getElementById('page-search-input'),
+    pageSearchClear: document.getElementById('page-search-clear'),
+    pagesTree: document.getElementById('pages-tree'),
+    dashboardView: document.getElementById('dashboard-view'),
+    dashboardGrid: document.getElementById('dashboard-grid'),
+    documentView: document.getElementById('document-view'),
+    documentContent: document.getElementById('document-content'),
+    documentContentSecondary: document.getElementById('document-content-secondary'),
+    splitDivider: document.getElementById('split-divider'),
+    contentScrollArea: document.getElementById('content-scroll-area'),
+    breadcrumb: document.getElementById('breadcrumb'),
+    uiLanguageSelect: document.getElementById('ui-language-select'),
+    toggleSplitViewBtn: document.getElementById('toggle-split-view-btn'),
+    pinsBtn: document.getElementById('toggle-pins-btn'),
+    pinsSidebar: document.getElementById('pins-sidebar'),
+    pinsContainer: document.getElementById('pins-container'),
+    pinsResizableContainer: document.getElementById('pins-resizable-container'),
+    pinsResizeHandle: document.getElementById('pins-resize-handle'),
+    noPinsMsg: document.getElementById('no-pins-msg'),
+    toast: document.getElementById('toast'),
+    globalTooltip: document.getElementById('global-tooltip'),
+    linkModal: document.getElementById('link-modal'),
+    linkCancel: document.getElementById('link-cancel'),
+    linkOkay: document.getElementById('link-okay'),
+    contextMenu: document.getElementById('context-menu'),
+    ctxOpenLeft: document.getElementById('ctx-open-left'),
+    ctxOpenRight: document.getElementById('ctx-open-right'),
+    themeToggleBtn: document.getElementById('theme-toggle-btn'),
+    themeIconSun: document.getElementById('theme-icon-sun'),
+    themeIconMoon: document.getElementById('theme-icon-moon'),
+    sidebarResizableContainer: document.getElementById('sidebar-resizable-container'),
+    sidebarResizeHandle: document.getElementById('sidebar-resize-handle')
+};
+
+export const ICONS = {
+    folder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg>`,
+    document: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`
+};
