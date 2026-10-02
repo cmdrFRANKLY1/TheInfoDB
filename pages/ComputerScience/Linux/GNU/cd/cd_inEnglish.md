@@ -1,5 +1,4 @@
-# cd — Change Directory
-
+# cd
 The `cd` command changes the current working directory of the shell. It is a builtin command in Bash and most other Unix shells, meaning it runs inside the shell process itself rather than as a separate executable. Because of this, its effect is local to the shell you are currently using.
 
 # Overview

@@ -1,4 +1,4 @@
-# alias — Befehlsaliase definieren oder anzeigen
+# alias
 
 Der Befehl `alias` erstellt, zeigt oder entfernt Abkürzungen für längere Befehle. Er ist ein Builtin-Befehl in Bash und den meisten anderen Unix-Shells, das heißt, er läuft im Shell-Prozess selbst und nicht als eigenständiges Programm. Aliase sind eine einfache Möglichkeit, Tipparbeit zu sparen und das Verhalten der Shell anzupassen.
 

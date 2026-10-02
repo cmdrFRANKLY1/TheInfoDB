@@ -1,4 +1,4 @@
-# export — Export Environment Variables
+# export
 
 The `export` command marks shell variables for inclusion in the environment of child processes. It is a builtin command in Bash and most other Unix shells, meaning it runs inside the shell process itself rather than as a separate executable. Once a variable is exported, any program launched from that shell inherits it.
 

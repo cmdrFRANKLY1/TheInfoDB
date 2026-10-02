@@ -1,4 +1,4 @@
-# alias — Define or Display Command Aliases
+# alias
 
 The `alias` command creates, displays, or removes shortcuts for longer commands. It is a builtin command in Bash and most other Unix shells, meaning it runs inside the shell process itself rather than as a separate executable. Aliases are a simple way to save typing and to customize the shell's behavior.
 

@@ -1,4 +1,4 @@
-# export — Umgebungsvariablen exportieren
+# export
 
 Der Befehl `export` markiert Shell-Variablen für die Aufnahme in die Umgebung von Kindprozessen. Er ist ein Builtin-Befehl in Bash und den meisten anderen Unix-Shells, das heißt, er läuft im Shell-Prozess selbst und nicht als eigenständiges Programm. Sobald eine Variable exportiert wurde, erbt jedes von dieser Shell gestartete Programm sie.
 

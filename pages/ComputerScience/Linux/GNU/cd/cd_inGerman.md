@@ -1,4 +1,4 @@
-# cd — Verzeichnis wechseln
+# cd
 
 Der Befehl `cd` ändert das aktuelle Arbeitsverzeichnis der Shell. Er ist ein Builtin-Befehl in Bash und den meisten anderen Unix-Shells, das heißt, er läuft im Shell-Prozess selbst und nicht als eigenständiges Programm. Deshalb wirkt sich seine Änderung nur auf die Shell aus, in der er ausgeführt wird.
 
