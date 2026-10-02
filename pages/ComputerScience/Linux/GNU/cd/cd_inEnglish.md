@@ -241,9 +241,10 @@ For related topics, see the sections on `pwd`, `pushd`, `popd`, `dirs`, and `ls`
 # Tags
 
 - cd
-- shell-builtin
-- navigation
+- shell
 - bash
 - linux
-- documentation
-- markdown
+- console
+- terminal
+- navigation
+
