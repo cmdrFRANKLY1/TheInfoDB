@@ -1,0 +1,5 @@
+[
+    "modules/settings/colorScheme.js",
+    "modules/settings/autohide_sidebars.js",
+    "modules/sql/sql_sandbox.js"
+]

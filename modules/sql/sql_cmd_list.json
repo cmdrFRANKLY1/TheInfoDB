@@ -1,0 +1,133 @@
+{
+  "version": "1.0.0",
+  "sql_keywords": [
+    "SELECT", "FROM", "WHERE", "INSERT", "INTO", "VALUES", "UPDATE", "SET",
+    "DELETE", "LIMIT", "OFFSET", "LIKE", "ORDER", "BY", "GROUP", "HAVING",
+    "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "OUTER", "CROSS", "ON", "AS",
+    "AND", "OR", "NOT", "NULL", "IS", "IN", "BETWEEN", "EXISTS", "CASE",
+    "WHEN", "THEN", "ELSE", "END", "DISTINCT", "UNION", "ALL", "INTERSECT",
+    "EXCEPT", "ASC", "DESC", "CREATE", "TABLE", "DROP", "ALTER", "ADD",
+    "COLUMN", "RENAME", "TO", "TRUNCATE", "INDEX", "VIEW", "PRIMARY", "KEY",
+    "FOREIGN", "REFERENCES", "UNIQUE", "CHECK", "DEFAULT", "CONSTRAINT",
+    "AUTOINCREMENT", "BEGIN", "COMMIT", "ROLLBACK", "SAVEPOINT", "TRANSACTION",
+    "GRANT", "REVOKE", "WITH", "RECURSIVE", "OVER", "PARTITION", "ROWS",
+    "RANGE", "PRECEDING", "FOLLOWING", "UNBOUNDED", "CURRENT", "ROW",
+    "CAST", "TRUE", "FALSE", "IF", "REPLACE", "IGNORE", "TOP", "FETCH",
+    "NEXT", "FIRST", "ONLY", "TIES"
+  ],
+
+  "aggregate_functions": [
+    "COUNT", "SUM", "AVG", "MIN", "MAX", "GROUP_CONCAT", "STRING_AGG",
+    "STDDEV", "VARIANCE", "MEDIAN"
+  ],
+
+  "scalar_functions": {
+    "string": ["UPPER", "LOWER", "LENGTH", "SUBSTR", "SUBSTRING", "TRIM", "LTRIM",
+               "RTRIM", "REPLACE", "CONCAT", "INSTR", "LEFT", "RIGHT", "REVERSE",
+               "REPLICATE", "SPACE", "CHAR", "ASCII", "UNICODE", "FORMAT"],
+    "numeric": ["ABS", "CEIL", "CEILING", "FLOOR", "ROUND", "TRUNC", "SIGN",
+                "SQRT", "POWER", "POW", "EXP", "LOG", "LOG10", "MOD", "RANDOM",
+                "RAND", "PI"],
+    "date": ["NOW", "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATE",
+             "TIME", "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND",
+             "STRFTIME", "JULIANDAY", "UNIXEPOCH"],
+    "null": ["COALESCE", "NULLIF", "IFNULL", "ISNULL", "IF"],
+    "type": ["CAST", "TYPEOF"],
+    "misc": ["PRINTF", "QUOTE", "HEX", "RANDOMBLOB", "ZEROBLOB"]
+  },
+
+  "operators": {
+    "comparison": ["=", "!=", "<>", ">", "<", ">=", "<=", "<=>"],
+    "logical": ["AND", "OR", "NOT", "XOR"],
+    "arithmetic": ["+", "-", "*", "/", "%", "||"],
+    "bitwise": ["&", "|", "<<", ">>", "~"],
+    "pattern": ["LIKE", "GLOB", "REGEXP", "MATCH"],
+    "set": ["IN", "NOT IN", "BETWEEN", "NOT BETWEEN", "EXISTS", "NOT EXISTS"],
+    "null": ["IS NULL", "IS NOT NULL"]
+  },
+
+  "join_types": ["INNER", "LEFT", "RIGHT", "FULL", "CROSS", "LEFT OUTER",
+                 "RIGHT OUTER", "FULL OUTER", "NATURAL"],
+
+  "commands": {
+    "SELECT": {
+      "syntax": "SELECT [DISTINCT|ALL] <columns> FROM <table> [JOIN ...] [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ...] [LIMIT n] [OFFSET n]",
+      "clauses": ["DISTINCT", "ALL", "FROM", "WHERE", "GROUP BY", "HAVING",
+                  "ORDER BY", "LIMIT", "OFFSET", "UNION", "INTERSECT", "EXCEPT"],
+      "category": "DQL"
+    },
+    "INSERT": {
+      "syntax": "INSERT INTO <table> [(cols)] VALUES (...), (...)",
+      "category": "DML"
+    },
+    "UPDATE": {
+      "syntax": "UPDATE <table> SET col = expr [, ...] [WHERE ...]",
+      "category": "DML"
+    },
+    "DELETE": {
+      "syntax": "DELETE FROM <table> [WHERE ...]",
+      "category": "DML"
+    },
+    "CREATE TABLE": {
+      "syntax": "CREATE TABLE [IF NOT EXISTS] <name> (col type [constraints], ...)",
+      "category": "DDL"
+    },
+    "ALTER TABLE": {
+      "syntax": "ALTER TABLE <name> ADD|DROP|RENAME COLUMN ...",
+      "category": "DDL"
+    },
+    "DROP TABLE": {
+      "syntax": "DROP TABLE [IF EXISTS] <name>",
+      "category": "DDL"
+    },
+    "TRUNCATE": {
+      "syntax": "TRUNCATE TABLE <name>",
+      "category": "DDL"
+    },
+    "CREATE INDEX": {
+      "syntax": "CREATE [UNIQUE] INDEX <name> ON <table> (cols)",
+      "category": "DDL"
+    },
+    "DROP INDEX": {
+      "syntax": "DROP INDEX <name>",
+      "category": "DDL"
+    },
+    "CREATE VIEW": {
+      "syntax": "CREATE VIEW <name> AS <select>",
+      "category": "DDL"
+    },
+    "DROP VIEW": {
+      "syntax": "DROP VIEW <name>",
+      "category": "DDL"
+    },
+    "BEGIN": {
+      "syntax": "BEGIN [TRANSACTION]",
+      "category": "TCL"
+    },
+    "COMMIT": {
+      "syntax": "COMMIT",
+      "category": "TCL"
+    },
+    "ROLLBACK": {
+      "syntax": "ROLLBACK [TO SAVEPOINT name]",
+      "category": "TCL"
+    },
+    "SAVEPOINT": {
+      "syntax": "SAVEPOINT <name>",
+      "category": "TCL"
+    },
+    "GRANT": {
+      "syntax": "GRANT <privileges> ON <object> TO <user>",
+      "category": "DCL"
+    },
+    "REVOKE": {
+      "syntax": "REVOKE <privileges> ON <object> FROM <user>",
+      "category": "DCL"
+    }
+  },
+
+  "data_types": ["INTEGER", "INT", "BIGINT", "SMALLINT", "TINYINT", "DECIMAL",
+                 "NUMERIC", "FLOAT", "REAL", "DOUBLE", "TEXT", "VARCHAR",
+                 "CHAR", "CLOB", "BLOB", "BOOLEAN", "BOOL", "DATE", "TIME",
+                 "DATETIME", "TIMESTAMP"]
+}
