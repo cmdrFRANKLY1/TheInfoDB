@@ -7,8 +7,12 @@
  *   - renderDatabase(state, ui)      → Live Database State grid
  *   - rebuildDictionary(state)       → autocomplete index
  *   - updateButtonStates(state, ui)  → undo/redo/close enable logic
- *   - scheduleHighlight / updateHighlights
- *   - scheduleGhost / updateGhostText
+ *   - scheduleHighlight / updateHighlights   (table cell highlighting only)
+ *   - scheduleGhost / updateGhostText        (autocomplete suggestion only)
+ *
+ * NOTE: The query editor no longer colorizes its own tokens.
+ *       The ghost layer is now used purely to display the faded
+ *       autocomplete remainder at the cursor.
  */
 
 (function (NS) {
@@ -82,11 +86,10 @@
             state.currentValueColors[key] = palette[(i + 6) % palette.length];
         }
 
-        // ── Build all table HTML in one pass ──
+        // Build all table HTML in one pass
         const overviewParts = [];
         for (const tableName of tableNames) {
             const tableData = state.db[tableName];
-            const lowerTable = tableName.toLowerCase();
 
             overviewParts.push(
                 '<div class="sql-db-table-wrapper" id="sql-table-wrap-' + tableName + '">'
@@ -107,7 +110,6 @@
 
                 overviewParts.push('<table class="sql-table"><thead><tr>');
                 for (let c = 0; c < cols.length; c++) {
-                    // th and td share the same class so column highlighting covers both
                     overviewParts.push(
                         '<th class="sql-col-' + tableName + '-' + cols[c] + '">' +
                             escapeHTML(cols[c]) +
@@ -135,10 +137,9 @@
             overviewParts.push('</div></div>');
         }
 
-        // Single assignment → one reflow
         el.tablesOverview.innerHTML = overviewParts.join('');
 
-        // ── Cache DOM nodes for highlighting ──
+        // Cache DOM nodes for table cell highlighting
         for (let t = 0; t < tableNames.length; t++) {
             const tableName = tableNames[t];
             const lowerTable = tableName.toLowerCase();
@@ -157,7 +158,6 @@
 
                 if (!state.dbNodes.cols[colNameLower]) state.dbNodes.cols[colNameLower] = [];
 
-                // Grab BOTH th and td with this class (needed for column-name highlighting)
                 const nodes = el.tablesOverview.querySelectorAll(
                     '.sql-col-' + tableName + '-' + colName
                 );
@@ -167,7 +167,6 @@
                     node.dataset.table = lowerTable;
                     state.dbNodes.cols[colNameLower].push(node);
 
-                    // Only index <td> for value-based highlighting
                     if (node.tagName === 'TD') {
                         const valString = String(node.textContent).toLowerCase();
                         if (!valString) continue;
@@ -180,6 +179,7 @@
 
         NS.rebuildDictionary(state);
         NS.scheduleHighlight(state, ui);
+        NS.scheduleGhost(state, ui);
     };
 
     // ─────────────────────────────────────────────────────────────
@@ -234,7 +234,7 @@
     };
 
     // ─────────────────────────────────────────────────────────────
-    // 5. Highlighting (batched via rAF)
+    // 5. TABLE CELL highlighting (only affects Live DB State)
     // ─────────────────────────────────────────────────────────────
     NS.scheduleHighlight = function (state, ui) {
         if (state.highlightQueued) return;
@@ -248,7 +248,6 @@
     NS.updateHighlights = function (state, ui) {
         const el = ui.elements;
 
-        // Clear previous highlights
         const prev = state.activeHighlights;
         for (let i = 0; i < prev.length; i++) prev[i].classList.remove('sql-highlight');
         state.activeHighlights = [];
@@ -263,7 +262,7 @@
         const mentionedCols   = Object.keys(state.dbNodes.cols).filter(c => tokens.has(c));
         const mentionedVals   = Object.keys(state.dbNodes.values).filter(v => tokens.has(v));
 
-        // Highlight mentioned table titles
+        // Table titles
         for (let i = 0; i < mentionedTables.length; i++) {
             const t = mentionedTables[i];
             const color = state.currentTableColors[t];
@@ -276,7 +275,7 @@
             }
         }
 
-        // Highlight mentioned columns
+        // Columns
         for (let i = 0; i < mentionedCols.length; i++) {
             const c = mentionedCols[i];
             const list = state.dbNodes.cols[c];
@@ -291,7 +290,7 @@
             }
         }
 
-        // Highlight mentioned cell values (skip SQL keywords)
+        // Cell values (skip keywords)
         const kwSet = NS.SQL_KEYWORDS_SET;
         for (let i = 0; i < mentionedVals.length; i++) {
             const v = mentionedVals[i];
@@ -310,7 +309,7 @@
     };
 
     // ─────────────────────────────────────────────────────────────
-    // 6. Ghost text (autocomplete preview)
+    // 6. Editor autocomplete (ghost suggestion only — no coloring)
     // ─────────────────────────────────────────────────────────────
     NS.scheduleGhost = function (state, ui) {
         if (state.ghostQueued) return;
@@ -323,19 +322,20 @@
 
     NS.updateGhostText = function (state, ui) {
         const input = ui.elements.input;
-        const ghost = ui.elements.ghost;
+        const layer = ui.elements.ghost;
 
         const val = input.value;
         const cursor = input.selectionStart;
         const before = val.substring(0, cursor);
         const after = val.substring(cursor);
 
-        const match = before.match(/([a-zA-Z_0-9]+)$/);
+        // Find the tail word
+        const tailMatch = before.match(/([a-zA-Z_0-9]+)$/);
         state.currentGhostSuggestion = '';
         state.currentGhostReplaceLength = 0;
 
-        if (match) {
-            const word = match[1];
+        if (tailMatch) {
+            const word = tailMatch[1];
             const lower = word.toLowerCase();
             const suggestion = state.prefixIndex.get(lower);
             if (suggestion && suggestion.toLowerCase() !== lower) {
@@ -344,19 +344,18 @@
             }
         }
 
-        // Fast path: no suggestion → just mirror the textarea
+        // Fast path — no suggestion: mirror raw text (invisible beneath the textarea)
         if (!state.currentGhostSuggestion) {
-            const text = val + (val.endsWith('\n') ? ' ' : '');
-            if (ghost.textContent !== text) ghost.textContent = text;
+            if (layer.textContent !== val) layer.textContent = val;
             return;
         }
 
+        // Show suggestion as faded text right after the cursor
         const remainder = state.currentGhostSuggestion.substring(state.currentGhostReplaceLength);
-        ghost.innerHTML =
+        layer.innerHTML =
             escapeHTML(before) +
-            '<span style="color:var(--text-color); opacity:0.35;">' + escapeHTML(remainder) + '</span>' +
-            escapeHTML(after) +
-            (val.endsWith('\n') ? ' ' : '');
+            '<span class="sql-ghost-suggest">' + escapeHTML(remainder) + '</span>' +
+            escapeHTML(after);
     };
 
     // ─────────────────────────────────────────────────────────────

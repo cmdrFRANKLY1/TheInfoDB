@@ -154,7 +154,6 @@
             },
 
             attachExecutor(executor, s) {
-                // Prefer explicit state passed in; otherwise use _setState's value
                 if (s) state = s;
                 ui.executor = executor;
 
@@ -373,19 +372,34 @@
             pushNewState(customDB, `Created custom database with ${createdCount} table(s).`);
         });
 
-        // ── Editor input: auto-uppercase keywords, highlight, ghost ──
+        // ── Editor input: keyword auto-uppercase (skipped for identifiers) ──
         el.input.addEventListener('input', () => {
             const val = el.input.value;
             const cursor = el.input.selectionStart;
 
+            // Auto-uppercase the tail word if it's a SQL keyword AND is NOT a
+            // known identifier (table/column/value) in the current DB.
             if (cursor > 0) {
                 const match = val.substring(0, cursor).match(/([a-zA-Z_]+)(\s+)$/);
                 if (match) {
                     const word = match[1];
-                    if (NS.SQL_KEYWORDS_SET.has(word.toLowerCase()) && word !== word.toUpperCase()) {
+                    const lower = word.toLowerCase();
+
+                    // Is the word an identifier in the current DB?
+                    const isIdentifier = !!(
+                        state.dbNodes.cols[lower] ||
+                        state.dbNodes.tables[lower] ||
+                        state.dbNodes.values[lower]
+                    );
+
+                    if (!isIdentifier &&
+                        NS.SQL_KEYWORDS_SET.has(lower) &&
+                        word !== word.toUpperCase()) {
                         const ws = match[2];
-                        el.input.value = val.substring(0, cursor - word.length - ws.length) +
-                                         word.toUpperCase() + ws + val.substring(cursor);
+                        el.input.value =
+                            val.substring(0, cursor - word.length - ws.length) +
+                            word.toUpperCase() + ws +
+                            val.substring(cursor);
                         el.input.selectionStart = el.input.selectionEnd = cursor;
                     }
                 }

@@ -12,7 +12,7 @@
 (function (NS) {
     'use strict';
 
-    const STYLE_ID = 'sql-sandbox-styles-v4';
+    const STYLE_ID = 'sql-sandbox-styles-v7';
 
     const STYLES = `
         /* ── Layout: top-level vertical stack ── */
@@ -44,14 +44,13 @@
             flex-shrink: 0;
         }
 
-        /* ── Editor + Results: side by side ── */
+        /* ── Editor + Results side by side ── */
         .sql-editor-results-row {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 12px;
             flex: 0 0 auto;
             min-height: 200px;
-            /* let children control their own height */
             align-items: stretch;
         }
 
@@ -89,6 +88,9 @@
             height: 160px;
             flex: 0 0 auto;
         }
+
+        /* Plain textarea. The ghost layer shows ONLY the faded
+           autocomplete suggestion — no syntax coloring. */
         .sql-textarea,
         .sql-ghost-textarea {
             position: absolute;
@@ -113,9 +115,16 @@
         .sql-textarea {
             background: transparent;
             color: var(--text-color);
+            caret-color: var(--text-color);
             resize: none;
             outline: none;
             z-index: 2;
+        }
+
+        /* Only the autocomplete remainder gets styled */
+        .sql-ghost-suggest {
+            color: var(--text-color);
+            opacity: 0.35;
         }
 
         /* ── Buttons ── */
@@ -140,7 +149,7 @@
         .sql-btn.secondary:hover:not(:disabled) { background-color: rgba(128,128,128,0.1); }
         .sql-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ── Highlighting ── */
+        /* ── Table cell highlighting (Live DB State only) ── */
         .sql-highlight {
             background-color: color-mix(in srgb, var(--hi-color) 20%, transparent) !important;
             color: var(--hi-color) !important;
@@ -150,7 +159,7 @@
             border-bottom: 1px solid var(--hi-color) !important;
         }
 
-        /* ── Results pane — now sits next to the editor ── */
+        /* ── Results pane ── */
         .sql-results-container {
             border: 1px solid var(--border-color);
             border-radius: 6px;
