@@ -1,7 +1,0 @@
-{
-  "ipconfig": "Windows-Dienstprogramm zum Anzeigen der aktuellen TCP/IP-Netzwerkkonfiguration sowie zum Aktualisieren von DHCP- und DNS-Einstellungen.",
-  "powershell": "Framework zur Aufgabenautomatisierung und Konfigurationsverwaltung von Microsoft mit leistungsfähiger Shell und Skriptsprache.",
-  "cmd": "Kommandozeileninterpreter von Windows-Betriebssystemen.",
-  "registry": "Hierarchische Datenbank mit grundlegenden Einstellungen des Microsoft-Windows-Betriebssystems und von Anwendungen.",
-  "active-directory": "Verzeichnisdienst von Microsoft zur Verwaltung von Berechtigungen und Zugriffen auf Netzwerkressourcen in einer Windows-Domänenumgebung."
-}

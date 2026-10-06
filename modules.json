@@ -1,0 +1,8 @@
+[
+    "modules/settings/colorSchemes_Presets.js",
+    "modules/settings/colorScheme.js",
+    "modules/settings/autohide_sidebars.js",
+    "modules/documents/documents_viewer.js",
+    "modules/calendar/calendar.js",
+    "modules/sql/sql_sandbox.js"
+]

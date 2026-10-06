@@ -1,7 +1,0 @@
-{
-  "ipconfig": "A Windows utility used to display all current TCP/IP network configuration values and refresh DHCP and DNS settings.",
-  "powershell": "A task automation and configuration management framework from Microsoft, consisting of a powerful shell and scripting language.",
-  "cmd": "The command-line interpreter application on Windows operating systems.",
-  "registry": "A hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications.",
-  "active-directory": "A Microsoft directory service that manages permissions and access to network resources in a Windows Domain environment."
-}

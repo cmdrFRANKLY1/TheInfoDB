@@ -1,880 +1,522 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheInfoDB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>theInfoDB</title>
+
+    <!-- High-Performance Font Loading (Zero blocking latency) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
+        /* High-Performance Reset & Variables */
         :root {
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-            --font-scale: 1;
+            /* Default Dark Theme */
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --panel-bg: #0a0a0a;
+            --border-color: #1a1a1a;
+            --accent-color: #3b82f6;
 
-            --bg-app: #101416;
-            --bg-panel: #151a1d;
-            --bg-panel-alt: #191f23;
-            --bg-panel-hover: #20272b;
-            --bg-subtle: #1c2226;
-            --bg-neutral-900: #22292d;
-            --bg-neutral-800: #2b3439;
-            --border-color: #30383d;
-            --border-subtle: #262d31;
-            --border-hover: #414b51;
-            --text-primary: #dce4e8;
-            --text-secondary: #a5b0b7;
-            --text-muted: #77858d;
-            --text-heading: #f5f7f8;
-            --scroll-track: #121719;
-            --scroll-thumb: #3a454b;
-            --scroll-thumb-hover: #536168;
-
-            --shadow-base: 0 2px 10px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(255, 255, 255, 0.025);
-            --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(255, 255, 255, 0.035);
-            --shadow-inset: inset 0 2px 6px rgba(0, 0, 0, 0.32), inset 0 1px 2px rgba(0, 0, 0, 0.2);
-            --shadow-toolbar: 0 4px 14px rgba(0, 0, 0, 0.28);
-            --toolbar-overlay: rgba(16, 20, 22, 0.94);
-
-            /* Subtle jump highlight */
-            --flash-rgb: 250, 204, 21;
-            --flash-ring: rgba(250, 204, 21, 0.08);
-            --flash-glow: rgba(250, 204, 21, 0.12);
-            --flash-glow-soft: rgba(250, 204, 21, 0.05);
-            --flash-tint: transparent;
-            --flash-tint-soft: transparent;
-            --flash-border: var(--border-subtle);
-            --flash-h3-bg: transparent;
-            --flash-h3-bg-soft: transparent;
-            --flash-h3-inset: rgba(250, 204, 21, 0.08);
-            --flash-h3-inset-soft: rgba(250, 204, 21, 0.04);
+            --topbar-height: 48px;
+            --sidebar-width: 250px;
         }
-        * { font-family: var(--font-sans); }
-        code, pre, kbd, samp { font-family: var(--font-mono); }
 
-        [data-theme="light"] {
-            --bg-app: #eef2f4;
-            --bg-panel: #f8fafb;
-            --bg-panel-alt: #ffffff;
-            --bg-panel-hover: #f1f5f6;
-            --bg-subtle: #f6f8f9;
-            --bg-neutral-900: #e9eef1;
-            --bg-neutral-800: #dde5e9;
-            --border-color: #d7e0e5;
-            --border-subtle: #e3e9ed;
-            --border-hover: #c2cfd5;
-            --text-primary: #26333a;
-            --text-secondary: #52616a;
-            --text-muted: #7d8b93;
-            --text-heading: #142127;
-            --scroll-track: #edf1f3;
-            --scroll-thumb: #c2cdd2;
-            --scroll-thumb-hover: #9eabb2;
+        /* Light Theme Overrides (Instant repaint, no layout reflow) */
+        :root.theme-light {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --panel-bg: #f4f4f5;
+            --border-color: #e4e4e7;
+            --accent-color: #2563eb;
+        }
 
-            --shadow-base: 0 2px 10px rgba(26, 42, 52, 0.07), 0 1px 3px rgba(26, 42, 52, 0.04);
-            --shadow-hover: 0 5px 16px rgba(26, 42, 52, 0.12), 0 1px 3px rgba(26, 42, 52, 0.05);
-            --shadow-inset: inset 0 1px 4px rgba(32, 48, 58, 0.045);
-            --shadow-toolbar: 0 3px 12px rgba(32, 48, 58, 0.1);
-            --toolbar-overlay: rgba(248, 250, 251, 0.94);
-
-            /* Subtle jump highlight */
-            --flash-rgb: 37, 99, 235;
-            --flash-ring: rgba(37, 99, 235, 0.08);
-            --flash-glow: rgba(37, 99, 235, 0.11);
-            --flash-glow-soft: rgba(37, 99, 235, 0.045);
-            --flash-tint: transparent;
-            --flash-tint-soft: transparent;
-            --flash-border: var(--border-subtle);
-            --flash-h3-bg: transparent;
-            --flash-h3-bg-soft: transparent;
-            --flash-h3-inset: rgba(37, 99, 235, 0.07);
-            --flash-h3-inset-soft: rgba(37, 99, 235, 0.035);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: var(--font-sans);
-            background-color: var(--bg-app);
-            color: var(--text-primary);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            font-size: calc(16px * var(--font-scale));
-        }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
-
-        .panel-stylized {
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-panel-alt);
-            border-radius: 0.5rem;
-            padding: 1.5rem 1.75rem;
-            margin-bottom: 1.5rem;
-            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .panel-stylized:hover { border-color: var(--border-hover); }
-        .panel-stylized:last-child { margin-bottom: 0; }
-
-        .subtopic-panel {
-            border: 1px solid var(--border-subtle);
-            background-color: var(--bg-subtle);
-            border-radius: 0.375rem;
-            padding: 1.1rem 1.25rem 1rem;
-            margin-top: 1rem;
-            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .subtopic-panel:hover {
-            border-color: var(--border-hover);
-            background-color: var(--bg-panel-hover);
-        }
-
-        .h3-block {
-            margin-top: 1rem;
-            padding-left: 0.9rem;
-            border-left: 2px solid var(--border-subtle);
-        }
-
-        .panel-raw {
-            margin-bottom: 1.5rem;
-            padding: 1.25rem 1.5rem;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.5;
-        }
-
-        .tooltip-term {
-            border-bottom: 1px dotted var(--text-muted);
-            cursor: help;
-            position: relative;
-        }
-        .tooltip-term:hover {
-            color: var(--text-heading);
-            border-bottom-color: var(--text-heading);
-        }
-        #global-tooltip {
-            position: fixed;
-            z-index: 200;
-            background: var(--bg-panel-hover);
-            color: var(--text-primary);
-            border: 1px solid var(--border-hover);
-            border-radius: 6px;
-            padding: 8px 10px;
-            font-size: 12px;
-            line-height: 1.4;
-            max-width: 320px;
-            white-space: pre-line;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.12s ease;
-            box-shadow: var(--shadow-toolbar);
-        }
-        #global-tooltip.show { opacity: 1; }
-
-        .doc-scope { --doc-scale: 1; }
-        .doc-scope .panel-stylized { font-size: calc(1rem * var(--doc-scale)); }
-        .doc-scope .subtopic-panel { font-size: calc(0.875rem * var(--doc-scale)); }
-        .doc-scope .h3-block { font-size: calc(0.875rem * var(--doc-scale)); }
-        .doc-scope .panel-raw { font-size: calc(0.85rem * var(--doc-scale)); }
-        .doc-scope .panel-stylized h1 { font-size: calc(1.5rem * var(--doc-scale)); }
-        .doc-scope .subtopic-panel h2 { font-size: calc(1rem * var(--doc-scale)); }
-        .doc-scope .text-neutral-300,
-        .doc-scope .text-neutral-400,
-        .doc-scope .text-neutral-500 { font-size: calc(0.875rem * var(--doc-scale)); }
-
-        .panel-stylized,
-        .subtopic-panel {
-            box-shadow: var(--shadow-base);
-        }
-        .panel-stylized:hover {
-            box-shadow: var(--shadow-hover);
-        }
-        .subtopic-panel:hover,
-        .dashboard-card:hover { box-shadow: var(--shadow-hover); }
-
-        .pages-panel { box-shadow: var(--shadow-inset); }
-        .dashboard-card,
-        .pinned-card { box-shadow: var(--shadow-base); }
-
-        .tree-details > summary {
-            list-style: none;
-            cursor: pointer;
-            padding: 0.15rem 0.3rem;
-            border-radius: 0.25rem;
-        }
-        .tree-details > summary::-webkit-details-marker { display: none; }
-        .tree-details > summary:hover { background-color: var(--bg-neutral-900); }
-        .tree-details[open] > summary .details-arrow { transform: rotate(90deg); }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-heading);
-            color: var(--bg-app);
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.25s;
-            pointer-events: none;
-            z-index: 100;
-        }
-        .toast.show { opacity: 1; }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: var(--bg-panel-hover);
-            min-width: 120px;
-            border: 1px solid var(--border-hover);
-            border-radius: 4px;
-            z-index: 50;
-        }
-        .dropdown-content button {
-            color: var(--text-heading);
-            padding: 8px 12px;
-            text-decoration: none;
-            display: block;
-            width: 100%;
-            text-align: left;
-        }
-        .dropdown-content button:hover { background-color: var(--bg-neutral-900); }
-        .dropdown:focus-within .dropdown-content { display: block; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; margin-bottom: 0.75rem; }
-        th, td { border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.875rem; }
-        th { background-color: var(--bg-neutral-900); color: var(--text-heading); }
-        ul, ol { padding-left: 1.25rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-        li { margin-bottom: 0.25rem; }
-
-        pre {
-            background-color: var(--bg-neutral-900);
-            border: 1px solid var(--border-subtle);
-            padding: 1rem;
-            border-radius: 0.375rem;
-            overflow-x: auto;
-            margin: 0.75rem 0;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-        code {
-            background-color: var(--bg-neutral-900);
-            color: var(--text-primary);
-            padding: 0.15rem 0.3rem;
-            border-radius: 0.25rem;
-            font-size: 0.85em;
-        }
-        pre code {
-            background-color: transparent;
-            padding: 0;
-            border-radius: 0;
-            font-size: inherit;
-            color: inherit;
-        }
-
-        .split-column {
-            flex: 1;
-            min-width: 0;
-            height: 100%;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-            padding-bottom: 1rem;
-            overscroll-behavior: contain;
-        }
-
-        .column-header {
-            position: sticky;
-            top: 0;
-            z-index: 5;
-            padding: 0.4rem 0.6rem;
-            margin-bottom: 0.75rem;
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            border-bottom: 1px solid var(--border-subtle);
-            background: var(--bg-app);
-            backdrop-filter: blur(6px);
-        }
-        .column-header { background: var(--toolbar-overlay); }
-
-        /* Document Toolbar Sticky Settings */
-        .doc-toolbar {
-            position: relative;
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            padding: 0.6rem 1rem;
-            box-shadow: var(--shadow-toolbar);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            z-index: 50;
-        }
-        .doc-toolbar { background: var(--toolbar-overlay); }
-        .doc-toolbar .dropdown {
-            position: relative;
-            z-index: 50;
-        }
-        .doc-toolbar .dropdown-content {
-            z-index: 60;
-        }
-
-        #document-toolbar-row {
-            gap: 1.5rem;
-            padding: 1.25rem 1.5rem 0;
-            flex-shrink: 0;
-        }
-        #document-toolbar-row:not(.hidden) { display: flex; }
-        .document-toolbar-slot { flex: 1; min-width: 0; }
-        #document-toolbar-row .doc-toolbar { width: 100%; margin-bottom: 0; }
-        #document-toolbar-secondary,
-        #document-toolbar-divider { display: none; }
-        #document-toolbar-row.split-active #document-toolbar-secondary,
-        #document-toolbar-row.split-active #document-toolbar-divider { display: block; }
-
-        .split-divider {
-            width: 1px;
-            background: var(--border-color);
-            margin: 1rem 0;
-            flex-shrink: 0;
-            align-self: stretch;
-        }
-        @media (max-width: 767px) {
-            .split-divider,
-            #document-toolbar-row.split-active #document-toolbar-divider { display: none; }
-            #document-toolbar-row:not(.hidden) { flex-direction: column; }
-        }
-
-        /* ============================================================
-           Jump Flash Animations
-           ============================================================ */
-        .panel-stylized,
-        .subtopic-panel,
-        .h3-block {
-            position: relative;
-        }
-
-        @keyframes flash-panel {
-            0% { box-shadow: 0 0 0 0 rgba(var(--flash-rgb), 0), 0 0 0 0 rgba(var(--flash-rgb), 0); border-color: var(--border-color); background-color: var(--bg-panel-alt); }
-            12% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            42% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            62% { box-shadow: 0 0 0 2px var(--flash-ring), 0 0 22px 6px var(--flash-glow), 0 0 50px 14px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint-soft); }
-            80% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            100% { box-shadow: 0 0 0 0 rgba(var(--flash-rgb), 0), 0 0 0 0 rgba(var(--flash-rgb), 0); border-color: var(--border-color); background-color: var(--bg-panel-alt); }
-        }
-
-        @keyframes flash-subtopic {
-            0% { box-shadow: 0 0 0 0 rgba(var(--flash-rgb), 0), 0 0 0 0 rgba(var(--flash-rgb), 0); border-color: var(--border-subtle); background-color: var(--bg-subtle); }
-            12% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            42% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            62% { box-shadow: 0 0 0 2px var(--flash-ring), 0 0 22px 6px var(--flash-glow), 0 0 50px 14px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint-soft); }
-            80% { box-shadow: 0 0 0 3px var(--flash-ring), 0 0 32px 10px var(--flash-glow), 0 0 70px 20px var(--flash-glow-soft); border-color: var(--flash-border); background-color: var(--flash-tint); }
-            100% { box-shadow: 0 0 0 0 rgba(var(--flash-rgb), 0), 0 0 0 0 rgba(var(--flash-rgb), 0); border-color: var(--border-subtle); background-color: var(--bg-subtle); }
-        }
-
-        .jump-target {
-            animation: flash-panel 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
-            z-index: 10;
-        }
-        .subtopic-panel.jump-target {
-            animation: flash-subtopic 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
-        }
-
-        @keyframes flash-h3 {
-            0% { background-color: transparent; border-left-color: var(--border-subtle); box-shadow: none; }
-            12% { background-color: var(--flash-h3-bg); border-left-color: var(--flash-border); box-shadow: inset 0 0 16px var(--flash-h3-inset); }
-            42% { background-color: var(--flash-h3-bg); border-left-color: var(--flash-border); box-shadow: inset 0 0 16px var(--flash-h3-inset); }
-            62% { background-color: var(--flash-h3-bg-soft); border-left-color: var(--flash-border); box-shadow: inset 0 0 8px var(--flash-h3-inset-soft); }
-            80% { background-color: var(--flash-h3-bg); border-left-color: var(--flash-border); box-shadow: inset 0 0 16px var(--flash-h3-inset); }
-            100% { background-color: transparent; border-left-color: var(--border-subtle); box-shadow: none; }
-        }
-
-        .jump-target-h3 {
-            animation: flash-h3 2s cubic-bezier(0.4, 0, 0.2, 1) 1;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .hover-actions {
-            opacity: 0;
-            transition: opacity 0.15s ease;
-            display: flex;
-            gap: 0.6rem;
-            flex-shrink: 0;
-        }
-        .group:hover > * > .hover-actions,
-        .group:hover > .hover-actions,
-        .group:hover .hover-actions { opacity: 1; }
-
-        #content-scroll-area {
-            padding: 1.25rem 1.5rem;
-        }
-        #content-scroll-area.split-active {
+            text-rendering: optimizeLegibility;
+            letter-spacing: -0.01em;
             overflow: hidden;
-            padding: 1.25rem 1.5rem;
-        }
-        #content-scroll-area.split-active #document-view { height: 100%; }
-        #content-scroll-area.split-active #document-layout { height: 100%; }
-
-        @media (min-width: 1600px) {
-            #content-scroll-area { padding-left: 3rem; padding-right: 3rem; }
-            #content-scroll-area.split-active { padding-left: 2rem; padding-right: 2rem; }
-        }
-
-        .file-actions button {
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 20px;
-            min-height: 18px;
-        }
-
-        .doc-action-btn {
-            width: 28px;
-            height: 28px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            flex-shrink: 0;
-            box-sizing: border-box;
-        }
-        .doc-action-btn > svg { width: 14px; height: 14px; display: block; }
-
-        .quick-search-box {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px;
-            min-height: 36px;
-            padding: 4px 58px 4px 6px;
-            background: var(--bg-neutral-900);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
-        .quick-search-box:focus-within { border-color: var(--border-hover); }
-        .quick-search-tags { display: contents; }
-        .quick-search-chip {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            border: 1px solid hsl(var(--tag-hue) 55% 48%);
-            background: hsl(var(--tag-hue) 58% 30%);
-            color: transparent;
-            font-size: 0;
-            position: relative;
-            cursor: pointer;
-            transition: filter 0.15s ease;
-        }
-        .quick-search-chip:hover { filter: brightness(1.2); }
-        
-        .search-result-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-        .search-result-tag {
-            padding: 1px 5px;
-            border: 1px solid hsl(var(--tag-hue) 55% 48%);
-            border-radius: 3px;
-            background: hsl(var(--tag-hue) 58% 30%);
-            color: #fff;
-            font-size: 9px;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
-        
-        [data-theme="light"] .quick-search-chip,
-        [data-theme="light"] .search-result-tag {
-            border-color: hsl(var(--tag-hue) 42% 70%);
-            background: hsl(var(--tag-hue) 65% 92%);
-        }
-        [data-theme="light"] .search-result-tag {
-            color: hsl(var(--tag-hue) 55% 25%);
-        }
-        [data-theme="light"] .quick-search-chip {
-            color: transparent;
-        }
-        .quick-search-chip-remove {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            border: 0;
-            padding: 0;
-            background: transparent;
-        }
-        .quick-search-tag-picker { position: absolute; top: 50%; right: 30px; transform: translateY(-50%); }
-        .quick-search-tag-menu-button {
-            display: inline-flex;
-            width: 24px;
-            height: 24px;
-            align-items: center;
-            justify-content: center;
-            border: 0;
-            border-radius: 3px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .quick-search-tag-menu-button:hover,
-        .quick-search-tag-menu-button[aria-expanded="true"] { background: var(--bg-neutral-800); color: var(--text-heading); }
-        .quick-search-tag-menu {
-            position: absolute;
-            top: calc(100% + 6px);
-            right: -30px;
-            z-index: 60;
-            width: 230px;
-            max-width: calc(100vw - 32px);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-panel);
-            box-shadow: var(--shadow-toolbar);
-        }
-        .quick-search-tag-filter { width: 100%; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--border-color); background: var(--bg-panel); color: var(--text-primary); outline: none; font-size: 12px; }
-        .quick-search-tag-options { max-height: 220px; overflow-y: auto; padding: 4px; }
-        .quick-search-tag-option { display: flex; width: 100%; align-items: center; gap: 8px; padding: 6px 8px; border: 0; border-radius: 4px; background: transparent; color: var(--text-primary); text-align: left; font-size: 12px; cursor: pointer; }
-        .quick-search-tag-option:hover,
-        .quick-search-tag-option:focus-visible { background: var(--bg-neutral-900); outline: none; }
-        .quick-search-tag-swatch { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: hsl(var(--tag-hue) 62% 48%); }
-        .quick-search-input {
-            flex: 1 1 90px;
-            min-width: 64px;
-            width: 100%;
-            padding: 2px 4px;
-            border: 0;
-            outline: none;
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 12px;
-        }
-
-        .toolbar-select {
-            background: var(--bg-neutral-900);
-            border: 1px solid var(--border-hover);
-            color: var(--text-heading);
-            border-radius: 4px;
-            padding: 4px 6px;
-            font-size: 12px;
-            outline: none;
-            max-width: 130px;
-        }
-        .toolbar-select option { background: var(--bg-panel); color: var(--text-heading); }
-        #ui-language-select,
-        #toggle-split-view-btn.control-surface,
-        .doc-toolbar .toolbar-select,
-        .doc-toolbar .doc-close-btn {
-            background-color: var(--bg-neutral-900);
-        }
-        .doc-toolbar .doc-close-btn:hover,
-        #toggle-split-view-btn.control-surface:hover { background-color: var(--bg-neutral-800); }
-        #toggle-split-view-btn.control-surface.bg-neutral-800 {
-            background-color: var(--bg-neutral-900) !important;
-        }
-
-        #theme-toggle-btn,
-        #ui-language-select,
-        #toggle-split-view-btn,
-        #toggle-pins-btn,
-        .doc-toolbar .doc-action-btn,
-        .doc-toolbar .toolbar-select,
-        .hover-actions button {
-            background-color: var(--bg-neutral-900);
-            border-color: var(--border-color);
-        }
-        #theme-toggle-btn:hover,
-        #ui-language-select:hover,
-        #toggle-split-view-btn:hover,
-        #toggle-pins-btn:hover,
-        .doc-toolbar .doc-action-btn:hover,
-        .doc-toolbar .toolbar-select:hover,
-        .hover-actions button:hover {
-            background-color: var(--bg-neutral-800);
-            border-color: var(--border-hover);
-        }
-        .dropdown-content {
-            background-color: var(--bg-panel);
-            border-color: var(--border-color);
-            box-shadow: var(--shadow-toolbar);
-        }
-        .dropdown-content button { background-color: transparent; }
-        .dropdown-content button:hover { background-color: var(--bg-neutral-900); }
-
-        .pins-scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-            padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
         }
 
-        .tree-icon {
-            display: inline-flex;
+        /* Topbar - Hardware Accelerated & Contained */
+        #topbar {
+            height: var(--topbar-height);
+            width: 100%;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            contain: layout size style;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .topbar-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #topbar-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Buttons */
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 1rem;
+            will-change: opacity;
+        }
+        .toggle-btn:hover { background-color: var(--border-color); }
+
+        /* Main Layout */
+        #main-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+            height: calc(100vh - var(--topbar-height));
+            contain: strict;
+        }
+
+        /* Sidebars - Hardware Accelerated & Contained */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--panel-bg);
+            display: flex;
+            flex-direction: column;
+            contain: layout size style;
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 50;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            contain: content;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            contain: content;
+        }
+
+        /* Settings Row Layout */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .settings-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Center View Layouts */
+        .center-view {
+            padding: 32px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            contain: content;
+        }
+
+        .center-view.hidden {
+            display: none !important;
+        }
+
+        .view-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .settings-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 600px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            color: currentColor;
-        }
-        .tree-icon svg {
-            display: block;
-            width: 12px;
-            height: 12px;
-            stroke: currentColor;
-            fill: none;
+            transition: background-color 0.1s;
         }
 
-        [data-theme="dark"] .bg-black { background-color: var(--bg-app) !important; }
-        [data-theme="dark"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
-        [data-theme="dark"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
-        [data-theme="dark"] .bg-\[\#0a0a0a\] { background-color: var(--bg-panel-hover) !important; }
-        [data-theme="dark"] .bg-\[\#080808\] { background-color: var(--bg-subtle) !important; }
-        [data-theme="dark"] .bg-neutral-900 { background-color: var(--bg-neutral-900) !important; }
-        [data-theme="dark"] .bg-neutral-800 { background-color: var(--bg-neutral-800) !important; }
-        [data-theme="dark"] .border-neutral-800 { border-color: var(--border-color) !important; }
-        [data-theme="dark"] .border-neutral-700 { border-color: var(--border-hover) !important; }
-        [data-theme="dark"] .text-white { color: var(--text-heading) !important; }
-        [data-theme="dark"] .text-neutral-300 { color: var(--text-primary) !important; }
-        [data-theme="dark"] .text-neutral-400 { color: var(--text-secondary) !important; }
-        [data-theme="dark"] .text-neutral-500 { color: var(--text-muted) !important; }
-        [data-theme="dark"] .hover\:bg-neutral-900:hover { background-color: var(--bg-neutral-900) !important; }
-        [data-theme="dark"] .hover\:bg-neutral-800:hover { background-color: var(--bg-neutral-800) !important; }
-        [data-theme="light"] .bg-black { background-color: var(--bg-app) !important; }
-        [data-theme="light"] .bg-\[\#030303\] { background-color: var(--bg-panel) !important; }
-        [data-theme="light"] .bg-\[\#050505\] { background-color: var(--bg-panel-alt) !important; }
-        [data-theme="light"] .bg-\[\#0a0a0a\] { background-color: var(--bg-panel-hover) !important; }
-        [data-theme="light"] .bg-\[\#080808\] { background-color: var(--bg-subtle) !important; }
-        [data-theme="light"] .bg-\[\#111\] { background-color: var(--bg-panel-alt) !important; }
-        [data-theme="light"] .bg-neutral-900 { background-color: var(--bg-neutral-900) !important; }
-        [data-theme="light"] .bg-neutral-800 { background-color: var(--bg-neutral-800) !important; }
-        [data-theme="light"] .border-neutral-800 { border-color: var(--border-color) !important; }
-        [data-theme="light"] .border-neutral-700 { border-color: var(--border-hover) !important; }
-        [data-theme="light"] .border-neutral-900 { border-color: var(--border-subtle) !important; }
-        [data-theme="light"] .border-neutral-800\/60 { border-color: rgba(0,0,0,0.08) !important; }
-        [data-theme="light"] .text-white { color: var(--text-heading) !important; }
-        [data-theme="light"] .text-neutral-300 { color: var(--text-primary) !important; }
-        [data-theme="light"] .text-neutral-400 { color: var(--text-secondary) !important; }
-        [data-theme="light"] .text-neutral-500 { color: var(--text-muted) !important; }
-        [data-theme="light"] .text-neutral-600 { color: #737373 !important; }
-        [data-theme="light"] .hover\:bg-neutral-900:hover { background-color: var(--bg-neutral-900) !important; }
-        [data-theme="light"] .hover\:bg-neutral-800:hover { background-color: var(--bg-neutral-800) !important; }
-        [data-theme="light"] .hover\:text-white:hover { color: var(--text-heading) !important; }
-        [data-theme="light"] .hover\:border-neutral-700:hover { border-color: var(--border-hover) !important; }
-        [data-theme="light"] .hover\:text-neutral-400:hover { color: var(--text-secondary) !important; }
-        [data-theme="light"] .bg-white { background-color: #171717 !important; }
-        [data-theme="light"] .bg-white:hover { background-color: #333 !important; }
-        [data-theme="light"] .text-black { color: #fff !important; }
-        [data-theme="light"] .hover\:bg-neutral-200:hover { background-color: #333 !important; }
-        [data-theme="light"] :not(pre) > code {
-            background-color: var(--bg-neutral-900) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-heading) !important;
+        .icon-btn:hover { background-color: var(--border-color); }
+
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
-        [data-theme="light"] pre {
-            background-color: var(--bg-neutral-900);
-            border-color: var(--border-color);
+
+        #left-sidebar {
+            left: 0;
+            border-right: 1px solid var(--border-color);
+            transform: translateX(0);
         }
-        [data-theme="light"] pre code {
-            background-color: transparent !important;
-            color: var(--text-heading) !important;
+        #left-sidebar.closed { transform: translateX(-100%); }
+
+        #right-sidebar {
+            right: 0;
+            border-left: 1px solid var(--border-color);
+            transform: translateX(0);
         }
-        [data-theme="light"] .text-blue-400 { color: #1d4ed8 !important; }
-        [data-theme="light"] select { color: var(--text-heading) !important; }
-        [data-theme="light"] select option { background: #fff; color: #171717; }
-        [data-theme="light"] input { color: var(--text-heading) !important; }
-        [data-theme="light"] .doc-toolbar input {
-            background-color: var(--bg-neutral-900) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-heading) !important;
+        #right-sidebar.closed { transform: translateX(100%); }
+
+        /* Central Content Area */
+        #content-area {
+            flex: 1;
+            background-color: var(--bg-color);
+            margin-left: var(--sidebar-width);
+            margin-right: var(--sidebar-width);
+            transition: margin 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: margin;
+            contain: strict;
         }
-        [data-theme="light"] .doc-toolbar input:hover,
-        [data-theme="light"] .doc-toolbar input:focus {
-            background-color: var(--bg-neutral-800) !important;
-            border-color: var(--border-hover) !important;
-        }
+
+        body.left-closed #content-area { margin-left: 0; }
+        body.right-closed #content-area { margin-right: 0; }
     </style>
 </head>
 <body>
+    <header id="topbar">
+        <div class="topbar-section" id="topbar-left">
+            <button class="toggle-btn" id="toggle-left" aria-label="Toggle Left Sidebar">☰</button>
+            <div id="topbar-title">theInfoDB</div>
+        </div>
+        <div class="topbar-section" id="topbar-center"></div>
+        <div class="topbar-section" id="topbar-right">
+            <button class="toggle-btn" id="toggle-right" aria-label="Toggle Right Sidebar">☰</button>
+        </div>
+    </header>
 
-    <aside class="w-72 border-r border-neutral-800 bg-[#030303] flex flex-col h-full shrink-0">
-        <div class="p-4 border-b border-neutral-800 space-y-3 shrink-0 relative z-30">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2.5">
-                    <button id="theme-toggle-btn" class="p-1.5 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Toggle theme">
-                        <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                    <h1 class="text-xl font-bold text-white tracking-tight">TheInfoDB</h1>
-                </div>
-            </div>
-            
-            <div id="quick-search-box" class="quick-search-box relative" style="padding-right: 58px;">
-                <div id="quick-search-tags" class="quick-search-tags"></div>
-                <input type="text" id="quick-search-input" data-i18n-placeholder="searchEverythingPlaceholder" placeholder="Search everything..."
-                       class="quick-search-input">
-                
-                <button id="quick-search-clear" class="absolute right-8 text-neutral-500 hover:text-white hidden">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                
-                <div class="quick-search-tag-picker" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%);">
-                    <button id="quick-search-tag-menu-button" type="button" class="quick-search-tag-menu-button" title="Browse tags" aria-label="Browse tags" aria-haspopup="listbox" aria-expanded="false">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div id="quick-search-tag-menu" class="quick-search-tag-menu hidden">
-                        <input id="quick-search-tag-filter" class="quick-search-tag-filter" type="text" placeholder="Filter tags..." aria-label="Filter tags">
-                        <div id="quick-search-tag-options" class="quick-search-tag-options" role="listbox"></div>
+    <div id="main-container">
+        <aside class="sidebar" id="left-sidebar">
+            <div class="sidebar-content" id="left-sidebar-top"></div>
+
+            <!-- Hardcoded Settings & Theme Toggle -->
+            <div class="sidebar-bottom" id="left-sidebar-bottom">
+                <div class="settings-row" id="core-settings-btn">
+                    <span>Settings</span>
+                    <div class="settings-actions">
+                        <button class="icon-btn" id="fullscreen-toggle" aria-label="Toggle Fullscreen">
+                            <svg id="fullscreen-icon" viewBox="0 0 24 24"></svg>
+                        </button>
+                        <button class="icon-btn" id="theme-toggle" aria-label="Toggle Theme">
+                            <svg id="theme-icon" viewBox="0 0 24 24"></svg>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div id="sidebar-resizable-container" class="p-3 flex flex-col" style="height: 380px; min-height: 120px; max-height: calc(100vh - 200px);">
-            <div class="pages-panel border border-neutral-800 bg-[#050505] rounded-lg p-3 flex flex-col gap-2 flex-1 overflow-hidden min-h-0">
-                <div class="flex items-center justify-between px-1 shrink-0">
-                    <div class="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider" data-i18n="pagesTitle">Pages</div>
-                </div>
-                <div class="relative flex items-center shrink-0">
-                    <input type="text" id="page-search-input" data-i18n-placeholder="searchPagesPlaceholder" placeholder="Search pages..."
-                           class="w-full bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-2.5 py-1.5 focus:outline-none focus:border-neutral-500 pr-7">
-                    <button id="page-search-clear" class="absolute right-2 text-neutral-500 hover:text-white hidden">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div id="pages-tree" class="text-xs mt-1 flex-1 overflow-y-auto min-h-0"></div>
+        <main id="content-area">
+            <!-- Central Settings View, hidden by default -->
+            <div id="settings-view" class="center-view hidden">
+                <div class="view-header">Settings</div>
+                <!-- Exposed Settings Menu Container moved to Center Pane -->
+                <div id="settings-menu" class="settings-grid"></div>
             </div>
-        </div>
-        <div id="sidebar-resize-handle" class="h-2 w-full cursor-ns-resize bg-transparent hover:bg-neutral-800 transition-colors flex items-center justify-center shrink-0" title="Drag to resize">
-            <div class="w-8 h-0.5 bg-neutral-700 rounded-full"></div>
-        </div>
-        <div class="flex-1"></div>
-    </aside>
+        </main>
 
-    <main class="flex-1 flex flex-col bg-black h-full relative overflow-hidden min-w-0">
-        <header class="h-14 border-b border-neutral-800 flex items-center justify-between px-6 bg-[#030303] shrink-0">
-            <div id="breadcrumb" class="text-sm font-medium text-neutral-400 truncate mr-4">
-                Dashboard
-            </div>
-
-            <div class="flex items-center space-x-3 shrink-0">
-                <select id="ui-language-select" class="bg-transparent border border-neutral-700 text-sm text-white rounded px-2 py-1 outline-none">
-                    <option value="English" selected>English</option>
-                    <option value="German">German</option>
-                </select>
-
-                <button id="toggle-split-view-btn" class="control-surface p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Split View">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
-                </button>
-
-                <button id="toggle-pins-btn" class="p-2 text-neutral-300 hover:text-white border border-neutral-700 rounded hover:bg-neutral-800 transition-colors" title="Pins">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
-                </button>
-            </div>
-        </header>
-
-        <div id="document-toolbar-row" class="hidden w-full">
-            <div id="document-toolbar-primary" class="document-toolbar-slot"></div>
-            <div id="document-toolbar-divider" class="split-divider"></div>
-            <div id="document-toolbar-secondary" class="document-toolbar-slot"></div>
-        </div>
-
-        <div id="content-scroll-area" class="flex-1 overflow-y-auto">
-            <div id="dashboard-view" class="max-w-[1366px] mx-auto">
-                <h2 class="text-2xl font-bold mb-6 text-white" data-i18n="dashboardOverview">Overview</h2>
-                <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <div class="text-neutral-500">Loading GitHub Repository Tree...</div>
-                </div>
-            </div>
-
-            <div id="document-view" class="w-full max-w-[1600px] mx-auto hidden transition-all duration-300">
-                <div id="document-layout" class="flex flex-col md:flex-row gap-6 w-full">
-                    <div id="document-content" class="flex-1 w-full min-w-0"></div>
-                    <div id="split-divider" class="split-divider hidden"></div>
-                    <div id="document-content-secondary" class="flex-1 w-full min-w-0 hidden"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <aside id="pins-sidebar" class="w-80 border-l border-neutral-800 bg-[#050505] flex flex-col hidden h-full shrink-0">
-        <div class="h-14 border-b border-neutral-800 flex items-center justify-between px-4 shrink-0">
-            <h2 class="font-semibold text-white" data-i18n="pinnedTopicsTitle">Pinned Topics</h2>
-            <div class="flex items-center space-x-2">
-                <div class="dropdown relative" tabindex="0">
-                    <button class="text-neutral-400 hover:text-white p-1" title="Download All Pins">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    </button>
-                    <div class="dropdown-content mt-1 right-0 min-w-[100px]">
-                        <button id="dl-pins-txt" data-i18n="downloadTextfile">Textfile</button>
-                        <button id="dl-pins-md" data-i18n="downloadMarkdown">Markdown</button>
-                    </div>
-                </div>
-                <button id="close-pins-btn" class="text-neutral-400 hover:text-white p-1" title="Close Pins">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-        </div>
-
-        <div id="pins-resizable-container" class="flex flex-col flex-1 min-h-0" style="min-height: 120px;">
-            <div id="pins-container" class="pins-scroll-area">
-                <div id="no-pins-msg" class="text-neutral-500 text-sm text-center mt-10" data-i18n="noPinsMsg">No topics pinned yet.</div>
-            </div>
-        </div>
-        <div id="pins-resize-handle" class="h-2 w-full cursor-ns-resize bg-transparent hover:bg-neutral-800 transition-colors flex items-center justify-center shrink-0" title="Drag to resize">
-            <div class="w-8 h-0.5 bg-neutral-700 rounded-full"></div>
-        </div>
-    </aside>
-
-    <div id="context-menu" class="hidden fixed bg-[#0a0a0a] border border-neutral-700 rounded z-50 py-1 min-w-[120px]">
-        <button id="ctx-open-left" class="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-neutral-800">Open Left</button>
-        <button id="ctx-open-right" class="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-neutral-800">Open Right</button>
+        <aside class="sidebar" id="right-sidebar">
+            <div class="sidebar-content" id="right-sidebar-top"></div>
+            <div class="sidebar-bottom" id="right-sidebar-bottom"></div>
+        </aside>
     </div>
 
-    <div id="link-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
-        <div class="bg-[#111] border border-neutral-800 rounded-lg p-6 max-w-sm w-full">
-            <h3 class="text-lg font-bold text-white mb-2" data-i18n="linkModalTitle">External Link</h3>
-            <p class="text-neutral-400 text-sm mb-6" data-i18n="linkModalText">You are leaving this page. Are you sure?</p>
-            <div class="flex justify-end space-x-3">
-                <button id="link-cancel" class="px-4 py-2 text-sm text-white border border-neutral-700 rounded hover:bg-neutral-800" data-i18n="linkModalCancel">Cancel</button>
-                <button id="link-okay" class="px-4 py-2 text-sm text-black bg-white rounded hover:bg-neutral-200" data-i18n="linkModalOkay">Okay</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        (function() {
+            // Core DOM Cache (eliminates redundant DOM queries for massive perf boost)
+            const DOM = {
+                root: document.documentElement,
+                left: document.getElementById('left-sidebar'),
+                right: document.getElementById('right-sidebar'),
+                body: document.body,
+                themeIcon: document.getElementById('theme-icon'),
+                fullscreenIcon: document.getElementById('fullscreen-icon'),
+                containers: {
+                    'top-panel': document.getElementById('topbar'),
+                    'left-panel': document.getElementById('left-sidebar'),
+                    'right-panel': document.getElementById('right-sidebar'),
+                    'content-panel': document.getElementById('content-area'),
+                    'topbar-left': document.getElementById('topbar-left'),
+                    'topbar-center': document.getElementById('topbar-center'),
+                    'topbar-right': document.getElementById('topbar-right'),
+                    'left-sidebar-top': document.getElementById('left-sidebar-top'),
+                    'left-sidebar-bottom': document.getElementById('left-sidebar-bottom'),
+                    'right-sidebar-top': document.getElementById('right-sidebar-top'),
+                    'right-sidebar-bottom': document.getElementById('right-sidebar-bottom'),
+                    'settings-menu': document.getElementById('settings-menu'),
+                    'settings-view': document.getElementById('settings-view')
+                }
+            };
 
-    <div id="toast" class="toast">Message</div>
-    <div id="global-tooltip"></div>
+            // Sidebar Toggle Logic
+            document.getElementById('toggle-left').addEventListener('click', () => {
+                DOM.left.classList.toggle('closed');
+                DOM.body.classList.toggle('left-closed');
+            }, { passive: true });
 
-    <script type="module" src="./modules/main.js"></script>
+            document.getElementById('toggle-right').addEventListener('click', () => {
+                DOM.right.classList.toggle('closed');
+                DOM.body.classList.toggle('right-closed');
+            }, { passive: true });
+
+            // Settings Menu Toggle - enforces exclusive center-view visibility
+            document.getElementById('core-settings-btn').addEventListener('click', () => {
+                const settingsView = DOM.containers['settings-view'];
+                const wasHidden = settingsView.classList.contains('hidden');
+
+                // 1. Hide ALL center views first (so Documents, Calendar, etc. disappear)
+                Array.from(DOM.containers['content-panel'].children).forEach(child => {
+                    if (child.classList.contains('center-view')) {
+                        child.classList.add('hidden');
+                    }
+                });
+
+                // 2. Hide module-specific right sidebar panels to clean up the UI
+                const rightTop = DOM.containers['right-sidebar-top'];
+                if (rightTop) {
+                    Array.from(rightTop.children).forEach(child => {
+                        child.classList.remove('active');
+                        child.style.display = 'none';
+                    });
+                }
+
+                // 3. Show settings if it was previously hidden
+                if (wasHidden) {
+                    settingsView.classList.remove('hidden');
+                }
+            });
+
+            // Ultra-fast Theme Toggle
+            const PATHS = {
+                moon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z',
+                sun: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z',
+                expand: 'M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3',
+                compress: 'M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3'
+            };
+
+            const updateThemeIcon = (isLight) => {
+                DOM.themeIcon.innerHTML = `<path d="${isLight ? PATHS.sun : PATHS.moon}" />`;
+            };
+
+            const updateFullscreenIcon = (isFullscreen) => {
+                if (DOM.fullscreenIcon) {
+                    DOM.fullscreenIcon.innerHTML = `<path d="${isFullscreen ? PATHS.compress : PATHS.expand}" />`;
+                }
+            };
+
+            updateThemeIcon(false);
+            updateFullscreenIcon(false);
+
+            document.getElementById('theme-toggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isLight = DOM.root.classList.toggle('theme-light');
+                updateThemeIcon(isLight);
+            }, { passive: true });
+
+            document.getElementById('fullscreen-toggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.warn('InfoDB: Fullscreen denied', err));
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                updateFullscreenIcon(!!document.fullscreenElement);
+            });
+
+            // ─────────────────────────────────────────────────────────
+            // Dynamic Sidebar Sorting Infrastructure
+            // ─────────────────────────────────────────────────────────
+            const ENTRY_ORDER = new WeakMap();
+            let sortDebounceTimer = null;
+
+            function setEntryOrder(el, index) {
+                if (!el) return;
+                ENTRY_ORDER.set(el, index);
+                requestSort(); // Automatically request a re-sort whenever a new order is set
+            }
+
+            function requestSort() {
+                if (sortDebounceTimer) cancelAnimationFrame(sortDebounceTimer);
+                sortDebounceTimer = requestAnimationFrame(sortLeftSidebar);
+            }
+
+            function sortLeftSidebar() {
+                const container = DOM.containers['left-sidebar-top'];
+                if (!container) return;
+                const children = Array.from(container.children);
+                children.sort((a, b) => {
+                    const ia = ENTRY_ORDER.has(a) ? ENTRY_ORDER.get(a) : Number.MAX_SAFE_INTEGER;
+                    const ib = ENTRY_ORDER.has(b) ? ENTRY_ORDER.get(b) : Number.MAX_SAFE_INTEGER;
+                    return ia - ib;
+                });
+                for (const child of children) container.appendChild(child);
+            }
+
+            // Core API Exposure for External Modules
+            window.theInfoDB = {
+                colorAPI: {
+                    setTheme: (colors) => {
+                        for (const [key, value] of Object.entries(colors)) {
+                            DOM.root.style.setProperty(`--${key}`, value);
+                        }
+                    },
+                    getColor: (token) => {
+                        return getComputedStyle(DOM.root).getPropertyValue(`--${token}`).trim();
+                    }
+                },
+                ui: {
+                    // Upgraded registerEntry: parses HTML string into real DOM nodes, 
+                    // auto-sorts if possible, and returns the elements.
+                    registerEntry: (target, elementHTML, position = 'append') => {
+                        const container = DOM.containers[target];
+                        if (!container) return console.warn(`InfoDB: Invalid target '${target}'`);
+
+                        // Parse string into elements
+                        const temp = document.createElement('div');
+                        temp.innerHTML = elementHTML.trim();
+                        const elements = Array.from(temp.children);
+
+                        // If called synchronously on load, we can auto-detect the module index
+                        const script = document.currentScript;
+                        const order = script ? parseInt(script.dataset.moduleOrder, 10) : null;
+
+                        elements.forEach(el => {
+                            if (order !== null && !isNaN(order)) setEntryOrder(el, order);
+                            if (position === 'prepend') {
+                                container.prepend(el);
+                            } else {
+                                container.appendChild(el);
+                            }
+                        });
+
+                        // Return the element(s) so async modules can apply setEntryOrder manually
+                        return elements.length === 1 ? elements[0] : elements;
+                    },
+                    registerElement: (target, htmlElement, position = 'append') => {
+                        const container = DOM.containers[target];
+                        if (!container) return;
+
+                        const script = document.currentScript;
+                        const order = script ? parseInt(script.dataset.moduleOrder, 10) : null;
+                        if (order !== null && !isNaN(order)) setEntryOrder(htmlElement, order);
+
+                        if (position === 'prepend' && container.firstChild) {
+                            container.insertBefore(htmlElement, container.firstChild);
+                        } else {
+                            container.appendChild(htmlElement);
+                        }
+                        return htmlElement;
+                    },
+                    setEntryOrder,
+                    sortLeftSidebar,
+                    requestSort
+                }
+            };
+        })();
+
+        // ─────────────────────────────────────────────────────────────
+        // Asynchronous High-Performance Module Bootstrapper
+        // ─────────────────────────────────────────────────────────────
+        async function loadModules() {
+            try {
+                if (window.location.protocol === 'blob:' ||
+                    window.location.protocol === 'data:' ||
+                    window.location.protocol === 'about:') {
+                    return;
+                }
+
+                const response = await fetch('modules.json');
+                if (!response.ok) return;
+
+                const modules = await response.json();
+                const fragment = document.createDocumentFragment();
+
+                for (let i = 0; i < modules.length; i++) {
+                    const script = document.createElement('script');
+                    script.src = modules[i];
+                    script.defer = true; 
+                    // CRITICAL: We tag the script with its modules.json index here
+                    script.dataset.moduleOrder = String(i);
+                    fragment.appendChild(script);
+                }
+
+                document.head.appendChild(fragment);
+
+            } catch (error) {
+                console.error('InfoDB Bootstrapper: Failed to load modules', error);
+            }
+        }
+
+        loadModules();
+    </script>
 </body>
 </html>
