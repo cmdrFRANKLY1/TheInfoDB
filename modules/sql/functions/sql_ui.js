@@ -3,23 +3,19 @@
  * Path: modules/sql/functions/sql_ui.js
  *
  * Builds the DOM, wires events, and exposes NS.buildUI / NS.bootUI.
- * The sidebar entry is created by the orchestrator (sql_sandbox.js) and
- * passed in as the second argument to buildUI().
  */
 
 (function (NS) {
     'use strict';
-    // Module-scoped so both buildUI and wireEvents can access it.
-    let showConfirmModal = (msg, onConfirm) => {
-        if (window.confirm(msg)) onConfirm();
-    };
 
     NS.buildUI = function (api, existingSidebarEntry) {
+        
         // ── Sidebar entry (reuse the one the orchestrator registered) ──
         const sidebarEntry = existingSidebarEntry || (function () {
             const div = document.createElement('div');
-            div.className = 'settings-row';
+            div.className = 'settings-row sql-sidebar-entry';
             div.innerHTML = '<span>SQL Sandbox</span>';
+            api.ui.registerElement('left-sidebar-top', div);
             return div;
         })();
 
@@ -27,7 +23,6 @@
         const centerView = document.createElement('div');
         centerView.className = 'center-view hidden sql-view-container';
         centerView.id = 'sql-view';
-        
         centerView.innerHTML = `
             <div class="sql-view-header">SQL Sandbox</div>
 
@@ -66,6 +61,7 @@
                         <textarea class="sql-textarea" id="sql-input" spellcheck="false" placeholder=""></textarea>
                     </div>
                 </div>
+
                 <div class="sql-results-container" id="sql-results">
                     <div class="sql-empty-state">Run a query to see results here.</div>
                 </div>
@@ -92,10 +88,12 @@
                         <div style="font-size:0.75rem; opacity:0.7; font-weight:500;">Cols 1-3 (comma separated)</div>
                         <input id="sql-b-t1" placeholder="e.g. users" class="sql-b-input">
                         <input id="sql-b-c1" placeholder="id, username, email" class="sql-b-input">
+
                         <div style="font-size:0.75rem; opacity:0.7; font-weight:500; margin-top:4px;">Table 2 Name</div>
                         <div style="font-size:0.75rem; opacity:0.7; font-weight:500; margin-top:4px;">Cols 1-3 (comma separated)</div>
                         <input id="sql-b-t2" placeholder="e.g. posts" class="sql-b-input">
                         <input id="sql-b-c2" placeholder="id, title, views" class="sql-b-input">
+
                         <div style="font-size:0.75rem; opacity:0.7; font-weight:500; margin-top:4px;">Table 3 Name</div>
                         <div style="font-size:0.75rem; opacity:0.7; font-weight:500; margin-top:4px;">Cols 1-3 (comma separated)</div>
                         <input id="sql-b-t3" placeholder="e.g. comments" class="sql-b-input">
@@ -123,6 +121,7 @@
             </div>
         `;
 
+        // Register panels with the app shell
         api.ui.registerElement('content-panel', centerView);
         api.ui.registerElement('right-sidebar-top', rightPanel);
 
@@ -154,6 +153,9 @@
         };
 
         let state = null;
+        let showConfirmModal = (msg, onConfirm) => {
+            if (window.confirm(msg)) onConfirm();
+        };
 
         const ui = {
             sidebarEntry,
@@ -174,8 +176,7 @@
                 if (typeof NS.updateButtonStates === 'function') NS.updateButtonStates(state, ui);
                 if (typeof NS.rebuildDictionary === 'function') NS.rebuildDictionary(state);
                 if (elements.results) {
-                    elements.results.innerHTML =
-                        '<div class="sql-empty-state">Run a query to see results here.</div>';
+                    elements.results.innerHTML = '<div class="sql-empty-state">Run a query to see results here.</div>';
                 }
             },
 
@@ -190,8 +191,7 @@
                 if (typeof NS.updateButtonStates === 'function') NS.updateButtonStates(state, ui);
                 if (typeof NS.rebuildDictionary === 'function') NS.rebuildDictionary(state);
                 if (elements.results) {
-                    elements.results.innerHTML =
-                        '<div class="sql-empty-state">Run a query to see results here.</div>';
+                    elements.results.innerHTML = '<div class="sql-empty-state">Run a query to see results here.</div>';
                 }
             },
 
@@ -212,6 +212,7 @@
     NS.bootUI = function (state, ui) {
         ui._setState(state);
 
+        // Sidebar click handler — Exclusive Center View logic
         ui.sidebarEntry.addEventListener('click', () => {
             const mainContainer = document.getElementById('content-area');
             Array.from(mainContainer.children).forEach(child => {
@@ -221,9 +222,14 @@
 
             const rightContainer = document.getElementById('right-sidebar-top');
             Array.from(rightContainer.children).forEach(child => {
-                if (child.id !== 'sql-right-view') child.style.display = 'none';
+                if (child.id !== 'sql-right-view') {
+                    child.style.display = 'none';
+                    child.classList.remove('active');
+                } else {
+                    child.classList.add('active');
+                    child.style.display = 'flex';
+                }
             });
-            ui.rightPanel.classList.add('active');
         });
 
         NS.renderDatabase(state, ui);
@@ -282,6 +288,7 @@
                 log('Undid last action.', 'info');
             }
         });
+
         el.redoBtn.addEventListener('click', () => {
             if (state.historyIndex < state.history.length - 1) {
                 state.historyIndex++;
@@ -292,7 +299,7 @@
             }
         });
 
-        showConfirmModal = (msg, onConfirm) => {
+        let showConfirmModal = (msg, onConfirm) => {
             el.modalMsg.textContent = msg;
             el.modalOverlay.style.display = 'flex';
 
@@ -411,11 +418,13 @@
                 if (match) {
                     const word = match[1];
                     const lower = word.toLowerCase();
+
                     const isIdentifier = !!(
                         state.dbNodes.cols[lower] ||
                         state.dbNodes.tables[lower] ||
                         state.dbNodes.values[lower]
                     );
+
                     if (!isIdentifier &&
                         NS.SQL_KEYWORDS_SET.has(lower) &&
                         word !== word.toUpperCase()) {
@@ -444,6 +453,7 @@
                 el.runBtn.click();
                 return;
             }
+
             if (state.currentGhostSuggestion && (e.key === 'Tab' || e.key === 'ArrowRight')) {
                 if (e.key === 'ArrowRight') {
                     const val = el.input.value;

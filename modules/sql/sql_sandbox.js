@@ -1,12 +1,23 @@
-// ... existing code ...
+/**
+ * SQL Sandbox — Orchestrator
+ * Path: modules/sql/sql_sandbox.js
+ */
+
 (function () {
     'use strict';
 
-    // Guard against double-load
+    // Smarter guard: Check if booted AND if the DOM element is actually there.
+    // This allows Live Servers to hot-reload the UI without getting stuck.
     if (window.SQLSandbox && window.SQLSandbox.__booted) {
-        console.warn('[SQL Sandbox] Already booted — skipping duplicate load.');
-        return;
+        if (!document.querySelector('.sql-sidebar-entry')) {
+            console.warn('[SQL Sandbox] Hot reload detected (DOM missing but JS state exists). Re-mounting.');
+            window.SQLSandbox = {}; // Reset state for a clean boot
+        } else {
+            console.warn('[SQL Sandbox] Already booted — skipping duplicate load.');
+            return;
+        }
     }
+    
     window.SQLSandbox = window.SQLSandbox || {};
     window.SQLSandbox.__booted = true;
 
@@ -17,12 +28,15 @@
 
     // ── Resolve our own directory so functions/*.js load correctly ──
     const THIS_SRC = (document.currentScript && document.currentScript.src) || '';
-// ... existing code ...
+    const BASE_DIR = THIS_SRC
+        ? THIS_SRC.substring(0, THIS_SRC.lastIndexOf('/') + 1)
+        : 'modules/sql/';
+
     window.SQLSandbox.BASE_DIR = BASE_DIR;
 
     // ─────────────────────────────────────────────────────────────
     // Sidebar entry with monochrome "database" icon
-    // Registered synchronously so it appears immediately.
+    // Registered synchronously so the framework can capture its order.
     // ─────────────────────────────────────────────────────────────
     const sidebarEntry = document.createElement('div');
     sidebarEntry.className = 'settings-row sql-sidebar-entry';
@@ -74,6 +88,7 @@
         document.head.appendChild(st);
     }
 
+    // Register with framework to ensure it gets sorted properly
     window.theInfoDB.ui.registerElement('left-sidebar-top', sidebarEntry);
 
     // ─────────────────────────────────────────────────────────────
@@ -145,15 +160,14 @@
             try {
                 NS.installStyles();
 
+                // Pass the pre-registered sidebar entry directly to the UI builder
                 const ui = NS.buildUI(api, sidebarEntry);
                 const state = NS.createState();
 
-                // Give the UI a reference to state BEFORE wiring events
                 if (typeof ui._setState === 'function') ui._setState(state);
 
                 const executor = NS.createExecutor(state, ui);
 
-                // Pass state explicitly as 2nd arg as well
                 if (typeof ui.attachExecutor === 'function') {
                     ui.attachExecutor(executor, state);
                 }
