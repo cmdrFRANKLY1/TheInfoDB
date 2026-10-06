@@ -1,5 +1,4 @@
 [
-
     "modules/settings/colorSchemes_Presets.js",
     "modules/settings/colorScheme.js",
     "modules/settings/autohide_sidebars.js",

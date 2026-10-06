@@ -6,27 +6,20 @@
 (function () {
     'use strict';
 
-    // Smarter guard: Check if booted AND if the DOM element is actually there.
-    // This allows Live Servers to hot-reload the UI without getting stuck.
-    if (window.SQLSandbox && window.SQLSandbox.__booted) {
-        if (!document.querySelector('.sql-sidebar-entry')) {
-            console.warn('[SQL Sandbox] Hot reload detected (DOM missing but JS state exists). Re-mounting.');
-            window.SQLSandbox = {}; // Reset state for a clean boot
-        } else {
-            console.warn('[SQL Sandbox] Already booted — skipping duplicate load.');
-            return;
-        }
-    }
-    
-    window.SQLSandbox = window.SQLSandbox || {};
+    // 1. HARD CLEANUP: Guarantee a clean slate on every run (crucial for HMR/Live Server)
+    window.SQLSandbox = {};
     window.SQLSandbox.__booted = true;
+
+    // Remove old UI elements to prevent stacking duplicates on Hot Reloads
+    const oldElements = document.querySelectorAll('.sql-sidebar-entry, #sql-view, #sql-right-view');
+    oldElements.forEach(el => el.remove());
 
     if (!window.theInfoDB) {
         console.warn("[SQL Sandbox] window.theInfoDB not found. Aborting.");
         return;
     }
 
-    // ── Resolve our own directory so functions/*.js load correctly ──
+    // 2. PATH RESOLUTION
     const THIS_SRC = (document.currentScript && document.currentScript.src) || '';
     const BASE_DIR = THIS_SRC
         ? THIS_SRC.substring(0, THIS_SRC.lastIndexOf('/') + 1)
@@ -34,10 +27,8 @@
 
     window.SQLSandbox.BASE_DIR = BASE_DIR;
 
-    // ─────────────────────────────────────────────────────────────
-    // Sidebar entry with monochrome "database" icon
-    // Registered synchronously so the framework can capture its order.
-    // ─────────────────────────────────────────────────────────────
+    // 3. SYNCHRONOUS SIDEBAR REGISTRATION
+    // This MUST happen now so the framework captures its order from the script tag.
     const sidebarEntry = document.createElement('div');
     sidebarEntry.className = 'settings-row sql-sidebar-entry';
     sidebarEntry.innerHTML = `
@@ -59,41 +50,17 @@
         const st = document.createElement('style');
         st.id = SIDEBAR_STYLE_ID;
         st.textContent = `
-            .sql-sidebar-entry {
-                display: flex !important;
-                align-items: center;
-                justify-content: flex-start !important;
-                gap: 10px;
-                font-size: 0.95rem;
-                font-weight: 500;
-            }
-            .sql-sidebar-entry-inner {
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .sql-sidebar-entry svg {
-                display: block;
-                width: 16px;
-                height: 16px;
-                color: currentColor;
-                flex-shrink: 0;
-                opacity: 0.85;
-            }
-            .sql-sidebar-entry:hover svg {
-                opacity: 1;
-                color: var(--accent-color);
-            }
+            .sql-sidebar-entry { display: flex !important; align-items: center; justify-content: flex-start !important; gap: 10px; font-size: 0.95rem; font-weight: 500; }
+            .sql-sidebar-entry-inner { display: inline-flex; align-items: center; gap: 10px; }
+            .sql-sidebar-entry svg { display: block; width: 16px; height: 16px; color: currentColor; flex-shrink: 0; opacity: 0.85; }
+            .sql-sidebar-entry:hover svg { opacity: 1; color: var(--accent-color); }
         `;
         document.head.appendChild(st);
     }
 
-    // Register with framework to ensure it gets sorted properly
     window.theInfoDB.ui.registerElement('left-sidebar-top', sidebarEntry);
 
-    // ─────────────────────────────────────────────────────────────
-    // Module list (execution order matters)
-    // ─────────────────────────────────────────────────────────────
+    // 4. MODULE LOADER
     const MODULES = [
         'functions/sql_constants.js',
         'functions/sql_tokenizer.js',
@@ -129,16 +96,13 @@
         s.async = false;
         s.defer = false;
         s.onload = done;
-        s.onerror = () => {
-            failed.push(src);
-            console.error('[SQL Sandbox] Failed to load:', src);
-            done();
-        };
+        s.onerror = () => { failed.push(src); console.error('[SQL Sandbox] Failed to load:', src); done(); };
         document.head.appendChild(s);
     }
 
     for (let i = 0; i < MODULES.length; i++) loadOne(MODULES[i]);
 
+    // 5. BOOTSTRAPPER
     function boot() {
         const NS = window.SQLSandbox;
         const api = window.theInfoDB;
@@ -149,10 +113,7 @@
         ];
         const missing = required.filter(fn => typeof NS[fn] !== 'function');
         if (missing.length) {
-            console.error(
-                '[SQL Sandbox] Boot aborted. Missing:\n  ' + missing.join('\n  ') +
-                '\nLoaded keys: ' + Object.keys(NS).join(', ')
-            );
+            console.error('[SQL Sandbox] Boot aborted. Missing:\n  ' + missing.join('\n  '));
             return;
         }
 
@@ -160,7 +121,7 @@
             try {
                 NS.installStyles();
 
-                // Pass the pre-registered sidebar entry directly to the UI builder
+                // UI receives the synchronously created sidebar entry
                 const ui = NS.buildUI(api, sidebarEntry);
                 const state = NS.createState();
 

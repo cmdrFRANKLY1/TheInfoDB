@@ -58,7 +58,7 @@
                     </div>
                     <div class="sql-textarea-container">
                         <div id="sql-ghost" class="sql-ghost-textarea"></div>
-                        <textarea class="sql-textarea" id="sql-input" spellcheck="false" placeholder=""></textarea>
+                        <textarea class="sql-textarea" id="sql-input" spellcheck="false" placeholder=">> Input here..."></textarea>
                     </div>
                 </div>
 
@@ -124,6 +124,30 @@
         // Register panels with the app shell
         api.ui.registerElement('content-panel', centerView);
         api.ui.registerElement('right-sidebar-top', rightPanel);
+
+        // Attach click listener immediately (independent of the boot chain)
+        sidebarEntry.addEventListener('click', () => {
+            const mainContainer = document.getElementById('content-area');
+            if (mainContainer) {
+                Array.from(mainContainer.children).forEach(child => {
+                    if (child.classList.contains('center-view')) child.classList.add('hidden');
+                });
+            }
+            centerView.classList.remove('hidden');
+
+            const rightContainer = document.getElementById('right-sidebar-top');
+            if (rightContainer) {
+                Array.from(rightContainer.children).forEach(child => {
+                    if (child.id !== 'sql-right-view') {
+                        child.style.display = 'none';
+                        child.classList.remove('active');
+                    } else {
+                        child.classList.add('active');
+                        child.style.display = 'flex';
+                    }
+                });
+            }
+        });
 
         const elements = {
             input: centerView.querySelector('#sql-input'),
@@ -211,27 +235,6 @@
 
     NS.bootUI = function (state, ui) {
         ui._setState(state);
-
-        // Sidebar click handler — Exclusive Center View logic
-        ui.sidebarEntry.addEventListener('click', () => {
-            const mainContainer = document.getElementById('content-area');
-            Array.from(mainContainer.children).forEach(child => {
-                if (child.classList.contains('center-view')) child.classList.add('hidden');
-            });
-            ui.centerView.classList.remove('hidden');
-
-            const rightContainer = document.getElementById('right-sidebar-top');
-            Array.from(rightContainer.children).forEach(child => {
-                if (child.id !== 'sql-right-view') {
-                    child.style.display = 'none';
-                    child.classList.remove('active');
-                } else {
-                    child.classList.add('active');
-                    child.style.display = 'flex';
-                }
-            });
-        });
-
         NS.renderDatabase(state, ui);
         NS.rebuildDictionary(state);
         NS.updateButtonStates(state, ui);
