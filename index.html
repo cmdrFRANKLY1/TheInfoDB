@@ -19,7 +19,11 @@
             --panel-bg: #0a0a0a;
             --border-color: #1a1a1a;
             --accent-color: #3b82f6;
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             --topbar-height: 48px;
             --sidebar-width: 250px;
         }
@@ -42,12 +46,21 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
+<<<<<<< HEAD
+=======
+            /* Inter for TVs/Monitors, falling back safely to native OS fonts */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+<<<<<<< HEAD
             letter-spacing: -0.01em;
             overflow: hidden;
+=======
+            letter-spacing: -0.01em; 
+            overflow: hidden; /* Prevent body scroll */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             width: 100vw;
             height: 100vh;
             display: flex;
@@ -64,7 +77,11 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 16px;
+<<<<<<< HEAD
             contain: layout size style;
+=======
+            contain: layout size style; /* Perf: CSS Containment */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             z-index: 100;
             flex-shrink: 0;
         }
@@ -110,7 +127,11 @@
             background-color: var(--panel-bg);
             display: flex;
             flex-direction: column;
+<<<<<<< HEAD
             contain: layout size style;
+=======
+            contain: layout size style; /* Perf: CSS Containment */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
             position: absolute;
@@ -145,7 +166,11 @@
             justify-content: space-between;
             font-size: 0.95rem;
             font-weight: 500;
+<<<<<<< HEAD
             cursor: pointer;
+=======
+            cursor: pointer; /* Ready for external JS to bind click events */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             padding: 4px 0;
         }
 
@@ -197,6 +222,7 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.1s;
+<<<<<<< HEAD
         }
 
         .icon-btn:hover { background-color: var(--border-color); }
@@ -223,6 +249,34 @@
             border-left: 1px solid var(--border-color);
             transform: translateX(0);
         }
+=======
+        }
+        
+        .icon-btn:hover { background-color: var(--border-color); }
+        
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        #left-sidebar {
+            left: 0;
+            border-right: 1px solid var(--border-color);
+            transform: translateX(0); /* Default open */
+        }
+        #left-sidebar.closed { transform: translateX(-100%); }
+
+        #right-sidebar {
+            right: 0;
+            border-left: 1px solid var(--border-color);
+            transform: translateX(0); /* Default open */
+        }
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         #right-sidebar.closed { transform: translateX(100%); }
 
         /* Central Content Area */
@@ -255,7 +309,11 @@
     <div id="main-container">
         <aside class="sidebar" id="left-sidebar">
             <div class="sidebar-content" id="left-sidebar-top"></div>
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             <!-- Hardcoded Settings & Theme Toggle -->
             <div class="sidebar-bottom" id="left-sidebar-bottom">
                 <div class="settings-row" id="core-settings-btn">
@@ -298,10 +356,19 @@
                 themeIcon: document.getElementById('theme-icon'),
                 fullscreenIcon: document.getElementById('fullscreen-icon'),
                 containers: {
+<<<<<<< HEAD
+=======
+                    // Macro-Level Panels
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                     'top-panel': document.getElementById('topbar'),
                     'left-panel': document.getElementById('left-sidebar'),
                     'right-panel': document.getElementById('right-sidebar'),
                     'content-panel': document.getElementById('content-area'),
+<<<<<<< HEAD
+=======
+                    
+                    // Micro-Level Containers
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                     'topbar-left': document.getElementById('topbar-left'),
                     'topbar-center': document.getElementById('topbar-center'),
                     'topbar-right': document.getElementById('topbar-right'),
@@ -325,6 +392,7 @@
                 DOM.body.classList.toggle('right-closed');
             }, { passive: true });
 
+<<<<<<< HEAD
             // Settings Menu Toggle - enforces exclusive center-view visibility
             document.getElementById('core-settings-btn').addEventListener('click', () => {
                 const settingsView = DOM.containers['settings-view'];
@@ -353,6 +421,14 @@
             });
 
             // Ultra-fast Theme Toggle
+=======
+            // Settings Menu Toggle - Now targets the center pane view
+            document.getElementById('core-settings-btn').addEventListener('click', () => {
+                DOM.containers['settings-view'].classList.toggle('hidden');
+            });
+
+            // Ultra-fast Theme Toggle (SVG string injection avoids heavy DOM parsing overhead)
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             const PATHS = {
                 moon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z',
                 sun: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z',
@@ -363,24 +439,41 @@
             const updateThemeIcon = (isLight) => {
                 DOM.themeIcon.innerHTML = `<path d="${isLight ? PATHS.sun : PATHS.moon}" />`;
             };
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             const updateFullscreenIcon = (isFullscreen) => {
                 if (DOM.fullscreenIcon) {
                     DOM.fullscreenIcon.innerHTML = `<path d="${isFullscreen ? PATHS.compress : PATHS.expand}" />`;
                 }
             };
+<<<<<<< HEAD
 
+=======
+            
+            // Set initial icons immediately
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             updateThemeIcon(false);
             updateFullscreenIcon(false);
 
             document.getElementById('theme-toggle').addEventListener('click', (e) => {
+<<<<<<< HEAD
                 e.stopPropagation();
+=======
+                e.stopPropagation(); // Prevents clicking the toggle from triggering a wider "Settings" menu open
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                 const isLight = DOM.root.classList.toggle('theme-light');
                 updateThemeIcon(isLight);
             }, { passive: true });
 
             document.getElementById('fullscreen-toggle').addEventListener('click', (e) => {
+<<<<<<< HEAD
                 e.stopPropagation();
+=======
+                e.stopPropagation(); // Prevents toggling the settings menu
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen().catch(err => console.warn('InfoDB: Fullscreen denied', err));
                 } else {
@@ -392,6 +485,7 @@
                 updateFullscreenIcon(!!document.fullscreenElement);
             });
 
+<<<<<<< HEAD
             // ─────────────────────────────────────────────────────────
             // Dynamic Sidebar Sorting Infrastructure
             // ─────────────────────────────────────────────────────────
@@ -421,6 +515,8 @@
                 for (const child of children) container.appendChild(child);
             }
 
+=======
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             // Core API Exposure for External Modules
             window.theInfoDB = {
                 colorAPI: {
@@ -434,6 +530,7 @@
                     }
                 },
                 ui: {
+<<<<<<< HEAD
                     // Upgraded registerEntry: parses HTML string into real DOM nodes, 
                     // auto-sorts if possible, and returns the elements.
                     registerEntry: (target, elementHTML, position = 'append') => {
@@ -460,29 +557,50 @@
 
                         // Return the element(s) so async modules can apply setEntryOrder manually
                         return elements.length === 1 ? elements[0] : elements;
+=======
+                    registerEntry: (target, elementHTML, position = 'append') => {
+                        const container = DOM.containers[target];
+                        if (!container) return console.warn(`InfoDB: Invalid target '${target}'`);
+                        
+                        // Using insertAdjacentHTML prevents destroying existing child event listeners
+                        if (position === 'prepend') {
+                            container.insertAdjacentHTML('afterbegin', elementHTML);
+                        } else {
+                            container.insertAdjacentHTML('beforeend', elementHTML);
+                        }
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                     },
                     registerElement: (target, htmlElement, position = 'append') => {
                         const container = DOM.containers[target];
                         if (!container) return;
+<<<<<<< HEAD
 
                         const script = document.currentScript;
                         const order = script ? parseInt(script.dataset.moduleOrder, 10) : null;
                         if (order !== null && !isNaN(order)) setEntryOrder(htmlElement, order);
 
+=======
+                        
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                         if (position === 'prepend' && container.firstChild) {
                             container.insertBefore(htmlElement, container.firstChild);
                         } else {
                             container.appendChild(htmlElement);
                         }
+<<<<<<< HEAD
                         return htmlElement;
                     },
                     setEntryOrder,
                     sortLeftSidebar,
                     requestSort
+=======
+                    }
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
                 }
             };
         })();
 
+<<<<<<< HEAD
         // ─────────────────────────────────────────────────────────────
         // Asynchronous High-Performance Module Bootstrapper
         // ─────────────────────────────────────────────────────────────
@@ -511,11 +629,44 @@
 
                 document.head.appendChild(fragment);
 
+=======
+        // Asynchronous High-Performance Module Bootstrapper
+        async function loadModules() {
+            try {
+                // Prevent relative fetch errors in sandboxed preview environments (like blob: URLs)
+                if (window.location.protocol === 'blob:' || window.location.protocol === 'data:' || window.location.protocol === 'about:') {
+                    console.info('InfoDB Bootstrapper: Sandboxed preview environment detected. Skipping modules.json fetch to prevent URL errors.');
+                    return;
+                }
+
+                // Fetch modules list non-blockingly
+                const response = await fetch('modules.json');
+                if (!response.ok) return; // Fail silently if not setup yet to prevent UI errors
+                
+                const modules = await response.json();
+                
+                // Use a DocumentFragment to batch DOM inserts (Zero Layout Thrashing)
+                const fragment = document.createDocumentFragment();
+                
+                for (let i = 0; i < modules.length; i++) {
+                    const script = document.createElement('script');
+                    script.src = modules[i];
+                    script.defer = true; // Execute in order after HTML parses, without blocking
+                    fragment.appendChild(script);
+                }
+                
+                document.head.appendChild(fragment);
+                
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             } catch (error) {
                 console.error('InfoDB Bootstrapper: Failed to load modules', error);
             }
         }
 
+<<<<<<< HEAD
+=======
+        // Kick off module fetching immediately
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         loadModules();
     </script>
 </body>

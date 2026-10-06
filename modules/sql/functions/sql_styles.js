@@ -12,7 +12,11 @@
 (function (NS) {
     'use strict';
 
+<<<<<<< HEAD
     const STYLE_ID = 'sql-sandbox-styles-v12';
+=======
+    const STYLE_ID = 'sql-sandbox-styles-v7';
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
 
     const STYLES = `
         /* ── Layout: top-level vertical stack ── */
@@ -88,6 +92,12 @@
             height: 160px;
             flex: 0 0 auto;
         }
+<<<<<<< HEAD
+=======
+
+        /* Plain textarea. The ghost layer shows ONLY the faded
+           autocomplete suggestion — no syntax coloring. */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-textarea,
         .sql-ghost-textarea {
             position: absolute;
@@ -117,6 +127,11 @@
             outline: none;
             z-index: 2;
         }
+<<<<<<< HEAD
+=======
+
+        /* Only the autocomplete remainder gets styled */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-ghost-suggest {
             color: var(--text-color);
             opacity: 0.35;
@@ -144,6 +159,7 @@
         .sql-btn.secondary:hover:not(:disabled) { background-color: rgba(128,128,128,0.1); }
         .sql-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+<<<<<<< HEAD
         /* Icon-only secondary buttons (Undo / Redo) */
         .sql-icon-btn {
             display: inline-flex;
@@ -168,6 +184,9 @@
         }
 
         /* ── Highlighting ── */
+=======
+        /* ── Table cell highlighting (Live DB State only) ── */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-highlight {
             background-color: color-mix(in srgb, var(--hi-color) 20%, transparent) !important;
             color: var(--hi-color) !important;
@@ -214,7 +233,11 @@
         }
         .sql-results-container::-webkit-scrollbar-corner { background: transparent; }
 
+<<<<<<< HEAD
         /* ── Tables ── */
+=======
+        /* ── Tables (single-line, auto-width, no truncation, no sticky) ── */
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-table {
             width: max-content;
             min-width: 100%;
@@ -262,6 +285,7 @@
             font-size: 0.9rem;
         }
 
+<<<<<<< HEAD
         /* ── Live DB state — flex row of table cards ──
            - 1 card: fills the row (flex: 1 1 auto).
            - N cards: each sits at content width, row scrolls horizontally. */
@@ -278,6 +302,20 @@
             flex: 1 1 auto;
             min-height: 240px;
             min-width: 0;
+=======
+        /* ── Live DB state grid — FIXED 2×2 ── */
+        .sql-tables-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-auto-rows: 1fr;
+            gap: 12px;
+            overflow: auto;
+            contain: content;
+            flex: 1 1 auto;
+            min-height: 360px;
+            align-items: stretch;
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             scrollbar-width: auto;
             scrollbar-color: #6b7280 rgba(255,255,255,0.06);
         }
@@ -305,8 +343,11 @@
         }
         .sql-tables-overview::-webkit-scrollbar-corner { background: transparent; }
 
+<<<<<<< HEAD
         /* Cards: shrink to content width but never less than 240px.
            The sole-child case is handled by :only-child below. */
+=======
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-db-table-wrapper {
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
@@ -314,6 +355,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+<<<<<<< HEAD
             flex: 0 0 auto;
             min-width: 240px;
             max-width: none;
@@ -328,6 +370,12 @@
             align-self: stretch;
         }
 
+=======
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+        }
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
         .sql-db-table-title {
             padding: 6px 12px;
             font-weight: 600;
@@ -348,6 +396,7 @@
         }
         .sql-db-table-title > span { flex-shrink: 0; }
 
+<<<<<<< HEAD
         /* ── Table body ── */
         .sql-db-table-scroll {
             overflow: auto;
@@ -356,10 +405,21 @@
             flex: 1 1 auto;
             min-height: 0;
             max-height: 320px;
+=======
+        /* ── Table scroll area — BOTH scrollbars always visible ── */
+        .sql-db-table-scroll {
+            overflow: scroll;
+            overflow-x: scroll;
+            overflow-y: scroll;
+            flex: 1 1 auto;
+            min-height: 0;
+            scrollbar-gutter: stable both-edges;
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             scrollbar-width: auto;
             scrollbar-color: #6b7280 rgba(255,255,255,0.06);
         }
         .sql-db-table-scroll::-webkit-scrollbar {
+<<<<<<< HEAD
             width: 12px;
             height: 12px;
             background: transparent;
@@ -367,11 +427,25 @@
         .sql-db-table-scroll::-webkit-scrollbar-track {
             background: rgba(255,255,255,0.04);
             border-radius: 6px;
+=======
+            width: 14px;
+            height: 14px;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        .sql-db-table-scroll::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.06);
+            border-radius: 7px;
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             margin: 2px;
         }
         .sql-db-table-scroll::-webkit-scrollbar-thumb {
             background: #6b7280;
+<<<<<<< HEAD
             border-radius: 6px;
+=======
+            border-radius: 7px;
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
             border: 3px solid transparent;
             background-clip: padding-box;
             min-height: 30px;
@@ -523,6 +597,7 @@
             width: 100%;
             box-sizing: border-box;
         }
+<<<<<<< HEAD
 
         /* ──────────────────────────────────────────────────────────
            Speedrun panel — compact
@@ -843,6 +918,8 @@
         .sql-quest-modal-body pre .str { color: #10b981; }
         .sql-quest-modal-body pre .num { color: #f59e0b; }
         .sql-quest-modal-body pre .cm { opacity: 0.5; font-style: italic; }
+=======
+>>>>>>> 4cda97e7e4f1cbbed3847076e5f376ab8f9eebb5
     `;
 
     let injected = false;
