@@ -18,9 +18,8 @@ if (window.DocumentViewer && window.DocumentViewer.__booted) {
 const api = window.theInfoDB;
 
 const THIS_SRC = (currentScript && currentScript.src) || '';
-const BASE_DIR = THIS_SRC
-    ? THIS_SRC.substring(0, THIS_SRC.lastIndexOf('/') + 1)
-    : 'modules/documents/';
+// Hardcode the path relative to index.html so Vercel routing can't confuse it
+const BASE_DIR = 'modules/documents/';
 
 const REGISTRY_FILE = 'registryForDocuments.json';
 const HISTORY_KEY = 'doc-viewer-history-v1';
@@ -746,13 +745,31 @@ function tagChipHTML(tag) {
 
 function resolveRootPath(rel) {
     rel = String(rel || '');
+    
+    // 1. Allow external URLs
     if (/^(https?:|data:|blob:|mailto:|tel:)/.test(rel)) return rel;
+    
+    // 2. Block malicious directory traversal
     if (/(^|\/)\.\.(\/|$)/.test(rel)) {
         console.warn('[Documents] Rejected path with "..":', rel);
-        return ROOT_URL + '__blocked__';
+        return '__blocked__';
     }
-    if (rel.startsWith('/')) return ROOT_URL.replace(/\/$/, '') + rel;
-    return ROOT_URL + rel.replace(/^\.\//, '');
+    
+    // 3. Strip leading slashes or dots
+    rel = rel.replace(/^(\.\/|\/)/, '');
+    
+    // 4. Build an absolute URL dynamically based on current Vercel path
+    let basePath = window.location.pathname;
+    
+    // If the path ends in a file (like index.html), strip it to get the directory
+    if (basePath.match(/\/[^\/]+\.[^\/]+$/)) {
+        basePath = basePath.substring(0, basePath.lastIndexOf('/'));
+    }
+    
+    // Ensure trailing slash
+    if (!basePath.endsWith('/')) basePath += '/';
+    
+    return window.location.origin + basePath + rel;
 }
 
 function inferType(path) {
