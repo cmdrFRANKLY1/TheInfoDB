@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>theInfoDB</title>
-    
+
     <style>
         :root {
             /* Color Palette - Light (Default) */
@@ -15,7 +15,7 @@
             --border-color: #e5e5e5;
             --hover-bg: #eaeaea;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            
+
             /* Sizing - Medium (Default) */
             --sidebar-width: 246px;
             --sidebar-icon-width: 64px;
@@ -56,19 +56,19 @@
             --btn-size: 48px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body { 
-            font-family: system-ui, -apple-system, sans-serif; 
-            background-color: var(--bg-secondary); 
-            color: var(--text-primary); 
-            font-size: var(--font-size); 
-            overflow: hidden; 
-            transition: background-color 0.2s, color 0.2s; 
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size);
+            overflow: hidden;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         /* Toggle Button */
@@ -94,20 +94,20 @@
             overflow: hidden;
         }
 
-        #sidebar-toggle:hover { 
-            background-color: var(--hover-bg); 
+        #sidebar-toggle:hover {
+            background-color: var(--hover-bg);
         }
-        
+
         #sidebar-toggle.is-open {
             background-color: transparent;
         }
 
-        #sidebar-toggle svg { 
-            width: var(--icon-size); 
-            height: var(--icon-size); 
-            flex-shrink: 0; 
+        #sidebar-toggle svg {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            flex-shrink: 0;
         }
-        
+
         #datetime-display {
             display: none;
             font-size: 0.9em;
@@ -178,8 +178,7 @@
             height: 100vh;
             z-index: 10;
             overflow-y: auto;
-            /* Provide visual breathing room for the floating button */
-            padding-top: calc(16px + var(--btn-size) + 24px); 
+            padding-top: calc(16px + var(--btn-size) + 24px);
         }
 
         /* Sidebar Content */
@@ -207,20 +206,20 @@
             overflow: hidden;
             white-space: nowrap;
         }
-        .sidebar-item:hover { 
-            background-color: var(--hover-bg); 
+        .sidebar-item:hover {
+            background-color: var(--hover-bg);
         }
-        .sidebar-item svg { 
-            width: var(--icon-size); 
-            height: var(--icon-size); 
-            flex-shrink: 0; 
+        .sidebar-item svg {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            flex-shrink: 0;
         }
-        
-        .sidebar-item-text { 
-            transition: opacity 0.2s; 
-            opacity: 1; 
+
+        .sidebar-item-text {
+            transition: opacity 0.2s;
+            opacity: 1;
         }
-        
+
         body[data-sidebar-mode="icons"] #sidebar:not(.is-open) .sidebar-item-text {
             opacity: 0;
             pointer-events: none;
@@ -262,9 +261,9 @@
             white-space: nowrap;
         }
         #settings-btn:hover { background-color: var(--hover-bg); }
-        
-        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #settings-btn-text { 
-            display: none; 
+
+        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #settings-btn-text {
+            display: none;
         }
 
         #theme-toggle {
@@ -321,15 +320,15 @@
         #settings-overlay.is-visible #settings-modal {
             transform: translateY(0);
         }
-        
-        .settings-row { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
+
+        .settings-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .settings-row label { 
-            font-weight: 600; 
-            font-size: 0.9em; 
+        .settings-row label {
+            font-weight: 600;
+            font-size: 0.9em;
         }
         .settings-row select {
             padding: 8px;
@@ -347,12 +346,12 @@
             margin-top: 8px;
         }
         .settings-row-inline input[type="checkbox"] {
-            width: 18px; 
-            height: 18px; 
+            width: 18px;
+            height: 18px;
             cursor: pointer;
             accent-color: var(--text-primary);
         }
-        
+
         #settings-close {
             align-self: flex-end;
             padding: 10px 20px;
@@ -392,7 +391,7 @@
         <div id="sidebar-content">
             <!-- External modules inject links here -->
         </div>
-        
+
         <div id="sidebar-footer">
             <button id="settings-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -414,7 +413,7 @@
     <div id="settings-overlay">
         <div id="settings-modal">
             <h2 style="margin-bottom: 8px;">Settings</h2>
-            
+
             <div class="settings-row">
                 <label>Sidebar Toggle Mode</label>
                 <select id="setting-sidebar-mode">
@@ -453,12 +452,90 @@
     </div>
 
     <script>
-        // State
+        // ─────────────────────────────────────────────────────────────
+        // Global configuration shared with dynamically-loaded modules
+        // ─────────────────────────────────────────────────────────────
+        window.__APP_CONFIG__ = {
+            github: {
+                owner:  'cmdrFRANKLY1',
+                repo:   'TheInfoDB_Data',
+                branch: 'main'
+            },
+            // Cache-busting version token for jsDelivr. Bump this whenever
+            // you push changes to any module and jsDelivr keeps serving the
+            // old copy. It's cheap and reliable.
+            assetVersion: 'v' + Date.now(),
+            // Optional: set a GitHub PAT here (fine-grained, read-only on
+            // this repo) to raise API rate limits from 60/hr to 5000/hr.
+            // Leave null to use unauthenticated requests.
+            githubToken: null
+        };
+        window.__GITHUB_TOKEN__ = window.__APP_CONFIG__.githubToken || null;
+
+        // ─────────────────────────────────────────────────────────────
+        // Shared helpers used by dynamically-loaded modules
+        // ─────────────────────────────────────────────────────────────
+
+        // Resolve a repo-relative path to a jsDelivr CDN URL that points at
+        // the module's source on GitHub. This lets the search module fetch
+        // things like `resources/index/titles/indexTitle.json` regardless
+        // of where the page itself is hosted (Vercel, localhost, etc.).
+        window.resolveUrl = function (relPath) {
+            if (!relPath) return '';
+            if (/^(https?:)?\/\//i.test(relPath)) return relPath;
+            const cfg = window.__APP_CONFIG__.github;
+            const clean = String(relPath).replace(/^\/+/, '');
+            return `https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${cfg.branch}/${clean}`;
+        };
+
+        window.escapeHtml = function (s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        };
+
+        window.pickRandom = function (arr) {
+            if (!Array.isArray(arr) || arr.length === 0) return '';
+            return arr[Math.floor(Math.random() * arr.length)];
+        };
+
+        window.safeFetchJson = async function (url) {
+            try {
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) return null;
+                return await res.json();
+            } catch {
+                return null;
+            }
+        };
+
+        window.safeFetchText = async function (url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) return null;
+                return await res.text();
+            } catch {
+                return null;
+            }
+        };
+
+        // Global app state object shared with modules. Modules extend it.
+        window.__appState = window.__appState || {
+            indexedPages: [],
+            hierarchicalStructure: [],
+            pins: []
+        };
+
+        // ─────────────────────────────────────────────────────────────
+        // UI State
+        // ─────────────────────────────────────────────────────────────
         let isSidebarOpen = false;
         let autoClose = true;
         let debugMode = false;
 
-        // DOM Entities
         const body = document.body;
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -466,9 +543,9 @@
         const iconClose = document.getElementById('icon-close');
         const datetimeDisplay = document.getElementById('datetime-display');
         const appCanvas = document.getElementById('app-canvas');
-        
+
         const sidebarSearch = document.getElementById('sidebar-search');
-        
+
         const settingsBtn = document.getElementById('settings-btn');
         const settingsOverlay = document.getElementById('settings-overlay');
         const settingsCancel = document.getElementById('settings-cancel');
@@ -482,16 +559,16 @@
             const now = new Date();
             const dateOpts = { weekday: 'short', month: 'short', day: 'numeric' };
             const timeOpts = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            
+
             datetimeDisplay.textContent = `${now.toLocaleDateString(undefined, dateOpts)} ${now.toLocaleTimeString(undefined, timeOpts)}`;
         }
         setInterval(updateDateTime, 1000);
-        updateDateTime(); // Initial render
+        updateDateTime();
 
         // Overlay Toggle Mechanics
         function toggleSidebar(forcedState) {
             isSidebarOpen = forcedState !== undefined ? forcedState : !isSidebarOpen;
-            
+
             if (isSidebarOpen) {
                 sidebar.classList.add('is-open');
                 sidebarToggle.classList.add('is-open');
@@ -538,12 +615,12 @@
             body.setAttribute('data-sidebar-mode', elSidebarMode.value);
             body.setAttribute('data-size', elUiScale.value);
             autoClose = elAutoClose.checked;
-            
+
             if (debugMode !== elDebugMode.checked) {
                 debugMode = elDebugMode.checked;
                 document.dispatchEvent(new CustomEvent('debugToggled', { detail: debugMode }));
             }
-            
+
             // Notify dynamic settings
             const dynamicCheckboxes = document.querySelectorAll('.dynamic-setting-cb');
             dynamicCheckboxes.forEach(cb => {
@@ -552,7 +629,7 @@
                     document.dispatchEvent(new CustomEvent(cb.id + '_applied', { detail: cb.checked }));
                 }
             });
-            
+
             settingsOverlay.classList.remove('is-visible');
         });
 
@@ -561,12 +638,9 @@
             const term = e.target.value.toLowerCase();
             const items = document.querySelectorAll('.sidebar-item');
             items.forEach(item => {
-                const text = item.querySelector('.sidebar-item-text').textContent.toLowerCase();
-                if (text.includes(term)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
+                const textEl = item.querySelector('.sidebar-item-text');
+                const text = textEl ? textEl.textContent.toLowerCase() : '';
+                item.style.display = text.includes(term) ? 'flex' : 'none';
             });
         });
 
@@ -575,7 +649,7 @@
             const current = body.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
-            
+
             if (next === 'light') {
                 iconSun.style.display = 'none';
                 iconMoon.style.display = 'block';
@@ -586,7 +660,9 @@
         }
         themeToggle.addEventListener('click', toggleTheme);
 
-        // Core API Window Attachment
+        // ─────────────────────────────────────────────────────────────
+        // Core API exposed to modules
+        // ─────────────────────────────────────────────────────────────
         window.CoreUI = {
             addSidebarItem: function(id, label, svgIconPath, onClickCallback) {
                 const content = document.getElementById('sidebar-content');
@@ -624,66 +700,101 @@
                     <input type="checkbox" id="${id}" class="dynamic-setting-cb" ${defaultState ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--text-primary);">
                     <label for="${id}">${label}</label>
                 `;
-                
+
                 const cb = row.querySelector('input');
                 cb.addEventListener('change', () => {
                     cb.dataset.changed = 'true';
                 });
-                
+
                 document.addEventListener(id + '_applied', (e) => {
-                    if(onChangeCallback) onChangeCallback(e.detail);
+                    if (onChangeCallback) onChangeCallback(e.detail);
                 });
-                
+
                 container.appendChild(row);
                 return row;
             }
         };
 
+        // ─────────────────────────────────────────────────────────────
+        // Module bootstrap
+        //
+        // Strategy: fetch a tiny manifest from raw.githubusercontent.com
+        // (no per-IP API rate limit for public repos) listing every module
+        // entry script. Fall back to a hardcoded local module if the fetch
+        // fails (offline dev, or repo structure changed).
+        //
+        // Each module is then loaded from jsDelivr with a cache-busting
+        // query string, so updates to module source are picked up on the
+        // next page load instead of after jsDelivr's 12-hour TTL.
+        // ─────────────────────────────────────────────────────────────
+
+        // Optional manifest format (any of these shapes works):
+        //   { "modules": ["modules/search/search.js", "modules/pins/pins.js"] }
+        //   { "modules": [{ "path": "modules/search/search.js" }, ...] }
+        //   ["modules/search/search.js", ...]
+        //
+        // If you don't want to maintain a manifest file, leave MODULE_MANIFEST_URL
+        // null and instead set the MANUAL_MODULE_LIST below.
+        const MODULE_MANIFEST_URL = null; // e.g. 'resources/manifest/modules.json'
+        const MANUAL_MODULE_LIST = [
+            'modules/search/search.js'
+        ];
+
+        function buildCdnUrl(repoPath) {
+            const cfg = window.__APP_CONFIG__.github;
+            const clean = String(repoPath).replace(/^\/+/, '');
+            return `https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${cfg.branch}/${clean}?${window.__APP_CONFIG__.assetVersion}`;
+        }
+
+        function loadModuleScript(repoPath) {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.src = buildCdnUrl(repoPath);
+                script.onload = () => resolve({ path: repoPath, ok: true });
+                script.onerror = (err) => {
+                    console.warn(`[Bootstrap] Failed to load ${repoPath}`, err);
+                    resolve({ path: repoPath, ok: false });
+                };
+                document.body.appendChild(script);
+            });
+        }
+
+        async function resolveModuleList() {
+            if (MODULE_MANIFEST_URL) {
+                const url = window.resolveUrl(MODULE_MANIFEST_URL);
+                const data = await window.safeFetchJson(url);
+                if (Array.isArray(data)) return data.filter(x => typeof x === 'string');
+                if (data && Array.isArray(data.modules)) {
+                    return data.modules
+                        .map(m => (typeof m === 'string' ? m : m && m.path))
+                        .filter(Boolean);
+                }
+                console.warn('[Bootstrap] Manifest missing or malformed; falling back to manual list.');
+            }
+            return MANUAL_MODULE_LIST.slice();
+        }
+
         async function bootstrapModules() {
             try {
-                // Query GitHub API to list the contents of the modules directory
-                const repoApiUrl = 'https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB_Data/contents/modules';
-                const res = await fetch(repoApiUrl);
-                
-                if (res.ok) {
-                    const items = await res.json();
-                    
-                    // Iterate through all subdirectories
-                    for (const item of items) {
-                        if (item.type === 'dir') {
-                            // Fetch the contents of the subdirectory
-                            const dirRes = await fetch(item.url);
-                            if (dirRes.ok) {
-                                const subItems = await dirRes.json();
-                                // Find the first .js file inside
-                                const jsFile = subItems.find(f => f.name.endsWith('.js'));
-                                
-                                if (jsFile) {
-                                    // Use jsDelivr CDN to serve the raw GitHub file with proper MIME types
-                                    const script = document.createElement('script');
-                                    script.src = `https://cdn.jsdelivr.net/gh/cmdrFRANKLY1/TheInfoDB_Data@main/${jsFile.path}`;
-                                    document.body.appendChild(script);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    console.warn("GitHub API rate limit or missing path. Attempting local fallback...");
-                    loadLocalFallback();
+                const list = await resolveModuleList();
+                if (list.length === 0) {
+                    console.warn('[Bootstrap] No modules to load.');
+                    return;
                 }
-            } catch(e) {
-                console.info("Error fetching modules from GitHub:", e);
-                loadLocalFallback();
+
+                const results = await Promise.all(list.map(loadModuleScript));
+                const failed = results.filter(r => !r.ok).map(r => r.path);
+                if (failed.length) {
+                    console.warn('[Bootstrap] Some modules failed to load:', failed);
+                } else {
+                    console.info(`[Bootstrap] Loaded ${results.length} module(s).`);
+                }
+            } catch (e) {
+                console.error('[Bootstrap] Fatal:', e);
             }
         }
 
-        function loadLocalFallback() {
-            // Allows the app to work locally while testing before pushing to GitHub
-            const script = document.createElement('script');
-            script.src = 'modules/template/template.js';
-            document.body.appendChild(script);
-        }
-        
         window.addEventListener('DOMContentLoaded', bootstrapModules);
     </script>
 </body>
