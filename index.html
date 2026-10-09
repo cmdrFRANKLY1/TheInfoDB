@@ -4,519 +4,687 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>theInfoDB</title>
-
-    <!-- High-Performance Font Loading (Zero blocking latency) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
+    
     <style>
-        /* High-Performance Reset & Variables */
         :root {
-            /* Default Dark Theme */
-            --bg-color: #000000;
-            --text-color: #ffffff;
-            --panel-bg: #0a0a0a;
-            --border-color: #1a1a1a;
-            --accent-color: #3b82f6;
-
-            --topbar-height: 48px;
-            --sidebar-width: 250px;
+            /* Color Palette - Light (Default) */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f4f4;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #e5e5e5;
+            --hover-bg: #eaeaea;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            
+            /* Sizing - Medium (Default) */
+            --sidebar-width: 246px;
+            --sidebar-icon-width: 64px;
+            --sidebar-padding: 12px;
+            --btn-left: 12px;
+            --font-size: 16px;
+            --icon-size: 20px;
+            --btn-size: 40px;
         }
 
-        /* Light Theme Overrides (Instant repaint, no layout reflow) */
-        :root.theme-light {
-            --bg-color: #ffffff;
-            --text-color: #000000;
-            --panel-bg: #f4f4f5;
-            --border-color: #e4e4e7;
-            --accent-color: #2563eb;
+        [data-theme="dark"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --border-color: #262626;
+            --hover-bg: #1f1f1f;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        [data-size="small"] {
+            --sidebar-width: 200px;
+            --sidebar-icon-width: 54px;
+            --sidebar-padding: 9px;
+            --btn-left: 11px;
+            --font-size: 14px;
+            --icon-size: 16px;
+            --btn-size: 32px;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            letter-spacing: -0.01em;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        [data-size="large"] {
+            --sidebar-width: 300px;
+            --sidebar-icon-width: 74px;
+            --sidebar-padding: 15px;
+            --btn-left: 13px;
+            --font-size: 18px;
+            --icon-size: 24px;
+            --btn-size: 48px;
         }
 
-        /* Topbar - Hardware Accelerated & Contained */
-        #topbar {
-            height: var(--topbar-height);
-            width: 100%;
-            background-color: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            contain: layout size style;
-            z-index: 100;
-            flex-shrink: 0;
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
         }
 
-        .topbar-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-secondary); 
+            color: var(--text-primary); 
+            font-size: var(--font-size); 
+            overflow: hidden; 
+            transition: background-color 0.2s, color 0.2s; 
         }
 
-        #topbar-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: -0.02em;
-        }
-
-        /* Buttons */
-        .toggle-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 1rem;
-            will-change: opacity;
-        }
-        .toggle-btn:hover { background-color: var(--border-color); }
-
-        /* Main Layout */
-        #main-container {
-            display: flex;
-            flex: 1;
-            position: relative;
-            height: calc(100vh - var(--topbar-height));
-            contain: strict;
-        }
-
-        /* Sidebars - Hardware Accelerated & Contained */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100%;
-            background-color: var(--panel-bg);
-            display: flex;
-            flex-direction: column;
-            contain: layout size style;
-            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            z-index: 50;
-        }
-
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            contain: content;
-        }
-
-        .sidebar-bottom {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            contain: content;
-        }
-
-        /* Settings Row Layout */
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 4px 0;
-        }
-
-        .settings-actions {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Center View Layouts */
-        .center-view {
-            padding: 32px;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            contain: content;
-        }
-
-        .center-view.hidden {
-            display: none !important;
-        }
-
-        .view-header {
-            font-size: 1.5rem;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px;
-            letter-spacing: -0.02em;
-        }
-
-        .settings-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            max-width: 600px;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 4px;
+        /* Toggle Button */
+        #sidebar-toggle {
+            position: fixed;
+            top: 16px;
+            left: var(--btn-left);
+            height: var(--btn-size);
+            min-width: var(--btn-size);
+            padding: 0 calc(var(--btn-size) * 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.1s;
+            gap: 12px;
+            z-index: 50;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
 
-        .icon-btn:hover { background-color: var(--border-color); }
-
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        #sidebar-toggle:hover { 
+            background-color: var(--hover-bg); 
+        }
+        
+        #sidebar-toggle.is-open {
+            background-color: transparent;
         }
 
-        #left-sidebar {
+        #sidebar-toggle svg { 
+            width: var(--icon-size); 
+            height: var(--icon-size); 
+            flex-shrink: 0; 
+        }
+        
+        #datetime-display {
+            display: none;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            padding-right: 8px;
+        }
+
+        #sidebar-toggle.is-open #datetime-display {
+            display: block;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-5px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Sidebar Overlay */
+        #sidebar {
+            position: fixed;
+            top: 0;
             left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--bg-primary);
             border-right: 1px solid var(--border-color);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+            box-shadow: 10px 0 25px -10px rgba(0,0,0,0.1);
+        }
+
+        /* "Full Hide" mode */
+        body[data-sidebar-mode="hide"] #sidebar {
+            transform: translateX(-100%);
+        }
+        body[data-sidebar-mode="hide"] #sidebar.is-open {
             transform: translateX(0);
         }
-        #left-sidebar.closed { transform: translateX(-100%); }
 
-        #right-sidebar {
-            right: 0;
-            border-left: 1px solid var(--border-color);
+        /* "Icons Only" mode */
+        body[data-sidebar-mode="icons"] #sidebar {
             transform: translateX(0);
+            width: var(--sidebar-icon-width);
         }
-        #right-sidebar.closed { transform: translateX(100%); }
+        body[data-sidebar-mode="icons"] #sidebar.is-open {
+            width: var(--sidebar-width);
+        }
 
-        /* Central Content Area */
-        #content-area {
+        #sidebar-header-space {
+            height: calc(16px + var(--btn-size) + 16px);
+            flex-shrink: 0;
+        }
+
+        #sidebar-search-container {
+            padding: 0 16px 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Canvas Layer */
+        #app-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            overflow-y: auto;
+            /* Provide visual breathing room for the floating button */
+            padding-top: calc(16px + var(--btn-size) + 24px); 
+        }
+
+        /* Sidebar Content */
+        #sidebar-content {
+            padding-top: 12px;
             flex: 1;
-            background-color: var(--bg-color);
-            margin-left: var(--sidebar-width);
-            margin-right: var(--sidebar-width);
-            transition: margin 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: margin;
-            contain: strict;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-left: var(--sidebar-padding);
+            padding-right: var(--sidebar-padding);
         }
 
-        body.left-closed #content-area { margin-left: 0; }
-        body.right-closed #content-area { margin-right: 0; }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .sidebar-item:hover { 
+            background-color: var(--hover-bg); 
+        }
+        .sidebar-item svg { 
+            width: var(--icon-size); 
+            height: var(--icon-size); 
+            flex-shrink: 0; 
+        }
+        
+        .sidebar-item-text { 
+            transition: opacity 0.2s; 
+            opacity: 1; 
+        }
+        
+        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) .sidebar-item-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #sidebar-search-container {
+            display: none;
+        }
+
+        /* Sidebar Footer (Settings & Theme) */
+        #sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #sidebar-footer {
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        #settings-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: var(--font-size);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+        #settings-btn:hover { background-color: var(--hover-bg); }
+        
+        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #settings-btn-text { 
+            display: none; 
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #theme-toggle:hover { background-color: var(--hover-bg); }
+
+        #theme-toggle svg, #settings-btn svg {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            flex-shrink: 0;
+        }
+
+        /* Settings Modal */
+        #settings-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(2px);
+        }
+        #settings-overlay.is-visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        #settings-modal {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        #settings-overlay.is-visible #settings-modal {
+            transform: translateY(0);
+        }
+        
+        .settings-row { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        .settings-row label { 
+            font-weight: 600; 
+            font-size: 0.9em; 
+        }
+        .settings-row select {
+            padding: 8px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: var(--font-size);
+            outline: none;
+        }
+        .settings-row-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .settings-row-inline input[type="checkbox"] {
+            width: 18px; 
+            height: 18px; 
+            cursor: pointer;
+            accent-color: var(--text-primary);
+        }
+        
+        #settings-close {
+            align-self: flex-end;
+            padding: 10px 20px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: var(--font-size);
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+        #settings-close:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
-<body>
-    <header id="topbar">
-        <div class="topbar-section" id="topbar-left">
-            <button class="toggle-btn" id="toggle-left" aria-label="Toggle Left Sidebar">☰</button>
-            <div id="topbar-title">theInfoDB</div>
-        </div>
-        <div class="topbar-section" id="topbar-center"></div>
-        <div class="topbar-section" id="topbar-right">
-            <button class="toggle-btn" id="toggle-right" aria-label="Toggle Right Sidebar">☰</button>
-        </div>
-    </header>
+<body data-theme="dark" data-size="small" data-sidebar-mode="hide">
 
-    <div id="main-container">
-        <aside class="sidebar" id="left-sidebar">
-            <div class="sidebar-content" id="left-sidebar-top"></div>
+    <!-- Toggle Button (Floats On Top) -->
+    <button id="sidebar-toggle" aria-label="Toggle Sidebar">
+        <svg id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <svg id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <span id="datetime-display"></span>
+    </button>
 
-            <!-- Hardcoded Settings & Theme Toggle -->
-            <div class="sidebar-bottom" id="left-sidebar-bottom">
-                <div class="settings-row" id="core-settings-btn">
-                    <span>Settings</span>
-                    <div class="settings-actions">
-                        <button class="icon-btn" id="fullscreen-toggle" aria-label="Toggle Fullscreen">
-                            <svg id="fullscreen-icon" viewBox="0 0 24 24"></svg>
-                        </button>
-                        <button class="icon-btn" id="theme-toggle" aria-label="Toggle Theme">
-                            <svg id="theme-icon" viewBox="0 0 24 24"></svg>
-                        </button>
-                    </div>
-                </div>
+    <!-- Sidebar Overlay -->
+    <aside id="sidebar">
+        <div id="sidebar-header-space"></div>
+        <div id="sidebar-search-container">
+            <div style="position: relative; display: flex; align-items: center;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 10px; width: 14px; height: 14px; color: var(--text-secondary);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="sidebar-search" placeholder="Search modules..." style="width: 100%; padding: 8px 8px 8px 30px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); color: var(--text-primary); outline: none; font-size: 0.9em; transition: opacity 0.2s;">
             </div>
-        </aside>
+        </div>
+        <div id="sidebar-content">
+            <!-- External modules inject links here -->
+        </div>
+        
+        <div id="sidebar-footer">
+            <button id="settings-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span id="settings-btn-text">Settings</span>
+            </button>
+            <button id="theme-toggle" title="Toggle Light/Dark Mode">
+                <svg id="icon-sun" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </aside>
 
-        <main id="content-area">
-            <!-- Central Settings View, hidden by default -->
-            <div id="settings-view" class="center-view hidden">
-                <div class="view-header">Settings</div>
-                <!-- Exposed Settings Menu Container moved to Center Pane -->
-                <div id="settings-menu" class="settings-grid"></div>
+    <!-- Main Empty Canvas -->
+    <main id="app-canvas">
+        <!-- Rendered completely empty for module injections -->
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-overlay">
+        <div id="settings-modal">
+            <h2 style="margin-bottom: 8px;">Settings</h2>
+            
+            <div class="settings-row">
+                <label>Sidebar Toggle Mode</label>
+                <select id="setting-sidebar-mode">
+                    <option value="hide">Full Hide / Overlay</option>
+                    <option value="icons">Icons Only / Expand</option>
+                </select>
             </div>
-        </main>
 
-        <aside class="sidebar" id="right-sidebar">
-            <div class="sidebar-content" id="right-sidebar-top"></div>
-            <div class="sidebar-bottom" id="right-sidebar-bottom"></div>
-        </aside>
+            <div class="settings-row">
+                <label>UI Scale</label>
+                <select id="setting-ui-scale">
+                    <option value="small" selected>Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                </select>
+            </div>
+
+            <div class="settings-row-inline">
+                <input type="checkbox" id="setting-auto-close" checked>
+                <label for="setting-auto-close">Auto-close Sidebar</label>
+            </div>
+
+            <div class="settings-row-inline" style="margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                <input type="checkbox" id="setting-debug-mode">
+                <label for="setting-debug-mode" style="font-weight: 600;">Debug Mode</label>
+            </div>
+
+            <!-- Container for external modules to add settings -->
+            <div id="dynamic-settings-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;"></div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+                <button id="settings-cancel" style="padding: 8px 16px; background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: opacity 0.2s;">Cancel</button>
+                <button id="settings-apply" style="padding: 8px 16px; background-color: var(--text-primary); color: var(--bg-primary); border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: opacity 0.2s;">Apply</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        (function() {
-            // Core DOM Cache (eliminates redundant DOM queries for massive perf boost)
-            const DOM = {
-                root: document.documentElement,
-                left: document.getElementById('left-sidebar'),
-                right: document.getElementById('right-sidebar'),
-                body: document.body,
-                themeIcon: document.getElementById('theme-icon'),
-                fullscreenIcon: document.getElementById('fullscreen-icon'),
-                containers: {
-                    'top-panel': document.getElementById('topbar'),
-                    'left-panel': document.getElementById('left-sidebar'),
-                    'right-panel': document.getElementById('right-sidebar'),
-                    'content-panel': document.getElementById('content-area'),
-                    'topbar-left': document.getElementById('topbar-left'),
-                    'topbar-center': document.getElementById('topbar-center'),
-                    'topbar-right': document.getElementById('topbar-right'),
-                    'left-sidebar-top': document.getElementById('left-sidebar-top'),
-                    'left-sidebar-bottom': document.getElementById('left-sidebar-bottom'),
-                    'right-sidebar-top': document.getElementById('right-sidebar-top'),
-                    'right-sidebar-bottom': document.getElementById('right-sidebar-bottom'),
-                    'settings-menu': document.getElementById('settings-menu'),
-                    'settings-view': document.getElementById('settings-view')
-                }
-            };
+        // State
+        let isSidebarOpen = false;
+        let autoClose = true;
+        let debugMode = false;
 
-            // Sidebar Toggle Logic
-            document.getElementById('toggle-left').addEventListener('click', () => {
-                DOM.left.classList.toggle('closed');
-                DOM.body.classList.toggle('left-closed');
-            }, { passive: true });
+        // DOM Entities
+        const body = document.body;
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const iconMenu = document.getElementById('icon-menu');
+        const iconClose = document.getElementById('icon-close');
+        const datetimeDisplay = document.getElementById('datetime-display');
+        const appCanvas = document.getElementById('app-canvas');
+        
+        const sidebarSearch = document.getElementById('sidebar-search');
+        
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsOverlay = document.getElementById('settings-overlay');
+        const settingsCancel = document.getElementById('settings-cancel');
+        const settingsApply = document.getElementById('settings-apply');
+        const themeToggle = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('icon-sun');
+        const iconMoon = document.getElementById('icon-moon');
 
-            document.getElementById('toggle-right').addEventListener('click', () => {
-                DOM.right.classList.toggle('closed');
-                DOM.body.classList.toggle('right-closed');
-            }, { passive: true });
+        // Fast Date/Time Update Engine
+        function updateDateTime() {
+            const now = new Date();
+            const dateOpts = { weekday: 'short', month: 'short', day: 'numeric' };
+            const timeOpts = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            
+            datetimeDisplay.textContent = `${now.toLocaleDateString(undefined, dateOpts)} ${now.toLocaleTimeString(undefined, timeOpts)}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial render
 
-            // Settings Menu Toggle - enforces exclusive center-view visibility
-            document.getElementById('core-settings-btn').addEventListener('click', () => {
-                const settingsView = DOM.containers['settings-view'];
-                const wasHidden = settingsView.classList.contains('hidden');
-
-                // 1. Hide ALL center views first (so Documents, Calendar, etc. disappear)
-                Array.from(DOM.containers['content-panel'].children).forEach(child => {
-                    if (child.classList.contains('center-view')) {
-                        child.classList.add('hidden');
-                    }
-                });
-
-                // 2. Hide module-specific right sidebar panels to clean up the UI
-                const rightTop = DOM.containers['right-sidebar-top'];
-                if (rightTop) {
-                    Array.from(rightTop.children).forEach(child => {
-                        child.classList.remove('active');
-                        child.style.display = 'none';
-                    });
-                }
-
-                // 3. Show settings if it was previously hidden
-                if (wasHidden) {
-                    settingsView.classList.remove('hidden');
-                }
-            });
-
-            // Ultra-fast Theme Toggle
-            const PATHS = {
-                moon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z',
-                sun: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z',
-                expand: 'M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3',
-                compress: 'M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3'
-            };
-
-            const updateThemeIcon = (isLight) => {
-                DOM.themeIcon.innerHTML = `<path d="${isLight ? PATHS.sun : PATHS.moon}" />`;
-            };
-
-            const updateFullscreenIcon = (isFullscreen) => {
-                if (DOM.fullscreenIcon) {
-                    DOM.fullscreenIcon.innerHTML = `<path d="${isFullscreen ? PATHS.compress : PATHS.expand}" />`;
-                }
-            };
-
-            updateThemeIcon(false);
-            updateFullscreenIcon(false);
-
-            document.getElementById('theme-toggle').addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isLight = DOM.root.classList.toggle('theme-light');
-                updateThemeIcon(isLight);
-            }, { passive: true });
-
-            document.getElementById('fullscreen-toggle').addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => console.warn('InfoDB: Fullscreen denied', err));
-                } else {
-                    document.exitFullscreen();
-                }
-            });
-
-            document.addEventListener('fullscreenchange', () => {
-                updateFullscreenIcon(!!document.fullscreenElement);
-            });
-
-            // ─────────────────────────────────────────────────────────
-            // Dynamic Sidebar Sorting Infrastructure
-            // ─────────────────────────────────────────────────────────
-            const ENTRY_ORDER = new WeakMap();
-            let sortDebounceTimer = null;
-
-            function setEntryOrder(el, index) {
-                if (!el) return;
-                ENTRY_ORDER.set(el, index);
-                requestSort(); // Automatically request a re-sort whenever a new order is set
-            }
-
-            function requestSort() {
-                if (sortDebounceTimer) cancelAnimationFrame(sortDebounceTimer);
-                sortDebounceTimer = requestAnimationFrame(sortLeftSidebar);
-            }
-
-            function sortLeftSidebar() {
-                const container = DOM.containers['left-sidebar-top'];
-                if (!container) return;
-                const children = Array.from(container.children);
-                children.sort((a, b) => {
-                    const ia = ENTRY_ORDER.has(a) ? ENTRY_ORDER.get(a) : Number.MAX_SAFE_INTEGER;
-                    const ib = ENTRY_ORDER.has(b) ? ENTRY_ORDER.get(b) : Number.MAX_SAFE_INTEGER;
-                    return ia - ib;
-                });
-                for (const child of children) container.appendChild(child);
-            }
-
-            // Core API Exposure for External Modules
-            window.theInfoDB = {
-                colorAPI: {
-                    setTheme: (colors) => {
-                        for (const [key, value] of Object.entries(colors)) {
-                            DOM.root.style.setProperty(`--${key}`, value);
-                        }
-                    },
-                    getColor: (token) => {
-                        return getComputedStyle(DOM.root).getPropertyValue(`--${token}`).trim();
-                    }
-                },
-                ui: {
-                    // Upgraded registerEntry: parses HTML string into real DOM nodes, 
-                    // auto-sorts if possible, and returns the elements.
-                    registerEntry: (target, elementHTML, position = 'append') => {
-                        const container = DOM.containers[target];
-                        if (!container) return console.warn(`InfoDB: Invalid target '${target}'`);
-
-                        // Parse string into elements
-                        const temp = document.createElement('div');
-                        temp.innerHTML = elementHTML.trim();
-                        const elements = Array.from(temp.children);
-
-                        // If called synchronously on load, we can auto-detect the module index
-                        const script = document.currentScript;
-                        const order = script ? parseInt(script.dataset.moduleOrder, 10) : null;
-
-                        elements.forEach(el => {
-                            if (order !== null && !isNaN(order)) setEntryOrder(el, order);
-                            if (position === 'prepend') {
-                                container.prepend(el);
-                            } else {
-                                container.appendChild(el);
-                            }
-                        });
-
-                        // Return the element(s) so async modules can apply setEntryOrder manually
-                        return elements.length === 1 ? elements[0] : elements;
-                    },
-                    registerElement: (target, htmlElement, position = 'append') => {
-                        const container = DOM.containers[target];
-                        if (!container) return;
-
-                        const script = document.currentScript;
-                        const order = script ? parseInt(script.dataset.moduleOrder, 10) : null;
-                        if (order !== null && !isNaN(order)) setEntryOrder(htmlElement, order);
-
-                        if (position === 'prepend' && container.firstChild) {
-                            container.insertBefore(htmlElement, container.firstChild);
-                        } else {
-                            container.appendChild(htmlElement);
-                        }
-                        return htmlElement;
-                    },
-                    setEntryOrder,
-                    sortLeftSidebar,
-                    requestSort
-                }
-            };
-        })();
-
-        // ─────────────────────────────────────────────────────────────
-        // Asynchronous High-Performance Module Bootstrapper
-        // ─────────────────────────────────────────────────────────────
-        async function loadModules() {
-            try {
-                if (window.location.protocol === 'blob:' ||
-                    window.location.protocol === 'data:' ||
-                    window.location.protocol === 'about:') {
-                    return;
-                }
-
-                const response = await fetch('modules.json');
-                if (!response.ok) return;
-
-                const modules = await response.json();
-                const fragment = document.createDocumentFragment();
-
-                for (let i = 0; i < modules.length; i++) {
-                    const script = document.createElement('script');
-                    script.src = modules[i];
-                    script.defer = true; 
-                    // CRITICAL: We tag the script with its modules.json index here
-                    script.dataset.moduleOrder = String(i);
-                    fragment.appendChild(script);
-                }
-
-                document.head.appendChild(fragment);
-
-            } catch (error) {
-                console.error('InfoDB Bootstrapper: Failed to load modules', error);
+        // Overlay Toggle Mechanics
+        function toggleSidebar(forcedState) {
+            isSidebarOpen = forcedState !== undefined ? forcedState : !isSidebarOpen;
+            
+            if (isSidebarOpen) {
+                sidebar.classList.add('is-open');
+                sidebarToggle.classList.add('is-open');
+                iconMenu.style.display = 'none';
+                iconClose.style.display = 'block';
+            } else {
+                sidebar.classList.remove('is-open');
+                sidebarToggle.classList.remove('is-open');
+                iconMenu.style.display = 'block';
+                iconClose.style.display = 'none';
             }
         }
 
-        loadModules();
+        sidebarToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar();
+        });
+
+        // Auto-close interaction hook
+        appCanvas.addEventListener('click', () => {
+            if (autoClose && isSidebarOpen) toggleSidebar(false);
+        });
+
+        // Settings Modal Binding
+        const elSidebarMode = document.getElementById('setting-sidebar-mode');
+        const elUiScale = document.getElementById('setting-ui-scale');
+        const elAutoClose = document.getElementById('setting-auto-close');
+        const elDebugMode = document.getElementById('setting-debug-mode');
+
+        settingsBtn.addEventListener('click', () => {
+            elSidebarMode.value = body.getAttribute('data-sidebar-mode');
+            elUiScale.value = body.getAttribute('data-size');
+            elAutoClose.checked = autoClose;
+            elDebugMode.checked = debugMode;
+            settingsOverlay.classList.add('is-visible');
+            if (autoClose) toggleSidebar(false);
+        });
+
+        settingsCancel.addEventListener('click', () => {
+            settingsOverlay.classList.remove('is-visible');
+        });
+
+        settingsApply.addEventListener('click', () => {
+            body.setAttribute('data-sidebar-mode', elSidebarMode.value);
+            body.setAttribute('data-size', elUiScale.value);
+            autoClose = elAutoClose.checked;
+            
+            if (debugMode !== elDebugMode.checked) {
+                debugMode = elDebugMode.checked;
+                document.dispatchEvent(new CustomEvent('debugToggled', { detail: debugMode }));
+            }
+            
+            // Notify dynamic settings
+            const dynamicCheckboxes = document.querySelectorAll('.dynamic-setting-cb');
+            dynamicCheckboxes.forEach(cb => {
+                if (cb.dataset.changed === 'true') {
+                    cb.dataset.changed = 'false';
+                    document.dispatchEvent(new CustomEvent(cb.id + '_applied', { detail: cb.checked }));
+                }
+            });
+            
+            settingsOverlay.classList.remove('is-visible');
+        });
+
+        // Sidebar Search Mechanics
+        sidebarSearch.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.sidebar-item');
+            items.forEach(item => {
+                const text = item.querySelector('.sidebar-item-text').textContent.toLowerCase();
+                if (text.includes(term)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            
+            if (next === 'light') {
+                iconSun.style.display = 'none';
+                iconMoon.style.display = 'block';
+            } else {
+                iconSun.style.display = 'block';
+                iconMoon.style.display = 'none';
+            }
+        }
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Core API Window Attachment
+        window.CoreUI = {
+            addSidebarItem: function(id, label, svgIconPath, onClickCallback) {
+                const content = document.getElementById('sidebar-content');
+                const el = document.createElement('div');
+                el.className = 'sidebar-item';
+                el.id = id;
+                el.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        ${svgIconPath}
+                    </svg>
+                    <span class="sidebar-item-text">${label}</span>
+                `;
+                el.addEventListener('click', () => {
+                    onClickCallback();
+                    if (autoClose) toggleSidebar(false);
+                });
+                content.appendChild(el);
+                return el;
+            },
+            getCanvas: function() {
+                return document.getElementById('app-canvas');
+            },
+            clearCanvas: function() {
+                document.getElementById('app-canvas').innerHTML = '';
+            },
+            isDebugMode: function() {
+                return debugMode;
+            },
+            addSettingToggle: function(id, label, defaultState, onChangeCallback) {
+                const container = document.getElementById('dynamic-settings-container');
+                const row = document.createElement('div');
+                row.className = 'settings-row-inline';
+                row.id = 'setting-container-' + id;
+                row.innerHTML = `
+                    <input type="checkbox" id="${id}" class="dynamic-setting-cb" ${defaultState ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--text-primary);">
+                    <label for="${id}">${label}</label>
+                `;
+                
+                const cb = row.querySelector('input');
+                cb.addEventListener('change', () => {
+                    cb.dataset.changed = 'true';
+                });
+                
+                document.addEventListener(id + '_applied', (e) => {
+                    if(onChangeCallback) onChangeCallback(e.detail);
+                });
+                
+                container.appendChild(row);
+                return row;
+            }
+        };
+
+        async function bootstrapModules() {
+            try {
+                // Query GitHub API to list the contents of the modules directory
+                const repoApiUrl = 'https://api.github.com/repos/cmdrFRANKLY1/TheInfoDB_Data/contents/modules';
+                const res = await fetch(repoApiUrl);
+                
+                if (res.ok) {
+                    const items = await res.json();
+                    
+                    // Iterate through all subdirectories
+                    for (const item of items) {
+                        if (item.type === 'dir') {
+                            // Fetch the contents of the subdirectory
+                            const dirRes = await fetch(item.url);
+                            if (dirRes.ok) {
+                                const subItems = await dirRes.json();
+                                // Find the first .js file inside
+                                const jsFile = subItems.find(f => f.name.endsWith('.js'));
+                                
+                                if (jsFile) {
+                                    // Use jsDelivr CDN to serve the raw GitHub file with proper MIME types
+                                    const script = document.createElement('script');
+                                    script.src = `https://cdn.jsdelivr.net/gh/cmdrFRANKLY1/TheInfoDB_Data@main/${jsFile.path}`;
+                                    document.body.appendChild(script);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    console.warn("GitHub API rate limit or missing path. Attempting local fallback...");
+                    loadLocalFallback();
+                }
+            } catch(e) {
+                console.info("Error fetching modules from GitHub:", e);
+                loadLocalFallback();
+            }
+        }
+
+        function loadLocalFallback() {
+            // Allows the app to work locally while testing before pushing to GitHub
+            const script = document.createElement('script');
+            script.src = 'modules/template/template.js';
+            document.body.appendChild(script);
+        }
+        
+        window.addEventListener('DOMContentLoaded', bootstrapModules);
     </script>
 </body>
 </html>
