@@ -6,24 +6,41 @@
     let queue = [];
     let currentQuestionIndex = -1;
     let clickCounts = {};
+    let totalQuestions = 0;
+    let correctCount = 0;
 
     // -------------------------------------------------------------------------
     // Daten dynamisch über die Registry laden
     // -------------------------------------------------------------------------
     async function loadQuestionsFromRegistry() {
         try {
-            const response = await fetch('./modules/quiz/registryForQuestions.json');
+            // FIX 1: Lade den exakten Namen deiner neuen JSON-Registry
+            const response = await fetch('./modules/quiz/registryForQuiz_2.json');
+            
+            if (!response.ok) {
+                console.error("Registry JSON konnte nicht geladen werden. HTTP Status:", response.status);
+                return;
+            }
+            
             const registry = await response.json();
 
             for (const filePath of registry.files) {
-                const module = await import(`/${filePath}`);
+                // FIX 2: Relativer Import-Pfad!
+                // quiz_2.js liegt in /modules/quiz/ -> wir springen mit "../../" ins Projekt-Root
+                // und hängen dann "modules/quiz/questions/questions00.js" an.
+                const relativePath = `../../${filePath}`;
                 
-                if (module.questionDatabase) {
-                    questionDatabase = questionDatabase.concat(module.questionDatabase);
+                try {
+                    const module = await import(relativePath);
+                    if (module.questionDatabase) {
+                        questionDatabase = questionDatabase.concat(module.questionDatabase);
+                    }
+                } catch (importError) {
+                    console.error(`Fehler beim Importieren von ${relativePath}:`, importError);
                 }
             }
         } catch (error) {
-            console.error("Fehler beim Laden der Fragendatenbanken:", error);
+            console.error("Allgemeiner Fehler beim Laden der Fragendatenbanken:", error);
         }
     }
 
@@ -219,7 +236,10 @@
 
             <div class="toolbar">
                 <span>Wähle die richtige(n) Antwort(en).</span>
-                <span id="queue-status" class="badge">Fragen: 0</span>
+                <div style="display:flex; gap:10px;">
+                    <span id="queue-status" class="badge" style="background:var(--bg-tertiary); color:var(--text-normal); border:1px solid var(--border-color);">Verbleibend: 0</span>
+                    <span id="progress-status" class="badge">Richtig Beantwortet: 0 / 0</span>
+                </div>
             </div>
 
             <div id="quiz-content-area">
@@ -240,6 +260,27 @@
         if (statusEl) {
             statusEl.textContent = `Verbleibend in Queue: ${queue.length}`;
         }
+        const progressEl = document.getElementById('progress-status');
+        if (progressEl) {
+            progressEl.textContent = `Richtig Beantwortet: ${correctCount} / ${totalQuestions}`;
+        }
+    }
+
+    // Hilfsfunktion: Zeigt den Weiter-Button an
+    function showNextButton(isCorrect, containerElement) {
+        const btn = document.createElement("button");
+        btn.textContent = "Weiter";
+        btn.className = "submit-btn";
+        btn.style.marginTop = "20px";
+        btn.style.backgroundColor = "var(--accent-color)";
+        
+        btn.onclick = () => {
+            processSpacedRepetition(isCorrect);
+        };
+        containerElement.appendChild(btn);
+        
+        // Scrollt leicht nach unten, falls die Box sehr groß ist
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function renderNextQuestion() {
@@ -330,7 +371,7 @@
                          l.querySelector('input').disabled = true;
                      });
 
-                     processSpacedRepetition(isCorrect);
+                     showNextButton(isCorrect, card);
                 });
             });
             card.appendChild(optsContainer);
@@ -394,7 +435,7 @@
                 });
                 
                 submitBtn.style.display = 'none';
-                processSpacedRepetition(isCorrect);
+                showNextButton(isCorrect, card);
             };
             card.appendChild(submitBtn);
         }
@@ -458,7 +499,7 @@
                 });
 
                 submitBtn.style.display = 'none';
-                processSpacedRepetition(allCorrect);
+                showNextButton(allCorrect, card);
             };
             card.appendChild(submitBtn);
         }
@@ -539,16 +580,16 @@
         const currentQIndex = queue.shift();
 
         if (isCorrect) {
-            // Push correct to back
-            queue.push(currentQIndex);
+            // Richtig: Zähler erhöhen. Frage ist endgültig aus der Queue entfernt!
+            correctCount++;
         } else {
-            // Incorrect: place back into the middle to review sooner
+            // Falsch: In die Mitte der Queue setzen, um sie später zu wiederholen
             const insertIndex = Math.max(1, Math.floor(queue.length / 2));
             queue.splice(insertIndex, 0, currentQIndex);
         }
 
         updateQueueStatus();
-        setTimeout(() => renderNextQuestion(), 2000); 
+        renderNextQuestion(); 
     }
 
 
@@ -562,6 +603,8 @@
         queue = questionDatabase.map((_, i) => i);
         shuffleArray(queue);
         clickCounts = {};
+        totalQuestions = questionDatabase.length;
+        correctCount = 0;
         updateQueueStatus();
         renderNextQuestion();
     }
