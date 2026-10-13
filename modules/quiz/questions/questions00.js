@@ -151,7 +151,7 @@ export const questionDatabase = [
     },
 
     // ==========================================
-    // Übungen zum Kapitel 1 (17 Fragen)
+    // Übungen zum Kapitel 1 (14 Fragen)
     // ==========================================
     {
         id: "ds_k1_01", type: "single",
@@ -180,13 +180,6 @@ export const questionDatabase = [
         ]
     },
     {
-        id: "ds_k1_03", type: "open",
-        title: "Aufsichtsbehörde",
-        text: "Welche Aufsichtsbehörde ist für dich zuständig? Besuche deren Website und stöbere nach Vordrucken oder Vorlagen, die für deine Arbeit wichtig sein können.",
-        answer: "Individuelle Rechercheaufgabe.",
-        options: ["Individuelle Rechercheaufgabe."]
-    },
-    {
         id: "ds_k1_04", type: "single",
         title: "Datenschutz und Datensicherheit",
         text: "Was bedeutet Datenschutz und Datensicherheit?",
@@ -197,13 +190,6 @@ export const questionDatabase = [
             "Datenschutz stellt sicher das alle elektronischen Daten eines Unternehmens in einer Cloud gespeichert werden",
             "Datenschutz ist ein verfassungsrechtlich geschütztes Recht auf informationelle Selbstbestimmung. Datensicherheit ist der Schutz aller Daten vor Manipulation, Verlust oder unberechtigter Kenntnisnahme."
         ]
-    },
-    {
-        id: "ds_k1_05", type: "open",
-        title: "Besondere personenbezogene Daten",
-        text: "Nenne 3 Beispiele von besonderen personenbezogenen Daten, die in einem Arbeitsverhältnis verarbeitet werden könnten",
-        answer: "Beispiele: Religionszugehörigkeit, Gesundheitsdaten, Biometrische Daten, Gewerkschaftszugehörigkeit.",
-        options: ["Beispiele: Religionszugehörigkeit, Gesundheitsdaten, Biometrische Daten, Gewerkschaftszugehörigkeit."]
     },
     {
         id: "ds_k1_06", type: "multi",
@@ -222,13 +208,6 @@ export const questionDatabase = [
             "Die DSGVO war nur ein Versuch der EU, der gescheitert ist, weshalb das BDSG als nationales Gesetz angewendet wird.",
             "Die DSGVO ist ein Gesetz auf europäischer Ebene, welches durch das BDSG konkretisiert wurde. Beide Gesetze sind von Unternehmen und Organisationen zu berücksichtigen."
         ]
-    },
-    {
-        id: "ds_k1_08", type: "open",
-        title: "Personenbezogene Daten",
-        text: "Nenne 10 Beispiele von personenbezogenen Daten, die ein Arbeitgeber von dir erheben könnte.",
-        answer: "Beispiele: Name, Adresse, Geburtsdatum, Bankverbindung, Konfession, Steuer-ID, Sozialversicherungsnummer, Telefonnummer, E-Mail, Qualifikationen.",
-        options: ["Beispiele: Name, Adresse, Geburtsdatum, Bankverbindung, Konfession, Steuer-ID, Sozialversicherungsnummer, Telefonnummer, E-Mail, Qualifikationen."]
     },
     {
         id: "ds_k1_09", type: "single",
@@ -700,7 +679,7 @@ export const questionDatabase = [
     },
 
     // ==========================================
-    // Übungen zum Kapitel 3 (24 Fragen)
+    // Übungen zum Kapitel 3 (23 Fragen)
     // ==========================================
     {
         id: "ds_k3_01", type: "single",
@@ -761,13 +740,6 @@ export const questionDatabase = [
             "Bedingungen über die Löschung oder Vernichtung der übermittelten Daten nach Abschluss der erbrachten Leistungen",
             "Übersicht der Einwilligungen der Betroffenen"
         ]
-    },
-    {
-        id: "ds_k3_06", type: "open",
-        title: "Recherche AVV",
-        text: "Recherchiere im Internet und suche bei deiner Aufsichtsbehörde nach Vertragsmustern für Auftragsverarbeitung und gemeinsamer Verantwortung.",
-        answer: "Individuelle Rechercheaufgabe.",
-        options: ["Individuelle Rechercheaufgabe."]
     },
     {
         id: "ds_k3_07", type: "single",
