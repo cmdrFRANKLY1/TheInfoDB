@@ -685,7 +685,7 @@
     if (window.AppAPI && window.AppAPI.sidebar) {
         window.AppAPI.sidebar.addEntry(
             'quiz-module',
-            'Spaced Repetition',
+            'Quiz',
             'fa-solid fa-graduation-cap', 
             () => initModule()
         );
