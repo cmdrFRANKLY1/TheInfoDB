@@ -1,32 +1,32 @@
 export const questionDatabase = [
     // ==========================================
-    // ProbeWiSo001.html (20 Fragen)[cite: 3]
+    // ProbeWiSo001.html (20 Fragen)
     // ==========================================
     {
         id: "wiso_01", type: "single",
         title: "Besonderer Kündigungsschutz",
-        text: "Welche Personengruppe erhält keinen besonderen Kündigungsschutz?[cite: 3]",
+        text: "Welche Personengruppe erhält keinen besonderen Kündigungsschutz?",
         answer: 4,
         options: ["Schwerbehinderte", "Werdende Mütter", "Angehörige des Betriebsrats", "Auszubildende nach der Probezeit", "Leitende Angestellte"]
     },
     {
         id: "wiso_02", type: "single",
         title: "Individualarbeitsrecht",
-        text: "Welche Regelung gehört nicht zum kollektiven Arbeitsrecht, sondern zum Individualarbeitsrecht?[cite: 3]",
+        text: "Welche Regelung gehört nicht zum kollektiven Arbeitsrecht, sondern zum Individualarbeitsrecht?",
         answer: 2,
         options: ["Betriebliche Überstundenregelungen", "Unfallverhütungsvorschriften", "Übertarifliche Gehaltsvereinbarungen", "Urlaubsregelungen nach dem Bundesurlaubsgesetz", "Betriebsvereinbarungen"]
     },
     {
         id: "wiso_03", type: "single",
         title: "Ausbildungsvertrag",
-        text: "Welche Aussage ist falsch bzw. nicht zulässig?[cite: 3]",
+        text: "Welche Aussage ist falsch bzw. nicht zulässig?",
         answer: 1,
         options: ["Die Probezeit beträgt mindestens einen und höchstens vier Monate.", "Die Ausbildungsvergütung ist während der gesamten Ausbildung gleich hoch.", "Bei Minderjährigen ist die Unterschrift der Erziehungsberechtigten erforderlich.", "Die Anzahl der Urlaubstage ist abhängig vom Alter des Auszubildenden.", "Der Ausbildungsvertrag ist zwingend schriftlich zu erstellen."]
     },
     {
         id: "wiso_04", type: "single",
         title: "Gewinnverteilung einer OHG",
-        text: "Wie hoch ist der Gewinnanteil von Gesellschafter C?[cite: 3]",
+        text: "Wie hoch ist der Gewinnanteil von Gesellschafter C?",
         context: "Die IT-Service OHG erzielt 24.000 € Gewinn. Kapitalanteile: A = 60.000 €, B = 40.000 €, C = 100.000 €, D = 76.000 €. Für diese Übungsaufgabe gilt ausdrücklich: zuerst 4 % auf die Kapitalanteile, anschließend Verteilung des Restgewinns zu gleichen Teilen.",
         answer: 0,
         options: ["7.240 €", "7.640 €", "6.840 €", "7.160 €"]
@@ -34,7 +34,7 @@ export const questionDatabase = [
     {
         id: "wiso_05", type: "match",
         title: "Kündigungsarten",
-        text: "Ordnen Sie die passende Kündigungsart zu.[cite: 3]",
+        text: "Ordnen Sie die passende Kündigungsart zu.",
         answer: ["Verhaltensbedingte Kündigung", "Betriebsbedingte Kündigung", "Personenbedingte Kündigung"],
         left: ["Wiederholtes Zuspätkommen eines Mitarbeiters", "Schließung der IT-Abteilung und Auslagerung der Aufgaben", "Eine Pflegekraft kann wegen eines chronischen Rückenleidens ihre Aufgaben nicht mehr erfüllen"],
         choices: ["Personenbedingte Kündigung", "Betriebsbedingte Kündigung", "Verhaltensbedingte Kündigung"]
@@ -42,14 +42,14 @@ export const questionDatabase = [
     {
         id: "wiso_06", type: "multi",
         title: "Mitbestimmung des Betriebsrats",
-        text: "In welchen zwei Fällen hat der Betriebsrat ein Mitbestimmungsrecht?[cite: 3]",
+        text: "In welchen zwei Fällen hat der Betriebsrat ein Mitbestimmungsrecht?",
         answer: [3, 4],
         options: ["Ein neuer Geschäftsführer wird ernannt.", "Eine zusätzliche Filiale wird eröffnet.", "Der Personalbedarf für das kommende Jahr wird ermittelt.", "Jährliche Betriebsferien werden eingeführt.", "Ein neues Kassensystem misst auch die Arbeitsgeschwindigkeit der Kassiererinnen und Kassierer."]
     },
     {
         id: "wiso_07", type: "match",
         title: "Bedürfnis, Bedarf und Nachfrage",
-        text: "Vervollständigen Sie den Lückentext.[cite: 3]",
+        text: "Vervollständigen Sie den Lückentext.",
         answer: ["Nachfrage", "Bedarf", "Bedürfnis"],
         left: ["Ein Markt entsteht, wo ein Verbraucher mit _____ auf ein Angebot trifft.", "Der Verbraucher setzt seine finanziellen Mittel ein. Es entsteht also _____.", "Ohne ausreichendes Geld hat er lediglich ein _____."],
         choices: ["Bedürfnis", "Nachfrage", "Bedarf"]
@@ -57,7 +57,7 @@ export const questionDatabase = [
     {
         id: "wiso_08", type: "match",
         title: "Geldströme im Wirtschaftskreislauf",
-        text: "Ordnen Sie jeder Ziffer der Grafik den passenden Geldstrom zu.[cite: 3]",
+        text: "Ordnen Sie jeder Ziffer der Grafik den passenden Geldstrom zu.",
         answer: ["Einkommen", "Konsumausgaben", "Sparen", "Transferleistungen", "Subventionen", "Importausgaben"],
         left: ["Geldstrom 1", "Geldstrom 2", "Geldstrom 3", "Geldstrom 4", "Geldstrom 5", "Geldstrom 6"],
         choices: ["Subventionen", "Sparen", "Einkommen", "Importausgaben", "Transferleistungen", "Konsumausgaben"]
@@ -65,21 +65,21 @@ export const questionDatabase = [
     {
         id: "wiso_09", type: "single",
         title: "Grundkapital einer AG",
-        text: "Wie hoch muss das Grundkapital einer AG mindestens sein?[cite: 3]",
+        text: "Wie hoch muss das Grundkapital einer AG mindestens sein?",
         answer: 1,
         options: ["25.000 €", "50.000 €", "1 €", "100.000 €"]
     },
     {
         id: "wiso_10", type: "single",
         title: "Angebot und Gleichgewichtspreis",
-        text: "Wie verändert sich auf einem vollkommenen Markt der Gleichgewichtspreis, wenn das Angebot bei gleichbleibender Nachfrage steigt?[cite: 3]",
+        text: "Wie verändert sich auf einem vollkommenen Markt der Gleichgewichtspreis, wenn das Angebot bei gleichbleibender Nachfrage steigt?",
         answer: 1,
         options: ["Er steigt.", "Er sinkt.", "Er bleibt gleich.", "Keine Antwort ist richtig."]
     },
     {
         id: "wiso_11", type: "match",
         title: "Betriebliche Produktionsfaktoren",
-        text: "Ordnen Sie die Beispiele aus der Stuhlproduktion den Produktionsfaktoren zu.[cite: 3]",
+        text: "Ordnen Sie die Beispiele aus der Stuhlproduktion den Produktionsfaktoren zu.",
         answer: ["Arbeit", "Betriebsmittel", "Werkstoffe (Betriebsstoffe)", "Werkstoffe (Rohstoffe)"],
         left: ["Mitarbeiter der Produktion", "Produktionsanlage", "Energie", "Holz"],
         choices: ["Werkstoffe (Rohstoffe)", "Betriebsmittel", "Arbeit", "Werkstoffe (Betriebsstoffe)"]
@@ -87,21 +87,21 @@ export const questionDatabase = [
     {
         id: "wiso_12", type: "multi",
         title: "Personengesellschaften",
-        text: "Identifizieren Sie die beiden Personengesellschaften.[cite: 3]",
+        text: "Identifizieren Sie die beiden Personengesellschaften.",
         answer: [1, 3],
         options: ["GmbH", "GmbH & Co. KG", "Jan Küster EDV-Systeme (Einzelunternehmen)", "OHG", "Jan Küster AG"]
     },
     {
         id: "wiso_13", type: "multi",
         title: "Aussagen zu Wirtschaft und Recht",
-        text: "Was ist falsch? Bitte auswählen.[cite: 3]",
+        text: "Was ist falsch? Bitte auswählen.",
         answer: [0, 3, 5, 10, 11, 13],
         options: ["Subventionen sind indirekte Steuern der Unternehmen an den Staat.", "Transferleistungen werden vom Staat an die Haushalte gewährt.", "Ausbilder dürfen in der Regel nur im eigenen Beruf ausbilden.", "Ohne einen Betriebsrat ist die Gründung einer JAV nicht möglich.", "Wenn sich die Nachfrage vermindert, sinkt bei gleichem Angebot der Preis.", "Ein Rechtsanwalt ist eine juristische Person.", "Lediglich rechtlich vorteilhafte Rechtsgeschäfte können auch beschränkt Geschäftsfähige eingehen.", "Rechtsgeschäfte unterliegen dem Grundsatz der Vertragsfreiheit.", "Schein- und Scherzgeschäfte sind nichtig.", "Nur ein Kaufmann bzw. eine Kauffrau kann nach HGB Prokura erteilen.", "Ein Kaufmann haftet immer mit dem Privatvermögen.", "Kaufleute und Freiberufler sind zur Mitgliedschaft in der IHK verpflichtet.", "Verträge, die gegen gesetzliche Formvorschriften verstoßen, sind von vornherein ungültig.", "Das Handelsregister wird von der IHK geführt."]
     },
     {
         id: "wiso_14", type: "match",
         title: "Konjunkturverlauf",
-        text: "Ordnen Sie die Ziffern der Grafik den Begriffen zu.[cite: 3]",
+        text: "Ordnen Sie die Ziffern der Grafik den Begriffen zu.",
         answer: ["Depression", "Aufschwung", "Hochkonjunktur", "Rezession", "Trend"],
         left: ["Ziffer 1", "Ziffer 2", "Ziffer 3", "Ziffer 4", "Ziffer 5"],
         choices: ["Rezession", "Trend", "Aufschwung", "Depression", "Hochkonjunktur"]
@@ -109,54 +109,54 @@ export const questionDatabase = [
     {
         id: "wiso_15", type: "single",
         title: "Unterschrift eines Prokuristen",
-        text: "Herr Meister ist Prokurist der Compu AG. Wie muss er unterschreiben?[cite: 3]",
+        text: "Herr Meister ist Prokurist der Compu AG. Wie muss er unterschreiben?",
         answer: 0,
         options: ["Compu AG / ppa. Michael Meister", "Compu AG / i.V. Michael Meister", "Compu AG / i.A. Michael Meister", "Compu AG / Michael Meister"]
     },
     {
         id: "wiso_16", type: "multi",
         title: "Haftung bei Gesellschaften",
-        text: "Kreuzen Sie die richtigen Aussagen an.[cite: 3]",
+        text: "Kreuzen Sie die richtigen Aussagen an.",
         answer: [1, 2, 4],
         options: ["Die Komplementäre einer KG haften nur mit ihrer Einlage.", "Die OHG-Gesellschafter haften mit ihrem Privatvermögen.", "Die Aktionäre einer AG haften nicht mit ihrem Privatvermögen.", "Die Geschäftsführer einer GmbH haften mit ihrem Privatvermögen.", "Die Kommanditisten einer KG haften nicht mit ihrem Privatvermögen."]
     },
     {
         id: "wiso_17", type: "multi",
         title: "Senkung der Einkommensteuer",
-        text: "Welche zwei möglichen Auswirkungen hat eine Senkung der Einkommensteuer auf die Geldströme?[cite: 3]",
+        text: "Welche zwei möglichen Auswirkungen hat eine Senkung der Einkommensteuer auf die Geldströme?",
         answer: [1, 4],
         options: ["Konsum sinkt.", "Konsum steigt.", "Transferleistungen steigen.", "Staatsausgaben steigen.", "Spareinlagen steigen."]
     },
     {
         id: "wiso_18", type: "single",
         title: "Wirtschaftswachstum",
-        text: "An welchem Indikator wird das Wirtschaftswachstum gemessen?[cite: 3]",
+        text: "An welchem Indikator wird das Wirtschaftswachstum gemessen?",
         answer: 2,
         options: ["Kreditaufnahme des Staates", "Investitionen", "Bruttoinlandsprodukt", "Arbeitslosigkeit"]
     },
     {
         id: "wiso_19", type: "single",
         title: "Tarifvertragsparteien",
-        text: "Wer kann auf Seiten der Arbeitnehmer Tarifvertragspartei sein?[cite: 3]",
+        text: "Wer kann auf Seiten der Arbeitnehmer Tarifvertragspartei sein?",
         answer: 0,
         options: ["Gewerkschaften", "Betriebsrat", "Arbeitgeberverbände", "Einzelne Arbeitgeber"]
     },
     {
         id: "wiso_20", type: "match",
         title: "Wirtschaftspolitische Ziele",
-        text: "Ordnen Sie den wirtschaftspolitischen Zielen die passenden Kennzahlen zu.[cite: 3]",
+        text: "Ordnen Sie den wirtschaftspolitischen Zielen die passenden Kennzahlen zu.",
         answer: ["Lebenshaltungskostenindex", "Außenhandelsüberschuss/-defizit", "Reales Bruttoinlandsprodukt", "Arbeitslosenquote"],
         left: ["Preisstabilität", "Außenhandelsgleichgewicht", "Wirtschaftswachstum", "Hoher Beschäftigungsgrad"],
         choices: ["Arbeitslosenquote", "Reales Bruttoinlandsprodukt", "Lebenshaltungskostenindex", "Außenhandelsüberschuss/-defizit"]
     },
 
     // ==========================================
-    // Übungen zum Kapitel 1 (17 Fragen)[cite: 5, 6, 7, 8, 9]
+    // Übungen zum Kapitel 1 (17 Fragen)
     // ==========================================
     {
         id: "ds_k1_01", type: "single",
         title: "Informationelle Selbstbestimmung",
-        text: "Was versteht man unter dem Begriff 'informationelle Selbstbestimmung'?[cite: 5]",
+        text: "Was versteht man unter dem Begriff 'informationelle Selbstbestimmung'?",
         answer: 4,
         options: [
             "Ich bestimme selbst darüber was ich als Beruf lerne.",
@@ -169,7 +169,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_02", type: "single",
         title: "Kritik an sozialen Medien",
-        text: "Was wird bei sozialen Medien, bezogen auf den Datenschutz oft kritisiert?[cite: 5]",
+        text: "Was wird bei sozialen Medien, bezogen auf den Datenschutz oft kritisiert?",
         answer: 3,
         options: [
             "Dass man sich anmelden muss und nicht anonym sein darf.",
@@ -182,14 +182,14 @@ export const questionDatabase = [
     {
         id: "ds_k1_03", type: "open",
         title: "Aufsichtsbehörde",
-        text: "Welche Aufsichtsbehörde ist für dich zuständig? Besuche deren Website und stöbere nach Vordrucken oder Vorlagen, die für deine Arbeit wichtig sein können.[cite: 5]",
+        text: "Welche Aufsichtsbehörde ist für dich zuständig? Besuche deren Website und stöbere nach Vordrucken oder Vorlagen, die für deine Arbeit wichtig sein können.",
         answer: "Individuelle Rechercheaufgabe.",
         options: ["Individuelle Rechercheaufgabe."]
     },
     {
         id: "ds_k1_04", type: "single",
         title: "Datenschutz und Datensicherheit",
-        text: "Was bedeutet Datenschutz und Datensicherheit?[cite: 5]",
+        text: "Was bedeutet Datenschutz und Datensicherheit?",
         answer: 3,
         options: [
             "Datenschutz ist der Schutz aller Daten vor Manipulation, Verlust oder unberechtigter Kenntnisnahme.",
@@ -201,21 +201,21 @@ export const questionDatabase = [
     {
         id: "ds_k1_05", type: "open",
         title: "Besondere personenbezogene Daten",
-        text: "Nenne 3 Beispiele von besonderen personenbezogenen Daten, die in einem Arbeitsverhältnis verarbeitet werden könnten[cite: 6]",
+        text: "Nenne 3 Beispiele von besonderen personenbezogenen Daten, die in einem Arbeitsverhältnis verarbeitet werden könnten",
         answer: "Beispiele: Religionszugehörigkeit, Gesundheitsdaten, Biometrische Daten, Gewerkschaftszugehörigkeit.",
         options: ["Beispiele: Religionszugehörigkeit, Gesundheitsdaten, Biometrische Daten, Gewerkschaftszugehörigkeit."]
     },
     {
         id: "ds_k1_06", type: "multi",
         title: "Verarbeitungen nach Art. 4 DSGVO",
-        text: "Welche der folgenden Punkte gehören zu den Verarbeitungen nach Art. 4 DSGVO?[cite: 6]",
+        text: "Welche der folgenden Punkte gehören zu den Verarbeitungen nach Art. 4 DSGVO?",
         answer: [0, 1, 2, 3, 4, 7],
         options: ["Einschränken", "Löschen", "Abgleichen", "Ordnen", "Erfassen", "Terminieren", "Entwerfen", "Speichern"]
     },
     {
         id: "ds_k1_07", type: "single",
         title: "Zusammenhang DSGVO und BDSG",
-        text: "Welchen Zusammenhang gibt es zwischen der DSGVO und dem BDSG?[cite: 6]",
+        text: "Welchen Zusammenhang gibt es zwischen der DSGVO und dem BDSG?",
         answer: 2,
         options: [
             "Unternehmen dürfen sich aussuchen, ob sie das BDSG oder die DSGVO anwenden.",
@@ -226,14 +226,14 @@ export const questionDatabase = [
     {
         id: "ds_k1_08", type: "open",
         title: "Personenbezogene Daten",
-        text: "Nenne 10 Beispiele von personenbezogenen Daten, die ein Arbeitgeber von dir erheben könnte.[cite: 6]",
+        text: "Nenne 10 Beispiele von personenbezogenen Daten, die ein Arbeitgeber von dir erheben könnte.",
         answer: "Beispiele: Name, Adresse, Geburtsdatum, Bankverbindung, Konfession, Steuer-ID, Sozialversicherungsnummer, Telefonnummer, E-Mail, Qualifikationen.",
         options: ["Beispiele: Name, Adresse, Geburtsdatum, Bankverbindung, Konfession, Steuer-ID, Sozialversicherungsnummer, Telefonnummer, E-Mail, Qualifikationen."]
     },
     {
         id: "ds_k1_09", type: "single",
         title: "Teil- oder automatisierte Verarbeitung",
-        text: "Was ist eine teil- oder automatisierte Verarbeitung?[cite: 6]",
+        text: "Was ist eine teil- oder automatisierte Verarbeitung?",
         answer: 1,
         options: [
             "Wenn neuartige Systeme, wie z. B. eine KI zur Recherche genutzt werden, ohne dass dabei personenbezogene Daten eingegeben werden",
@@ -244,7 +244,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_10", type: "multi",
         title: "Anwendungsbereich DSGVO",
-        text: "Wer fällt in den Anwendungsbereich der DSGVO, wenn die genannten Stellen personenbezogene Daten verarbeiten?[cite: 7]",
+        text: "Wer fällt in den Anwendungsbereich der DSGVO, wenn die genannten Stellen personenbezogene Daten verarbeiten?",
         answer: [1, 2, 3, 4],
         options: [
             "Sängerin Silvia, die in ihrem privaten Smartphone die Telefonnummer ihrer Kollegin verwaltet.",
@@ -257,7 +257,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_11", type: "multi",
         title: "Anwendungsbereich BDSG",
-        text: "Wer fällt in den Anwendungsbereich des BDSG, wenn die genannten Stellen personenbezogene Daten verarbeiten?[cite: 7]",
+        text: "Wer fällt in den Anwendungsbereich des BDSG, wenn die genannten Stellen personenbezogene Daten verarbeiten?",
         answer: [0, 1, 2, 4],
         options: [
             "Die Gemeindeverwaltung der Stadt Frankfurt Oder.",
@@ -270,14 +270,14 @@ export const questionDatabase = [
     {
         id: "ds_k1_12", type: "multi",
         title: "Beschäftigte im Sinne BDSG",
-        text: "§ 26 BDSG gilt für die Verarbeitung von Beschäftigten. Was sind Beschäftigte im Sinne BDSG und DSGVO?[cite: 7]",
+        text: "§ 26 BDSG gilt für die Verarbeitung von Beschäftigten. Was sind Beschäftigte im Sinne BDSG und DSGVO?",
         answer: [0, 3, 4, 5],
         options: ["Arbeitnehmer", "Vorstandsmitglieder", "Ehrenamtliche (Verein / Verband)", "Auszubildende", "Leiharbeiter", "Bewerber", "Bereits ausgeschiedene Beschäftigte"]
     },
     {
         id: "ds_k1_13", type: "single",
         title: "Datenschutz vs. Datensicherheit",
-        text: "Welche der folgenden Aussagen ist falsch?[cite: 8]",
+        text: "Welche der folgenden Aussagen ist falsch?",
         answer: 2,
         options: [
             "Die DSGVO beschäftigt sich überwiegend mit Datenschutz, enthält aber auch Vorschriften zur Datensicherheit.",
@@ -289,7 +289,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_14", type: "multi",
         title: "Gesetzliche Grundlagen",
-        text: "Welche beiden Aussagen zu den gesetzlichen Grundlagen des Datenschutzes sind korrekt?[cite: 8]",
+        text: "Welche beiden Aussagen zu den gesetzlichen Grundlagen des Datenschutzes sind korrekt?",
         answer: [1, 2],
         options: [
             "Die DSGVO gilt ausschließlich für Unternehmen, nicht für die öffentlichen Stellen des Bundes.",
@@ -301,7 +301,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_15", type: "single",
         title: "Online-Shop im EWR",
-        text: "Ein kanadischer Konzern möchte seine Produkte online in Ländern des EWR anbieten. Welche Aussage in Bezug auf den Datenschutz ist richtig?[cite: 8]",
+        text: "Ein kanadischer Konzern möchte seine Produkte online in Ländern des EWR anbieten. Welche Aussage in Bezug auf den Datenschutz ist richtig?",
         answer: 2,
         options: [
             "Die Regeln der DSGVO müssen nicht beachtet werden, da der Sitz des Unternehmens in Kanada liegt und der Online-Shop über Südafrika läuft.",
@@ -312,7 +312,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_16", type: "single",
         title: "Personenbezogene Daten",
-        text: "Was sind personenbezogene Daten?[cite: 9]",
+        text: "Was sind personenbezogene Daten?",
         answer: 3,
         options: [
             "Nur Daten, die eine identifizierte Person bezeichnen.",
@@ -324,7 +324,7 @@ export const questionDatabase = [
     {
         id: "ds_k1_17", type: "single",
         title: "Verantwortlichkeit",
-        text: "Wer ist bei einer verantwortlichen Stelle immer für die Einhaltung der Datenschutzvorschriften verantwortlich?[cite: 9]",
+        text: "Wer ist bei einer verantwortlichen Stelle immer für die Einhaltung der Datenschutzvorschriften verantwortlich?",
         answer: 2,
         options: ["Der Datenschutzbeauftragte", "Der Abteilungsleiter, in dessen Abteilung die Daten verarbeitet werden", "Die oberste Leitungsebene"]
     },
@@ -335,7 +335,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_01", type: "multi",
         title: "Betroffene Person",
-        text: "Welche zwei Aussagen definieren eine betroffene Person?[cite: 10]",
+        text: "Welche zwei Aussagen definieren eine betroffene Person?",
         answer: [1, 2],
         options: [
             "Die Nationalität",
@@ -348,21 +348,21 @@ export const questionDatabase = [
     {
         id: "ds_k2_02", type: "multi",
         title: "Grundsätze gem. DSGVO",
-        text: "Welche Grundsätze gem. DSGVO gelten für die Verarbeitung von personenbezogener Daten?[cite: 10]",
+        text: "Welche Grundsätze gem. DSGVO gelten für die Verarbeitung von personenbezogener Daten?",
         answer: [0, 1, 3, 4, 5],
         options: ["Transparenz", "Zweckbindung", "Kopplungsverbot", "Datenminimierung", "Speicherbegrenzung", "Rechenschaftspflicht", "Informationelle Selbstbestimmung", "Freiwilligkeit des Betroffenen"]
     },
     {
         id: "ds_k2_03", type: "multi",
         title: "Prinzip der Datenminimierung",
-        text: "Wie kannst du das Prinzip der Datenminimierung erfüllen?[cite: 10]",
+        text: "Wie kannst du das Prinzip der Datenminimierung erfüllen?",
         answer: [0, 2, 3],
         options: ["So wenig Daten wie möglich erheben", "Der vorgegebene Speicherplatz für die Daten sollte nicht überschritten werden", "Nur die Daten erheben, die für die Erfüllung des Zweckes erforderlich sind", "Doppelte Datenerhebung sollte vermieden werden", "Alle Daten sollten nur noch abgekürzt gespeichert werden"]
     },
     {
         id: "ds_k2_04", type: "single",
         title: "Verbot mit Erlaubnisvorbehalt",
-        text: "Was versteht man unter dem juristischen Begriff 'Verbot mit Erlaubnisvorbehalt'?[cite: 11]",
+        text: "Was versteht man unter dem juristischen Begriff 'Verbot mit Erlaubnisvorbehalt'?",
         answer: 0,
         options: [
             "Die Verarbeitung von pbD ist grundsätzlich verboten. Die Gesetze der DSGVO und des BDSG machen von dieser Regel ein paar Ausnahmen, die als Erlaubnistatbestände aufgezählt werden.",
@@ -374,14 +374,14 @@ export const questionDatabase = [
     {
         id: "ds_k2_05", type: "multi",
         title: "Bedingungen einer Einwilligung",
-        text: "Was sind die Bedingungen einer rechtskonformen Einwilligung nach der DSGVO?[cite: 11]",
+        text: "Was sind die Bedingungen einer rechtskonformen Einwilligung nach der DSGVO?",
         answer: [0, 1, 3],
         options: ["Zweck der Verarbeitung muss angegeben sein", "Nachweisbarkeit sollte gegeben sein", "Nennung des Speicherortes", "Widerrufsrecht muss eingeräumt sein", "Übersichtlicher Text, max. 1 Din A4 Seite"]
     },
     {
         id: "ds_k2_06", type: "single",
         title: "Double-Opt-In",
-        text: "Was bedeutet in dem Zusammenhang das Double-Opt-In Verfahren?[cite: 11]",
+        text: "Was bedeutet in dem Zusammenhang das Double-Opt-In Verfahren?",
         answer: 3,
         options: [
             "Der User muss sowohl über den Zweck als auch die Rechtsgrundlage der Erhebung der Daten informiert werden.",
@@ -393,7 +393,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_07", type: "multi",
         title: "Einwilligung von Kindern",
-        text: "Was ist bei der Einwilligung von Kindern, im Sinne des Art. 8 DSGVO zu beachten?[cite: 12]",
+        text: "Was ist bei der Einwilligung von Kindern, im Sinne des Art. 8 DSGVO zu beachten?",
         answer: [0, 1],
         options: [
             "Kinder ab 16 Jahren dürfen selbst einwilligen, wenn sie einen Dienst der Informationsgesellschaft nutzen, der sich direkt an Kinder und Jugendliche wendet.",
@@ -406,14 +406,14 @@ export const questionDatabase = [
     {
         id: "ds_k2_08", type: "multi",
         title: "Unabdingbare Rechte",
-        text: "Welche Rechte gehören zu den unabdingbaren Rechten der Betroffenen?[cite: 12]",
+        text: "Welche Rechte gehören zu den unabdingbaren Rechten der Betroffenen?",
         answer: [0, 1, 2, 4, 5],
         options: ["Recht auf Einschränkung/Sperrung", "Recht auf Auskunft", "Recht auf Berichtigung", "Recht auf Treu und Glaube", "Recht auf Löschung", "Recht auf Beschwerde", "Recht auf Datenminimierung"]
     },
     {
         id: "ds_k2_09", type: "single",
         title: "Recht auf Auskunft bei Nicht-Vorliegen von Daten",
-        text: "Du erhältst einen Anruf eines vermeintlichen Kunden, der sein Recht auf Auskunft wahrnehmen möchte. Deiner Firma liegen allerdings keine Daten dieser Person vor. Muss der Verantwortliche auf diese Anfrage reagieren?[cite: 12]",
+        text: "Du erhältst einen Anruf eines vermeintlichen Kunden, der sein Recht auf Auskunft wahrnehmen möchte. Deiner Firma liegen allerdings keine Daten dieser Person vor. Muss der Verantwortliche auf diese Anfrage reagieren?",
         answer: 3,
         options: [
             "Nein, der Verantwortliche muss nicht reagieren, da keine Verarbeitung stattgefunden hat",
@@ -425,7 +425,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_10", type: "single",
         title: "Recht auf Widerspruch",
-        text: "Was ist mit dem Recht auf Widerspruch gemeint?[cite: 13]",
+        text: "Was ist mit dem Recht auf Widerspruch gemeint?",
         answer: 1,
         options: [
             "Widerspruch gegen die erteilte Einwilligung",
@@ -437,7 +437,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_11", type: "multi",
         title: "Daten löschen",
-        text: "Unter welchen Voraussetzungen muss der Verantwortliche personenbezogene Daten unverzüglich löschen?[cite: 13]",
+        text: "Unter welchen Voraussetzungen muss der Verantwortliche personenbezogene Daten unverzüglich löschen?",
         answer: [0, 2, 3, 4],
         options: [
             "Wenn der Betroffene seine Einwilligung widerrufen hat",
@@ -451,7 +451,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_12", type: "multi",
         title: "Informationspflichten",
-        text: "Über welche Inhalte müssen Betroffene zum Zeitpunkt einer Datenerhebung grundsätzlich informiert werden?[cite: 13]",
+        text: "Über welche Inhalte müssen Betroffene zum Zeitpunkt einer Datenerhebung grundsätzlich informiert werden?",
         answer: [0, 1, 2, 3, 4, 5],
         options: [
             "Die Rechtsgrundlage(n) für die Verarbeitung",
@@ -466,7 +466,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_13", type: "multi",
         title: "Datenschutzverletzung",
-        text: "Welche Schritte sind zu ergreifen bei einer Datenschutzverletzung?[cite: 14]",
+        text: "Welche Schritte sind zu ergreifen bei einer Datenschutzverletzung?",
         answer: [1, 3, 4],
         options: [
             "Der DSB muss sofort informiert werden",
@@ -479,7 +479,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_14", type: "multi",
         title: "Beispiele für Datenpanne",
-        text: "Welche der folgenden Vorfälle stellt eine Datenpanne gem. DSGVO dar?[cite: 14]",
+        text: "Welche der folgenden Vorfälle stellt eine Datenpanne gem. DSGVO dar?",
         answer: [1, 2, 4],
         options: [
             "Der PC-Arbeitsplatz in der Personalabteilung hat keine automatische Bildschirmsperre",
@@ -492,14 +492,14 @@ export const questionDatabase = [
     {
         id: "ds_k2_15", type: "multi",
         title: "Inhalte Meldung Datenpanne",
-        text: "Welche Informationen muss die Meldung einer Datenschutzverletzung an die Aufsichtsbehörde mindestens enthalten?[cite: 14]",
+        text: "Welche Informationen muss die Meldung einer Datenschutzverletzung an die Aufsichtsbehörde mindestens enthalten?",
         answer: [0, 1, 2, 3],
         options: ["Name und Kontaktdaten des DSB", "Beschreibung der Datenschutzverletzung", "Beschreibung der wahrscheinlichen Folgen", "Kategorie und ungefähre Anzahl der Datensätze", "Name und Kontaktdaten der Betroffenen"]
     },
     {
         id: "ds_k2_16", type: "multi",
         title: "Drittlandübermittlung",
-        text: "Die Übermittlung von Daten in Drittländer ist nach der DSGVO zulässig, wenn...[cite: 15]",
+        text: "Die Übermittlung von Daten in Drittländer ist nach der DSGVO zulässig, wenn...",
         answer: [0, 1, 4],
         options: [
             "die betroffene Person in die Übermittlung gem. Art. 49 (1) lit. a DSGVO ausdrücklich eingewilligt hat",
@@ -512,7 +512,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_17", type: "single",
         title: "Drittland",
-        text: "Was ist im Sinne der DSGVO unter einem Drittland zu verstehen?[cite: 15]",
+        text: "Was ist im Sinne der DSGVO unter einem Drittland zu verstehen?",
         answer: 2,
         options: [
             "Ein Land, in dem die DSGVO zur Anwendung kommt",
@@ -525,7 +525,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_18", type: "multi",
         title: "Übermittlung an andere Empfänger",
-        text: "Welche Voraussetzungen müssen bei der Übermittlung an andere Unternehmen erfüllt werden?[cite: 15]",
+        text: "Welche Voraussetzungen müssen bei der Übermittlung an andere Unternehmen erfüllt werden?",
         answer: [0, 3, 4],
         options: [
             "Es muss mindestens eine Rechtsgrundlage nach DSGVO oder BDSG erfüllt sein, um Daten zu verarbeiten",
@@ -538,14 +538,14 @@ export const questionDatabase = [
     {
         id: "ds_k2_19", type: "multi",
         title: "Videoüberwachung",
-        text: "In welchen der folgenden Bereiche ist Videoüberwachung grundsätzlich verboten?[cite: 16]",
+        text: "In welchen der folgenden Bereiche ist Videoüberwachung grundsätzlich verboten?",
         answer: [0, 2, 4, 5, 6],
         options: ["Umkleidekabinen des Unternehmens", "In der Kantine", "Ruheraum der Mitarbeiter in einer Arztpraxis", "Flure und IT-Abteilung einer Behörde", "Vorräume einer Toilette eines Vereines", "Duschräume", "Toilettenräume", "Öffentlicher Parkplatz"]
     },
     {
         id: "ds_k2_20", type: "multi",
         title: "Verpflichtung auf Vertraulichkeit",
-        text: "Was soll bei der Verpflichtung der Mitarbeiter auf die Vertraulichkeit beachtet werden?[cite: 16]",
+        text: "Was soll bei der Verpflichtung der Mitarbeiter auf die Vertraulichkeit beachtet werden?",
         answer: [0, 3],
         options: [
             "Die Mitarbeiter sollen verstehen, was das Ziel dieser Verpflichtung ist",
@@ -557,7 +557,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_21", type: "multi",
         title: "Akzeptanz des Datenschutzes",
-        text: "Mit welchen Maßnahmen können die Verantwortlichen eine bessere Akzeptanz des Datenschutzes herstellen?[cite: 16]",
+        text: "Mit welchen Maßnahmen können die Verantwortlichen eine bessere Akzeptanz des Datenschutzes herstellen?",
         answer: [0, 1, 2],
         options: [
             "Die Geschäftsführung sollte als Vorbild vorangehen",
@@ -570,7 +570,7 @@ export const questionDatabase = [
     {
         id: "ds_k2_22", type: "multi",
         title: "Analyse-Tool auf Website",
-        text: "Welche Regelungen sind bei der Nutzung eines Analyse-Tools zu beachten?[cite: 17]",
+        text: "Welche Regelungen sind bei der Nutzung eines Analyse-Tools zu beachten?",
         answer: [1, 3, 4],
         options: [
             "Es muss eine Datenschutz-Folgenabschätzung durchgeführt werden",
@@ -583,56 +583,56 @@ export const questionDatabase = [
     {
         id: "ds_k2_23", type: "multi",
         title: "Schutzziele Informationssicherheit",
-        text: "Welches sind die Schutzziele in der Informationssicherheit?[cite: 17]",
+        text: "Welches sind die Schutzziele in der Informationssicherheit?",
         answer: [0, 5, 12],
         options: ["Verfügbarkeit", "Verschlüsselung", "Authentizität", "Pseudonymisierung", "Belastbarkeit", "Vertraulichkeit", "Datenminimierung", "Nichtverkettung", "Transparenz", "Intervenierbarkeit", "Wiederherstellung", "Wirksamkeit", "Integrität", "Nichtabstreitbarkeit"]
     },
     {
         id: "ds_k2_24", type: "multi",
         title: "Schutzziele DSGVO",
-        text: "Welches sind die Schutzziele im Datenschutz gem. DSGVO?[cite: 18]",
+        text: "Welches sind die Schutzziele im Datenschutz gem. DSGVO?",
         answer: [0, 5, 12],
         options: ["Verfügbarkeit", "Verschlüsselung", "Authentizität", "Pseudonymisierung", "Belastbarkeit", "Vertraulichkeit", "Datenminimierung", "Nichtverkettung", "Transparenz", "Intervenierbarkeit", "Wiederherstellung", "Wirksamkeit", "Integrität", "Nichtabstreitbarkeit"]
     },
     {
         id: "ds_k2_25", type: "multi",
         title: "Schutzziele nach SDM",
-        text: "Welches sind die Schutzziele nach SDM (Standard Datenschutz Model)?[cite: 18]",
+        text: "Welches sind die Schutzziele nach SDM (Standard Datenschutz Model)?",
         answer: [0, 5, 7, 8, 9, 12],
         options: ["Verfügbarkeit", "Verschlüsselung", "Authentizität", "Pseudonymisierung", "Belastbarkeit", "Vertraulichkeit", "Datenminimierung", "Nichtverkettung", "Transparenz", "Intervenierbarkeit", "Wiederherstellung", "Wirksamkeit", "Integrität", "Nichtabstreitbarkeit"]
     },
     {
         id: "ds_k2_26", type: "single",
         title: "Rechtsgrundlage Datenübermittlung",
-        text: "Dein Unternehmen möchte deine personenbezogenen Daten an andere Empfänger übermitteln. Welches Gesetz(e) regeln und ermöglichen das?[cite: 19]",
+        text: "Dein Unternehmen möchte deine personenbezogenen Daten an andere Empfänger übermitteln. Welches Gesetz(e) regeln und ermöglichen das?",
         answer: 1,
         options: ["Ausschließlich die DSGVO", "DSGVO in Verbindung mit dem BDSG", "Ausschließlich das BDSG bei Beschäftigten", "Das BGB", "Keine der o.a. Antworten ist richtig"]
     },
     {
         id: "ds_k2_27", type: "multi",
         title: "Informationspflichten",
-        text: "Welche Personen müssen vor einer Datenverarbeitung ihrer personenbezogenen Daten informiert werden?[cite: 19]",
+        text: "Welche Personen müssen vor einer Datenverarbeitung ihrer personenbezogenen Daten informiert werden?",
         answer: [0, 1, 2, 3, 4, 5, 7],
         options: ["Nutzer der Website", "Interessenten bei Anfragen über die Kontaktseite der Internetseite", "Beschäftigte", "Bewerber", "Praktikanten", "Geschäftspartner und Lieferanten", "Behörden", "Kunden"]
     },
     {
         id: "ds_k2_28", type: "multi",
         title: "Inhalte Datenschutzinformation",
-        text: "Welche groben Inhalte sollte eine Information zu Datenschutz enthalten?[cite: 19]",
+        text: "Welche groben Inhalte sollte eine Information zu Datenschutz enthalten?",
         answer: [0, 1, 2, 3, 6, 7, 8],
         options: ["Die Kontaktdaten des Verantwortlichen und des DSBs (wenn benannt)", "Den Zweck der Datenverarbeitung", "Die Empfänger der Daten", "Eine beabsichtigte Übermittlung in Drittländer", "Die Webadresse des Unternehmens", "Die Anzahl der Beschäftigten und die Art des Unternehmens", "Die Dauer der Speicherung der Daten", "Eine Auflistung der Betroffenenrechte", "Hinweise zum Beschwerde- und Widerrufsrecht", "Informationen in der Landessprache und mindestens auch in englischer Sprache verfasst sein"]
     },
     {
         id: "ds_k2_29", type: "multi",
         title: "TOMs",
-        text: "Welchen Zweck erfüllen TOMs (techn.- organisatorische Maßnahmen)?[cite: 20]",
+        text: "Welchen Zweck erfüllen TOMs (techn.- organisatorische Maßnahmen)?",
         answer: [1, 2, 3, 4],
         options: ["TOMs sind nach DSGVO vorgeschrieben und müssen nicht immer einen Zweck erfüllen", "TOMs erfüllen Anforderungen zu Schutzzielen der DSGVO", "TOMs erfüllen Anforderungen zu Schutzzielen der Informationssicherheit", "Organisatorische Maßnahmen können Richtlinien und Mitarbeiteranweisungen sein", "Technische Maßnahmen können z. B. durch Transponder Key Schließsysteme als Zutrittskontrolle umgesetzt werden, um einen berechtigten Zutritt zu gewährleisten", "TOMs sind nur in datenschutzrechtlichen Aspekten wirksam", "TOMs beziehen ausschließlich auf die Datensicherheit"]
     },
     {
         id: "ds_k2_30", type: "single",
         title: "Risikoansätze",
-        text: "Welche Risikoansätze werden bei der Verarbeitung personenbezogener Daten nach DSGVO im Vergleich zur allgemeinen IT verfolgt?[cite: 20]",
+        text: "Welche Risikoansätze werden bei der Verarbeitung personenbezogener Daten nach DSGVO im Vergleich zur allgemeinen IT verfolgt?",
         answer: 1,
         options: [
             "Es gibt keinen Unterschied, da beide die gleiche Formel zur Berechnung des Risikoausmaßes verwenden.",
@@ -643,35 +643,35 @@ export const questionDatabase = [
     {
         id: "ds_k2_31", type: "single",
         title: "Schutzbedarfsanalyse",
-        text: "Was versteht man im Datenschutz unter einer Schutzbedarfsanalyse?[cite: 20]",
+        text: "Was versteht man im Datenschutz unter einer Schutzbedarfsanalyse?",
         answer: 1,
         options: ["Die Methode, wie alle Informationen im Unternehmen abgesichert werden müssen.", "Bildung von Schutzbedarfskategorien aus einer Risikoanalyse über personenbezogene Daten.", "Die Beschreibung welche Technisch-Organisatorische Maßnahme zu welchem Risiko passt."]
     },
     {
         id: "ds_k2_32", type: "single",
         title: "Besondere Kategorien von Daten",
-        text: "Welche der folgenden Daten zählen nicht zu den „Daten besonderer Kategorie“ nach Art. 9 DSGVO wie z. B. Gesundheitsdaten?[cite: 21]",
+        text: "Welche der folgenden Daten zählen nicht zu den „Daten besonderer Kategorie“ nach Art. 9 DSGVO wie z. B. Gesundheitsdaten?",
         answer: 0,
         options: ["Bankdaten", "Biometrische Daten", "Religiöse Überzeugung", "Polizeiliches Führungszeugnis"]
     },
     {
         id: "ds_k2_33", type: "multi",
         title: "Keine Betroffenenrechte",
-        text: "Welche der folgenden Rechte sind keine Betroffenenrechte gemäß DSGVO?[cite: 21]",
+        text: "Welche der folgenden Rechte sind keine Betroffenenrechte gemäß DSGVO?",
         answer: [1, 3],
         options: ["Recht auf Berichtigung", "Recht auf Verschlüsselung", "Recht auf Einschränkung der Verarbeitung", "Recht auf Anonymisierung"]
     },
     {
         id: "ds_k2_34", type: "multi",
         title: "Auskunftsrecht",
-        text: "Welche beiden der folgenden Aussagen sind falsch? Das Auskunftsrecht nach DSGVO...[cite: 21]",
+        text: "Welche beiden der folgenden Aussagen sind falsch? Das Auskunftsrecht nach DSGVO...",
         answer: [0, 1],
         options: ["gilt nur gegenüber Behörden, nicht gegenüber Privatunternehmen.", "wird durch die Aufsichtsbehörde ausgeübt.", "schließt das Recht auf eine Kopie der Daten ein.", "kann bei exzessiver Nutzung verweigert werden."]
     },
     {
         id: "ds_k2_35", type: "multi",
         title: "Ausnahmen Art. 9 DSGVO",
-        text: "Die besonderen Kategorien des Art. 9 DSGVO untersagen grundsätzlich die Verarbeitung der bezeichneten Daten. Es gibt aber Ausnahmen. Welche Aussagen sind richtig?[cite: 21]",
+        text: "Die besonderen Kategorien des Art. 9 DSGVO untersagen grundsätzlich die Verarbeitung der bezeichneten Daten. Es gibt aber Ausnahmen. Welche Aussagen sind richtig?",
         answer: [0, 2],
         options: [
             "Die Einwilligung der betroffenen Person liegt in rechtsgültiger Form vor.",
@@ -683,14 +683,14 @@ export const questionDatabase = [
     {
         id: "ds_k2_36", type: "single",
         title: "Rechtsgrundlage",
-        text: "Welches ist im normalen Geschäftsbereich die sicherste und stärkste Rechtsgrundlage für die Verarbeitung personenbezogener Daten?[cite: 22]",
+        text: "Welches ist im normalen Geschäftsbereich die sicherste und stärkste Rechtsgrundlage für die Verarbeitung personenbezogener Daten?",
         answer: 2,
         options: ["Die Einwilligung, weil die von der betroffenen Person bewusst gegeben werden muss.", "Berechtigte Interessen, weil die am breitesten ausgelegt werden können.", "Ein Vertrag, der auf Anfrage der betroffenen Person zustande kommt."]
     },
     {
         id: "ds_k2_37", type: "single",
         title: "Datensparsamkeit bei Formularen",
-        text: "Wie muss eine Eingabemaske für einen Online-Büchershop konditioniert werden?[cite: 22]",
+        text: "Wie muss eine Eingabemaske für einen Online-Büchershop konditioniert werden?",
         answer: 2,
         options: [
             "Alle Eingabefelder können als Pflichtfelder deklariert werden, da die Daten auch anderweitig verwendet werden können.",
@@ -705,14 +705,14 @@ export const questionDatabase = [
     {
         id: "ds_k3_01", type: "single",
         title: "Entscheidungsgewalt Verarbeitung",
-        text: "Wer bestimmt über den Zweck und die Mittel einer Verarbeitung von personenbezogenen Daten?[cite: 23]",
+        text: "Wer bestimmt über den Zweck und die Mittel einer Verarbeitung von personenbezogenen Daten?",
         answer: 0,
         options: ["Der Verantwortliche", "Der Auftragsverarbeiter", "Der Empfänger der pbD", "Der Dritte, wenn dieser in Deutschland ansässig ist", "Der zuständige Sachbearbeiter/in der verarbeitenden Stelle"]
     },
     {
         id: "ds_k3_02", type: "multi",
         title: "Auftragsverarbeitung Aktenvernichtung",
-        text: "Dein Unternehmen möchte für die jährliche Aktenvernichtung einen externen Dienstleister beauftragen. Welche der folgenden Voraussetzungen sind vor dem Beginn der Dienstleistung zu erfüllen?[cite: 23]",
+        text: "Dein Unternehmen möchte für die jährliche Aktenvernichtung einen externen Dienstleister beauftragen. Welche der folgenden Voraussetzungen sind vor dem Beginn der Dienstleistung zu erfüllen?",
         answer: [1, 2, 3],
         options: [
             "Die Beschäftigten müssen gem. Art. 6 (1) lit. a DSGVO ihre Einwilligung zur Vernichtung der Akten zustimmen",
@@ -726,7 +726,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_03", type: "multi",
         title: "Unterauftragnehmer",
-        text: "Der Dienstleister für die Aktenvernichtung möchte bei Engpässen auf die Leistungen eines Partnerunternehmens zurückgreifen. Welche der folgenden Aussagen sind korrekt?[cite: 23]",
+        text: "Der Dienstleister für die Aktenvernichtung möchte bei Engpässen auf die Leistungen eines Partnerunternehmens zurückgreifen. Welche der folgenden Aussagen sind korrekt?",
         answer: [0, 2],
         options: [
             "Das Partnerunternehmen wird als Unterauftragnehmer gegenüber deiner Firma angesehen",
@@ -738,7 +738,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_04", type: "multi",
         title: "Gemeinsame Verantwortung",
-        text: "Welche Aussagen zur gemeinsamen Verantwortung gem. Art. 26 DSGVO sind richtig?[cite: 24]",
+        text: "Welche Aussagen zur gemeinsamen Verantwortung gem. Art. 26 DSGVO sind richtig?",
         answer: [2, 3],
         options: [
             "Die gemeinsame Verantwortung gibt es im Sinne der DSGVO nicht",
@@ -751,7 +751,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_05", type: "multi",
         title: "Inhalte Auftragsverarbeitungsvertrag",
-        text: "Welche Inhalte müssen in einem Auftragsverarbeitungsvertrag mindestens abgedeckt sein?[cite: 24]",
+        text: "Welche Inhalte müssen in einem Auftragsverarbeitungsvertrag mindestens abgedeckt sein?",
         answer: [0, 1, 2, 4],
         options: [
             "Eine Bestätigung, dass alle Beschäftigten des Auftragsverarbeiters zur Vertraulichkeit verpflichtet wurden",
@@ -765,21 +765,21 @@ export const questionDatabase = [
     {
         id: "ds_k3_06", type: "open",
         title: "Recherche AVV",
-        text: "Recherchiere im Internet und suche bei deiner Aufsichtsbehörde nach Vertragsmustern für Auftragsverarbeitung und gemeinsamer Verantwortung.[cite: 24]",
+        text: "Recherchiere im Internet und suche bei deiner Aufsichtsbehörde nach Vertragsmustern für Auftragsverarbeitung und gemeinsamer Verantwortung.",
         answer: "Individuelle Rechercheaufgabe.",
         options: ["Individuelle Rechercheaufgabe."]
     },
     {
         id: "ds_k3_07", type: "single",
         title: "Führung des VVT",
-        text: "Wer führt das Verzeichnis der Verarbeitungstätigkeiten (VVT) gem. DSGVO?[cite: 25]",
+        text: "Wer führt das Verzeichnis der Verarbeitungstätigkeiten (VVT) gem. DSGVO?",
         answer: 2,
         options: ["Der Datenschutzbeauftragte, falls dieser benannt ist", "Die Fachabteilung die mit dieser Verarbeitung beauftragt ist", "Der Verantwortliche z. B. der Geschäftsführer", "Der Datenschutzkoordinator", "Der Leiter des Personalbüros"]
     },
     {
         id: "ds_k3_08", type: "multi",
         title: "Inhalte VVT",
-        text: "Welche Inhalte müssen im VVT mindestens abgebildet sein?[cite: 25]",
+        text: "Welche Inhalte müssen im VVT mindestens abgebildet sein?",
         answer: [0, 1, 2, 5, 6],
         options: [
             "Zweck der Verarbeitung",
@@ -794,7 +794,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_09", type: "multi",
         title: "EG 78 DSGVO TOMs",
-        text: "Der Erwägungsgrund (EG) 78 der DSGVO bezieht sich auf mehrere TOMs die besonders von Fachinformatikern eingehalten werden sollten. Welche sind das?[cite: 25]",
+        text: "Der Erwägungsgrund (EG) 78 der DSGVO bezieht sich auf mehrere TOMs die besonders von Fachinformatikern eingehalten werden sollten. Welche sind das?",
         answer: [0, 3, 4, 5, 6, 7, 8],
         options: [
             "Datenschutz durch Technikgestaltung",
@@ -813,7 +813,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_10", type: "multi",
         title: "Nachweispflichten",
-        text: "Welche Nachweispflichten bestehen für den Verantwortlichen?[cite: 26]",
+        text: "Welche Nachweispflichten bestehen für den Verantwortlichen?",
         answer: [0, 1, 6, 11],
         options: [
             "Benennung des DSB (wann gemeldet)",
@@ -833,7 +833,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_11", type: "multi",
         title: "KRITIS Unternehmen",
-        text: "Welche Unternehmen fallen unter den Begriff KRITIS?[cite: 26]",
+        text: "Welche Unternehmen fallen unter den Begriff KRITIS?",
         answer: [0, 3, 4, 9, 10, 11, 12, 14, 15],
         options: [
             "Krankenhäuser", "Elektriker", "Klempnerbetriebe", "Telekommunikationsunternehmen", "Wasserversorger", "Internet-Dienstleister (Hosting)", "Cloudcomputing Dienstleister", "Cloudspeicher Anbieter", "Betreiber großer KI-Rechenzentren", "Öffentlicher Nahverkehr", "Banken", "Abfallversorgungsunternehmen", "Staat/Verwaltung", "Klimaschutz Unternehmen", "Lebensmittelindustrie", "Pharmaindustrie"
@@ -842,7 +842,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_12", type: "multi",
         title: "NIS2 Regelung",
-        text: "Welches Ziel verfolgt man mit der NIS2 Regelung? Welche weiteren Aussagen sind richtig?[cite: 27]",
+        text: "Welches Ziel verfolgt man mit der NIS2 Regelung? Welche weiteren Aussagen sind richtig?",
         answer: [2, 3],
         options: [
             "Die Stärkung von Fördermaßnahmen in der Technologiebranche",
@@ -854,14 +854,14 @@ export const questionDatabase = [
     {
         id: "ds_k3_13", type: "single",
         title: "TDDDG",
-        text: "Welche neue Regelung findet sich im TDDDG?[cite: 27]",
+        text: "Welche neue Regelung findet sich im TDDDG?",
         answer: 3,
         options: ["Nutzen der digitalen Dienste", "Cookiefreie Webseiten", "Schutz vor Abhörmaßnahmen", "Rechte von Erben (digitales Erbe)"]
     },
     {
         id: "ds_k3_14", type: "single",
         title: "2-Klick-Regel Impressum",
-        text: "Das DDG regelt u.a. auch die Impressumspflichten. Gerichte haben zusätzlich eine 2-Klick-Regel festgelegt. Was ist damit gemeint?[cite: 27]",
+        text: "Das DDG regelt u.a. auch die Impressumspflichten. Gerichte haben zusätzlich eine 2-Klick-Regel festgelegt. Was ist damit gemeint?",
         answer: 2,
         options: [
             "Die Impressumsseite wird nach zweimaligem Anklicken nicht weiter angezeigt",
@@ -873,7 +873,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_15", type: "multi",
         title: "Urheberrecht",
-        text: "Welche der folgenden Aussagen zum Urheberrecht sind richtig?[cite: 28]",
+        text: "Welche der folgenden Aussagen zum Urheberrecht sind richtig?",
         answer: [0, 4, 6, 8, 9],
         options: [
             "Das Urheberrecht schützt ideelle und materielle Interessen eines Urhebers an geistigen Werken",
@@ -891,7 +891,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_16", type: "multi",
         title: "Softwareerstellung im Unternehmen",
-        text: "Sie erschaffen in ihrem Unternehmen eine Software, die von hohem Nutzen für das Unternehmen ist. Welche Aussage ist richtig?[cite: 28]",
+        text: "Sie erschaffen in ihrem Unternehmen eine Software, die von hohem Nutzen für das Unternehmen ist. Welche Aussage ist richtig?",
         answer: [0, 1, 3],
         options: [
             "Grundsätzlich sind sie Urheber der Software",
@@ -905,7 +905,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_17", type: "single",
         title: "Urheberrecht Grundlagen",
-        text: "Welche der folgenden Aussagen ist richtig?[cite: 28]",
+        text: "Welche der folgenden Aussagen ist richtig?",
         answer: 2,
         options: [
             "Das Urheberrecht gilt nur für Werke der Musik und der bildenden Kunst, nicht aber für Computerprogramme.",
@@ -917,7 +917,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_18", type: "single",
         title: "Verantwortliche Stelle",
-        text: "Damit eine natürliche oder juristische Person als „Verantwortlicher“ oder „verantwortliche Stelle“ gilt, muss sie Entscheidungsgewalt über zwei Dinge haben:[cite: 29]",
+        text: "Damit eine natürliche oder juristische Person als „Verantwortlicher“ oder „verantwortliche Stelle“ gilt, muss sie Entscheidungsgewalt über zwei Dinge haben:",
         answer: 2,
         options: [
             "Zeitpunkt und Art der Daten",
@@ -929,7 +929,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_19", type: "single",
         title: "Verzeichnis der Verarbeitungstätigkeiten",
-        text: "Kennzeichnen Sie die falsche Aussage in Bezug auf ein Verzeichnis der Verarbeitungstätigkeiten (VVT).[cite: 29]",
+        text: "Kennzeichnen Sie die falsche Aussage in Bezug auf ein Verzeichnis der Verarbeitungstätigkeiten (VVT).",
         answer: 3,
         options: [
             "Die meisten Unternehmen sind zum Erstellen eines VVT verpflichtet.",
@@ -941,14 +941,14 @@ export const questionDatabase = [
     {
         id: "ds_k3_20", type: "single",
         title: "Dokument für Rechtsgrundlage",
-        text: "Um im Unternehmen herauszufinden, was die Rechtgrundlage und was die Löschfrist für die Arbeitszeiterfassung ist, wird welches Dokument diese Angaben enthalten?[cite: 29]",
+        text: "Um im Unternehmen herauszufinden, was die Rechtgrundlage und was die Löschfrist für die Arbeitszeiterfassung ist, wird welches Dokument diese Angaben enthalten?",
         answer: 3,
         options: ["Personalakte", "Stellenbeschreibung des Mitarbeiters", "Tätigkeitsbericht des DSB", "Verzeichnis der Verarbeitungstätigkeiten (VVT)"]
     },
     {
         id: "ds_k3_21", type: "single",
         title: "Zweckbindung und Identifizierung",
-        text: "Die Verarbeitung personenbezogener Daten darf nur zweckgebunden erfolgen. Nach der Zweckerfüllung darf auch keine Identifizierung der betroffenen Person mehr möglich sein. Welche Aussagen sind richtig?[cite: 30]",
+        text: "Die Verarbeitung personenbezogener Daten darf nur zweckgebunden erfolgen. Nach der Zweckerfüllung darf auch keine Identifizierung der betroffenen Person mehr möglich sein. Welche Aussagen sind richtig?",
         answer: 1,
         options: [
             "Nach der Zweckerfüllung müssen die personenbezogenen Daten sofort gelöscht oder anonymisiert werden, wenn keine gesetzlichen Regelungen entgegenstehen.",
@@ -959,7 +959,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_22", type: "single",
         title: "Definition Auftragsverarbeitung",
-        text: "Wann spricht man von einer Auftragsverarbeitung?[cite: 30]",
+        text: "Wann spricht man von einer Auftragsverarbeitung?",
         answer: 2,
         options: [
             "Wenn ein Unternehmen die Daten von einer dritten Stelle bekommt und sie für eigene Zwecke verarbeitet.",
@@ -970,7 +970,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_23", type: "single",
         title: "Werbezwecke und UWG",
-        text: "Die DSGVO enthält keine detaillierten Regelungen zur Verarbeitung von personenbezogenen Daten für Werbezwecke. Diese sind explizit im UWG formuliert. Welche Aussage ist richtig?[cite: 30]",
+        text: "Die DSGVO enthält keine detaillierten Regelungen zur Verarbeitung von personenbezogenen Daten für Werbezwecke. Diese sind explizit im UWG formuliert. Welche Aussage ist richtig?",
         answer: 2,
         options: [
             "Da das UWG ein nationales deutsches Gesetz ist, müssen die Vorgaben der DSGVO im Hinblick auf Datenerhebung und Informationspflichten nicht beachtet werden.",
@@ -981,7 +981,7 @@ export const questionDatabase = [
     {
         id: "ds_k3_24", type: "single",
         title: "Meldepflicht Zeitraum",
-        text: "Innerhalb welchem Zeitraum nach bekannt werden muss die verantwortliche Stelle meldepflichtige Datenschutzverstöße der Aufsichtsbehörde melden?[cite: 31]",
+        text: "Innerhalb welchem Zeitraum nach bekannt werden muss die verantwortliche Stelle meldepflichtige Datenschutzverstöße der Aufsichtsbehörde melden?",
         answer: 1,
         options: ["Innerhalb 1 Monats", "Innerhalb von 72 Stunden", "Innerhalb von 3 Monaten"]
     }
