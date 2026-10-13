@@ -1,0 +1,9 @@
+{
+"files": [
+"pages/economics/supply_and_demand/registryForSupplyAndDemand.json",
+"pages/information_technology/terminal/registryForTerminal.json",
+"pages/information_technology/network/protocols/registryForProtocols.json",
+"pages/information_technology/network/osi/registryForOsi.json",
+"pages/information_technology/database/sql/registryForSQL.json"
+]
+}

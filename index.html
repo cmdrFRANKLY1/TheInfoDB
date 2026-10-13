@@ -4,798 +4,681 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>theInfoDB</title>
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        discord: {
+                            blurple: 'var(--accent-color)',
+                            dark: 'var(--bg-primary)',
+                            darker: 'var(--bg-secondary)',
+                            darkest: 'var(--bg-tertiary)',
+                            text_normal: 'var(--text-normal)',
+                            interactive_normal: 'var(--interactive-normal)',
+                            interactive_hover: 'var(--interactive-hover)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            /* Color Palette - Light (Default) */
+            /* Default Dark Theme */
+            --bg-primary: #36393f;
+            --bg-secondary: #2f3136;
+            --bg-tertiary: #202225;
+            --text-normal: #dcddde;
+            --text-muted: #72767d;
+            --interactive-normal: #b9bbbe;
+            --interactive-hover: #dcddde;
+            --border-color: rgba(32, 34, 37, 0.5);
+            --settings-bg: #36393f;
+        }
+
+        .light-theme {
             --bg-primary: #ffffff;
-            --bg-secondary: #f4f4f4;
-            --text-primary: #000000;
-            --text-secondary: #666666;
-            --border-color: #e5e5e5;
-            --hover-bg: #eaeaea;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
-            /* Sizing - Medium (Default) */
-            --sidebar-width: 246px;
-            --sidebar-icon-width: 64px;
-            --sidebar-padding: 12px;
-            --btn-left: 12px;
-            --font-size: 16px;
-            --icon-size: 20px;
-            --btn-size: 40px;
+            --bg-secondary: #f2f3f5;
+            --bg-tertiary: #e3e5e8;
+            --text-normal: #000000;
+            --text-muted: #747f8d;
+            --interactive-normal: #000000;
+            --interactive-hover: #4f545c;
+            --border-color: rgba(6, 6, 7, 0.08);
+            --settings-bg: #ffffff;
         }
 
-        [data-theme="dark"] {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #141414;
-            --text-primary: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-color: #262626;
-            --hover-bg: #1f1f1f;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        .midnight-theme {
+            --bg-primary: #121212;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #000000;
+            --text-normal: #e0e0e0;
+            --text-muted: #6b6b6b;
+            --interactive-normal: #a3a3a3;
+            --interactive-hover: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --settings-bg: #121212;
         }
 
-        [data-size="small"] {
-            --sidebar-width: 200px;
-            --sidebar-icon-width: 54px;
-            --sidebar-padding: 9px;
-            --btn-left: 11px;
-            --font-size: 14px;
-            --icon-size: 16px;
-            --btn-size: 32px;
-        }
-
-        [data-size="large"] {
-            --sidebar-width: 300px;
-            --sidebar-icon-width: 74px;
-            --sidebar-padding: 15px;
-            --btn-left: 13px;
-            --font-size: 18px;
-            --icon-size: 24px;
-            --btn-size: 48px;
-        }
-
-        * {
-            box-sizing: border-box;
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg-primary);
+            color: var(--text-normal);
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: var(--font-size);
-            overflow: hidden;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        /* Toggle Button */
-        #sidebar-toggle {
-            position: fixed;
-            top: 16px;
-            left: var(--btn-left);
-            height: var(--btn-size);
-            min-width: var(--btn-size);
-            padding: 0 calc(var(--btn-size) * 0.25);
+            transition: background-color 0.3s, color 0.3s;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            z-index: 50;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            color: var(--text-primary);
-            cursor: pointer;
-            box-shadow: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
         }
 
-        #sidebar-toggle:hover {
-            background-color: var(--hover-bg);
-        }
-
-        #sidebar-toggle.is-open {
-            background-color: transparent;
-        }
-
-        #sidebar-toggle svg {
-            width: var(--icon-size);
-            height: var(--icon-size);
-            flex-shrink: 0;
-        }
-
-        #datetime-display {
-            display: none;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            padding-right: 8px;
-        }
-
-        #sidebar-toggle.is-open #datetime-display {
-            display: block;
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-5px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Sidebar Overlay */
         #sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background-color: var(--bg-primary);
-            border-right: 1px solid var(--border-color);
-            z-index: 40;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
-            box-shadow: 10px 0 25px -10px rgba(0,0,0,0.1);
-        }
-
-        /* "Full Hide" mode */
-        body[data-sidebar-mode="hide"] #sidebar {
-            transform: translateX(-100%);
-        }
-        body[data-sidebar-mode="hide"] #sidebar.is-open {
-            transform: translateX(0);
-        }
-
-        /* "Icons Only" mode */
-        body[data-sidebar-mode="icons"] #sidebar {
-            transform: translateX(0);
-            width: var(--sidebar-icon-width);
-        }
-        body[data-sidebar-mode="icons"] #sidebar.is-open {
-            width: var(--sidebar-width);
-        }
-
-        #sidebar-header-space {
-            height: calc(16px + var(--btn-size) + 16px);
-            flex-shrink: 0;
-        }
-
-        #sidebar-search-container {
-            padding: 0 16px 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* Canvas Layer */
-        #app-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 10;
-            overflow-y: auto;
-            padding-top: calc(16px + var(--btn-size) + 24px);
-        }
-
-        /* Sidebar Content */
-        #sidebar-content {
-            padding-top: 12px;
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-left: var(--sidebar-padding);
-            padding-right: var(--sidebar-padding);
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: background-color 0.2s;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .sidebar-item:hover {
-            background-color: var(--hover-bg);
-        }
-        .sidebar-item svg {
-            width: var(--icon-size);
-            height: var(--icon-size);
-            flex-shrink: 0;
-        }
-
-        .sidebar-item-text {
-            transition: opacity 0.2s;
-            opacity: 1;
-        }
-
-        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) .sidebar-item-text {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #sidebar-search-container {
-            display: none;
-        }
-
-        /* Sidebar Footer (Settings & Theme) */
-        #sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #sidebar-footer {
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-            padding: 16px 0;
-        }
-
-        #settings-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: var(--font-size);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            white-space: nowrap;
-        }
-        #settings-btn:hover { background-color: var(--hover-bg); }
-
-        body[data-sidebar-mode="icons"] #sidebar:not(.is-open) #settings-btn-text {
-            display: none;
-        }
-
-        #theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #theme-toggle:hover { background-color: var(--hover-bg); }
-
-        #theme-toggle svg, #settings-btn svg {
-            width: var(--icon-size);
-            height: var(--icon-size);
-            flex-shrink: 0;
-        }
-
-        /* Settings Modal */
-        #settings-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0,0,0,0.6);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            backdrop-filter: blur(2px);
-        }
-        #settings-overlay.is-visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-        #settings-modal {
-            background-color: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            padding: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4);
-            transform: translateY(20px);
-            transition: transform 0.3s;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        #settings-overlay.is-visible #settings-modal {
-            transform: translateY(0);
-        }
-
-        .settings-row {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .settings-row label {
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        .settings-row select {
-            padding: 8px;
+            transition: width 0.2s ease-in-out, background-color 0.3s;
             background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: var(--font-size);
-            outline: none;
-        }
-        .settings-row-inline {
+            border-color: var(--border-color);
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 8px;
-        }
-        .settings-row-inline input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--text-primary);
+            flex-direction: column;
+            height: 100%;
+            width: 52px; /* Starts collapsed. 52px perfectly houses 32px icons + 10px total left padding */
+            overflow-x: hidden;
         }
 
-        #settings-close {
-            align-self: flex-end;
-            padding: 10px 20px;
-            background-color: var(--text-primary);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: var(--font-size);
-            margin-top: 8px;
-            transition: opacity 0.2s;
+        #sidebar-header {
+            border-color: var(--border-color);
         }
-        #settings-close:hover {
-            opacity: 0.8;
+
+        /* Fixed text layout with opacity fade for smooth transition */
+        .sidebar-text {
+            white-space: nowrap;
+            transition: opacity 0.15s ease-in-out;
+            opacity: 1;
+        }
+        
+        .collapsed .sidebar-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #settings-panel {
+            background-color: var(--settings-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            display: none;
+            color: var(--text-normal);
+            width: 100%;
+            max-width: 420px;
+        }
+        #settings-panel.active { display: block; }
+
+        .setting-row { margin-bottom: 16px; }
+        .setting-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .dropdown-select {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-normal);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+        .dropdown-select:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* Settings Color & Theme Circles */
+        .circle-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .circle-btn:hover {
+            transform: scale(1.1);
+        }
+        .circle-btn.selected {
+            border-color: var(--text-normal);
+            transform: scale(1.1);
+        }
+        .circle-btn.selected::after {
+            content: "\f00c"; /* FontAwesome check */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: white;
+            font-size: 12px;
+            text-shadow: 0px 0px 4px rgba(0,0,0,0.8);
+        }
+        .light-theme .circle-btn.selected::after {
+            color: black;
+            text-shadow: 0px 0px 4px rgba(255,255,255,0.8);
+        }
+
+        .custom-color-btn {
+            background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+        }
+
+        .settings-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .btn {
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s, filter 0.2s;
+        }
+        .btn-cancel { background-color: transparent; color: var(--text-normal); }
+        .btn-cancel:hover { text-decoration: underline; }
+        .btn-apply { background-color: var(--accent-color); color: white; }
+        .btn-apply:hover { filter: brightness(1.1); }
+
+        #bottom-area {
+            background-color: var(--bg-tertiary);
+            padding: 8px 6px; /* perfectly matches entries container padding */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .sidebar-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px; /* leaves exactly 32px inner space for the icon when collapsed */
+            gap: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .icon-square {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .sidebar-btn:hover .icon-square,
+        #sidebar-header:hover .icon-square {
+            background-color: var(--accent-color);
+            color: #ffffff;
         }
     </style>
 </head>
-<body data-theme="dark" data-size="small" data-sidebar-mode="hide">
-
-    <!-- Toggle Button (Floats On Top) -->
-    <button id="sidebar-toggle" aria-label="Toggle Sidebar">
-        <svg id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        <svg id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        <span id="datetime-display"></span>
-    </button>
-
-    <!-- Sidebar Overlay -->
-    <aside id="sidebar">
-        <div id="sidebar-header-space"></div>
-        <div id="sidebar-search-container">
-            <div style="position: relative; display: flex; align-items: center;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 10px; width: 14px; height: 14px; color: var(--text-secondary);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="sidebar-search" placeholder="Search modules..." style="width: 100%; padding: 8px 8px 8px 30px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); color: var(--text-primary); outline: none; font-size: 0.9em; transition: opacity 0.2s;">
+<body>
+    <!-- Sidebar (Starts Collapsed) -->
+    <aside id="sidebar" class="flex-shrink-0 border-r border-discord-dark relative flex flex-col h-full z-20 transition-all duration-200 collapsed">
+        <!-- Sidebar Header (Acts as Toggle) -->
+        <div id="sidebar-header" class="h-12 border-b flex items-center justify-start pl-[10px] flex-shrink-0 transition-all duration-200 cursor-pointer overflow-hidden" title="Toggle Sidebar">
+            <div class="icon-square text-[var(--interactive-normal)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                </svg>
             </div>
+            <span class="sidebar-text font-bold whitespace-nowrap ml-[12px]" style="color: var(--accent-color);">theInfoDB</span>
         </div>
-        <div id="sidebar-content">
-            <!-- External modules inject links here -->
-        </div>
-
-        <div id="sidebar-footer">
-            <button id="settings-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span id="settings-btn-text">Settings</span>
-            </button>
-            <button id="theme-toggle" title="Toggle Light/Dark Mode">
-                <svg id="icon-sun" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        
+        <!-- Dynamic Sidebar Entries Area -->
+        <div id="sidebar-entries-container" class="flex-1 overflow-y-auto overflow-x-hidden py-4 px-[6px] flex flex-col gap-1"></div>
+        
+        <!-- Bottom Area -->
+        <div id="bottom-area" class="flex-shrink-0 border-t border-discord-dark transition-all duration-200">
+            <button id="settings-btn" class="sidebar-btn text-discord-interactive_normal hover:text-discord-interactive_hover hover:bg-gray-700/50 transition-colors group">
+                <div class="icon-square">
+                    <i class="fa-solid fa-gear text-lg"></i>
+                </div>
+                <span class="sidebar-text font-medium text-sm">Settings</span>
             </button>
         </div>
     </aside>
 
-    <!-- Main Empty Canvas -->
-    <main id="app-canvas">
-        <!-- Rendered completely empty for module injections -->
-    </main>
+    <!-- Main Content Area (Canvas) -->
+    <main class="flex-1 bg-discord-dark flex items-center justify-center h-full w-full p-6 relative">
+        
+        <!-- Module Canvas Space -->
+        <div id="app-canvas" class="absolute inset-0 p-6 overflow-auto z-0 text-discord-text_normal">
+            <!-- External js modules will populate this area -->
+        </div>
 
-    <!-- Settings Modal -->
-    <div id="settings-overlay">
-        <div id="settings-modal">
-            <h2 style="margin-bottom: 8px;">Settings</h2>
-
-            <div class="settings-row">
-                <label>Sidebar Toggle Mode</label>
-                <select id="setting-sidebar-mode">
-                    <option value="hide">Full Hide / Overlay</option>
-                    <option value="icons">Icons Only / Expand</option>
-                </select>
-            </div>
-
-            <div class="settings-row">
-                <label>UI Scale</label>
-                <select id="setting-ui-scale">
+        <!-- Settings Panel in Canvas -->
+        <div id="settings-panel" class="z-50 relative">
+            <h2 class="text-2xl font-bold mb-6">Settings</h2>
+            
+            <div class="setting-row">
+                <span class="setting-label">Sidebar Scale</span>
+                <select id="sidebar-scale-select" class="dropdown-select">
                     <option value="small" selected>Small</option>
                     <option value="medium">Medium</option>
                     <option value="large">Large</option>
                 </select>
             </div>
-
-            <div class="settings-row-inline">
-                <input type="checkbox" id="setting-auto-close" checked>
-                <label for="setting-auto-close">Auto-close Sidebar</label>
+            
+            <div class="setting-row mt-6">
+                <span class="setting-label">Appearance</span>
+                <div class="flex gap-4">
+                    <div class="flex flex-col items-center gap-2">
+                        <button class="circle-btn theme-btn" data-theme="dark" style="background-color: #36393f;" title="Dark"></button>
+                        <span class="text-xs text-[var(--text-muted)]">Dark</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <button class="circle-btn theme-btn" data-theme="light" style="background-color: #f2f3f5; border: 1px solid #ccc;" title="Light"></button>
+                        <span class="text-xs text-[var(--text-muted)]">Light</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <button class="circle-btn theme-btn" data-theme="midnight" style="background-color: #0a0a0a;" title="Midnight"></button>
+                        <span class="text-xs text-[var(--text-muted)]">Midnight</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="settings-row-inline" style="margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-                <input type="checkbox" id="setting-debug-mode">
-                <label for="setting-debug-mode" style="font-weight: 600;">Debug Mode</label>
+            <div class="setting-row mt-6">
+                <span class="setting-label">Accent Color</span>
+                <div class="flex gap-3 flex-wrap">
+                    <button class="circle-btn color-btn" data-color="#5865F2" style="background-color: #5865F2;" title="Blurple"></button>
+                    <button class="circle-btn color-btn" data-color="#ed4245" style="background-color: #ed4245;" title="Red"></button>
+                    <button class="circle-btn color-btn" data-color="#3ba55d" style="background-color: #3ba55d;" title="Green"></button>
+                    <button class="circle-btn color-btn" data-color="#fee75c" style="background-color: #fee75c;" title="Yellow"></button>
+                    <button class="circle-btn color-btn" data-color="#eb459e" style="background-color: #eb459e;" title="Pink"></button>
+                    
+                    <div class="flex items-center ml-2 border-l border-[var(--border-color)] pl-3">
+                        <button class="circle-btn custom-color-btn color-btn" id="custom-color-trigger" title="Custom Color"></button>
+                        <input type="color" id="accent-color-picker" class="opacity-0 absolute w-0 h-0 pointer-events-none">
+                    </div>
+                </div>
             </div>
 
-            <!-- Container for external modules to add settings -->
-            <div id="dynamic-settings-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;"></div>
+            <!-- Dynamic Settings Container -->
+            <div id="dynamic-settings-container"></div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
-                <button id="settings-cancel" style="padding: 8px 16px; background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: opacity 0.2s;">Cancel</button>
-                <button id="settings-apply" style="padding: 8px 16px; background-color: var(--text-primary); color: var(--bg-primary); border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: opacity 0.2s;">Apply</button>
+            <div class="settings-footer">
+                <button class="btn btn-cancel" id="settings-cancel">Cancel</button>
+                <button class="btn btn-apply" id="settings-apply">Apply</button>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // ─────────────────────────────────────────────────────────────
-        // Global configuration shared with dynamically-loaded modules
-        // ─────────────────────────────────────────────────────────────
-        window.__APP_CONFIG__ = {
-            github: {
-                owner:  'cmdrFRANKLY1',
-                repo:   'TheInfoDB_Data',
-                branch: 'main'
+        window.AppAPI = {
+            // 1. Canvas API
+            canvas: {
+                getContainer: () => document.getElementById('app-canvas'),
+                setContent: (htmlOrElement) => {
+                    const container = document.getElementById('app-canvas');
+                    if (typeof htmlOrElement === 'string') {
+                        container.innerHTML = htmlOrElement;
+                    } else if (htmlOrElement instanceof HTMLElement) {
+                        container.innerHTML = '';
+                        container.appendChild(htmlOrElement);
+                    }
+                }
             },
-            // Cache-busting version token for jsDelivr. Bump this whenever
-            // you push changes to any module and jsDelivr keeps serving the
-            // old copy. It's cheap and reliable.
-            assetVersion: 'v' + Date.now(),
-            // Optional: set a GitHub PAT here (fine-grained, read-only on
-            // this repo) to raise API rate limits from 60/hr to 5000/hr.
-            // Leave null to use unauthenticated requests.
-            githubToken: null
-        };
-        window.__GITHUB_TOKEN__ = window.__APP_CONFIG__.githubToken || null;
+            
+            // 2. Sidebar API
+            sidebar: {
+                addEntry: (id, text, iconClass, onClick) => {
+                    const container = document.getElementById('sidebar-entries-container');
+                    const btn = document.createElement('button');
+                    btn.className = "sidebar-btn text-discord-interactive_normal hover:text-discord-interactive_hover hover:bg-gray-700/50 transition-colors group";
+                    btn.id = `sidebar-item-${id}`;
+                    
+                    const iconContainer = document.createElement('div');
+                    iconContainer.className = "icon-square";
+                    
+                    const icon = document.createElement('i');
+                    icon.className = `${iconClass} text-lg text-center`;
+                    
+                    iconContainer.appendChild(icon);
+                    
+                    const label = document.createElement('span');
+                    label.className = "sidebar-text font-medium text-sm whitespace-nowrap";
+                    label.textContent = text;
 
-        // ─────────────────────────────────────────────────────────────
-        // Shared helpers used by dynamically-loaded modules
-        // ─────────────────────────────────────────────────────────────
-
-        // Resolve a repo-relative path to a jsDelivr CDN URL that points at
-        // the module's source on GitHub. This lets the search module fetch
-        // things like `resources/index/titles/indexTitle.json` regardless
-        // of where the page itself is hosted (Vercel, localhost, etc.).
-        window.resolveUrl = function (relPath) {
-            if (!relPath) return '';
-            if (/^(https?:)?\/\//i.test(relPath)) return relPath;
-            const cfg = window.__APP_CONFIG__.github;
-            const clean = String(relPath).replace(/^\/+/, '');
-            return `https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${cfg.branch}/${clean}`;
-        };
-
-        window.escapeHtml = function (s) {
-            return String(s == null ? '' : s)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        };
-
-        window.pickRandom = function (arr) {
-            if (!Array.isArray(arr) || arr.length === 0) return '';
-            return arr[Math.floor(Math.random() * arr.length)];
-        };
-
-        window.safeFetchJson = async function (url) {
-            try {
-                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) return null;
-                return await res.json();
-            } catch {
-                return null;
+                    btn.appendChild(iconContainer);
+                    btn.appendChild(label);
+                    
+                    btn.addEventListener('click', (e) => {
+                        onClick(e);
+                        // Auto-close sidebar after clicking an entry
+                        if (typeof isCollapsed !== 'undefined' && !isCollapsed) {
+                            isCollapsed = true;
+                            document.getElementById('sidebar').classList.add('collapsed');
+                            if (typeof updateSidebarWidth === 'function') updateSidebarWidth();
+                        }
+                    });
+                    container.appendChild(btn);
+                    
+                    // Auto-adjust width if a new module loads while the sidebar is already expanded
+                    if (typeof updateSidebarWidth === 'function') {
+                        updateSidebarWidth();
+                    }
+                    
+                    return btn;
+                },
+                clearEntries: () => {
+                    document.getElementById('sidebar-entries-container').innerHTML = '';
+                }
+            },
+            
+            // 3. Settings API
+            settings: {
+                addEntry: (id, labelText, customHtml) => {
+                    const container = document.getElementById('dynamic-settings-container');
+                    const row = document.createElement('div');
+                    row.className = 'setting-row mt-6 pt-4 border-t border-[var(--border-color)]';
+                    row.id = `setting-item-${id}`;
+                    
+                    const label = document.createElement('span');
+                    label.className = 'setting-label';
+                    label.textContent = labelText;
+                    
+                    const content = document.createElement('div');
+                    content.innerHTML = customHtml;
+                    
+                    row.appendChild(label);
+                    row.appendChild(content);
+                    container.appendChild(row);
+                }
+            },
+            
+            // 4. Color API
+            colors: {
+                get: (varName) => {
+                    return getComputedStyle(document.body).getPropertyValue(varName).trim();
+                },
+                set: (varName, value) => {
+                    document.documentElement.style.setProperty(varName, value);
+                    document.body.style.setProperty(varName, value);
+                }
             }
         };
 
-        window.safeFetchText = async function (url) {
+        async function loadModules() {
             try {
-                const res = await fetch(url);
-                if (!res.ok) return null;
-                return await res.text();
-            } catch {
-                return null;
+                const response = await fetch('modules/registryForModules.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                if (data && Array.isArray(data.files)) {
+                    const loadPromises = [];
+                    for (const fileUrl of data.files) {
+                        console.log(`Loading module: ${fileUrl}`);
+                        const p = new Promise((resolve) => {
+                            const script = document.createElement('script');
+                            script.src = fileUrl;
+                            script.async = false; // Maintain execution order
+                            script.onload = resolve;
+                            script.onerror = () => {
+                                console.warn(`Failed to load module script: ${fileUrl}`);
+                                resolve();
+                            };
+                            document.body.appendChild(script);
+                        });
+                        loadPromises.push(p);
+                    }
+                    
+                    // Wait for all scripts to finish loading
+                    await Promise.all(loadPromises);
+                    
+                    // Auto-start the search module once everything is ready
+                    const searchBtn = document.getElementById('sidebar-item-search');
+                    if (searchBtn) {
+                        searchBtn.click();
+                    }
+                }
+            } catch (error) {
+                console.warn('Could not load modules registry. This is expected if running without a local server.', error);
             }
-        };
+        }
 
-        // Global app state object shared with modules. Modules extend it.
-        window.__appState = window.__appState || {
-            indexedPages: [],
-            hierarchicalStructure: [],
-            pins: []
-        };
+        // Initialize external modules
+        loadModules();
 
-        // ─────────────────────────────────────────────────────────────
-        // UI State
-        // ─────────────────────────────────────────────────────────────
-        let isSidebarOpen = false;
-        let autoClose = true;
-        let debugMode = false;
-
-        const body = document.body;
         const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const iconMenu = document.getElementById('icon-menu');
-        const iconClose = document.getElementById('icon-close');
-        const datetimeDisplay = document.getElementById('datetime-display');
-        const appCanvas = document.getElementById('app-canvas');
-
-        const sidebarSearch = document.getElementById('sidebar-search');
-
+        const sidebarHeader = document.getElementById('sidebar-header');
+        
         const settingsBtn = document.getElementById('settings-btn');
-        const settingsOverlay = document.getElementById('settings-overlay');
+        const settingsPanel = document.getElementById('settings-panel');
         const settingsCancel = document.getElementById('settings-cancel');
         const settingsApply = document.getElementById('settings-apply');
-        const themeToggle = document.getElementById('theme-toggle');
-        const iconSun = document.getElementById('icon-sun');
-        const iconMoon = document.getElementById('icon-moon');
+        
+        const scaleSelect = document.getElementById('sidebar-scale-select');
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const colorBtns = document.querySelectorAll('.color-btn');
+        const customColorTrigger = document.getElementById('custom-color-trigger');
+        const accentPicker = document.getElementById('accent-color-picker');
+        
+        // Start Collapsed
+        let isCollapsed = true;
 
-        // Fast Date/Time Update Engine
-        function updateDateTime() {
-            const now = new Date();
-            const dateOpts = { weekday: 'short', month: 'short', day: 'numeric' };
-            const timeOpts = { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-
-            datetimeDisplay.textContent = `${now.toLocaleDateString(undefined, dateOpts)} ${now.toLocaleTimeString(undefined, timeOpts)}`;
+        // Generate a random hex color on first load
+        function getRandomColor() {
+            return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
+        
+        const initialAccentColor = getRandomColor();
+        applyAccentColor(initialAccentColor);
+        
+        // Settings State
+        let currentSettings = {
+            scale: 'small',
+            theme: 'dark',
+            accentColor: initialAccentColor
+        };
+        let pendingSettings = { ...currentSettings };
 
-        // Overlay Toggle Mechanics
-        function toggleSidebar(forcedState) {
-            isSidebarOpen = forcedState !== undefined ? forcedState : !isSidebarOpen;
+        // Halved the small sidebar to 100px
+        const sidebarScales = {
+            small: '100px',
+            medium: '240px',
+            large: '300px'
+        };
 
-            if (isSidebarOpen) {
-                sidebar.classList.add('is-open');
-                sidebarToggle.classList.add('is-open');
-                iconMenu.style.display = 'none';
-                iconClose.style.display = 'block';
+        function updateSidebarWidth() {
+            if (isCollapsed) {
+                sidebar.style.width = '52px';
             } else {
-                sidebar.classList.remove('is-open');
-                sidebarToggle.classList.remove('is-open');
-                iconMenu.style.display = 'block';
-                iconClose.style.display = 'none';
+                // Temporarily disable transition and set to max-content to accurately measure natural content width
+                const oldTransition = sidebar.style.transition;
+                sidebar.style.transition = 'none';
+                
+                const currentWidth = sidebar.style.width;
+                sidebar.style.width = 'max-content'; 
+                
+                // Read the unclipped natural width (added 24px buffer to guarantee text isn't cut off)
+                const naturalWidth = sidebar.offsetWidth + 24;
+                const scaleWidth = parseInt(sidebarScales[currentSettings.scale]);
+                
+                // Pick whichever is larger: the chosen scale, or the natural text width
+                const finalWidth = Math.max(naturalWidth, scaleWidth);
+                
+                // Restore width and force browser to process the visual change before animating
+                sidebar.style.width = currentWidth;
+                sidebar.offsetHeight; 
+                
+                // Re-enable transition and set final responsive width
+                sidebar.style.transition = oldTransition;
+                sidebar.style.width = finalWidth + 'px';
             }
         }
+        
+        // Ensure initial width is synced on load
+        updateSidebarWidth();
 
-        sidebarToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleSidebar();
+        // Close sidebar when clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (!isCollapsed && !sidebar.contains(e.target)) {
+                isCollapsed = true;
+                sidebar.classList.add('collapsed');
+                updateSidebarWidth();
+            }
         });
 
-        // Auto-close interaction hook
-        appCanvas.addEventListener('click', () => {
-            if (autoClose && isSidebarOpen) toggleSidebar(false);
+        // Sidebar Toggle Handler (Header Click)
+        sidebarHeader.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+            } else {
+                sidebar.classList.remove('collapsed');
+            }
+            updateSidebarWidth();
         });
-
-        // Settings Modal Binding
-        const elSidebarMode = document.getElementById('setting-sidebar-mode');
-        const elUiScale = document.getElementById('setting-ui-scale');
-        const elAutoClose = document.getElementById('setting-auto-close');
-        const elDebugMode = document.getElementById('setting-debug-mode');
 
         settingsBtn.addEventListener('click', () => {
-            elSidebarMode.value = body.getAttribute('data-sidebar-mode');
-            elUiScale.value = body.getAttribute('data-size');
-            elAutoClose.checked = autoClose;
-            elDebugMode.checked = debugMode;
-            settingsOverlay.classList.add('is-visible');
-            if (autoClose) toggleSidebar(false);
+            settingsPanel.classList.toggle('active');
+            if (settingsPanel.classList.contains('active')) {
+                pendingSettings = { ...currentSettings };
+                updateSettingsUI();
+            }
+            // Auto-close sidebar after clicking Settings
+            if (!isCollapsed) {
+                isCollapsed = true;
+                sidebar.classList.add('collapsed');
+                updateSidebarWidth();
+            }
         });
 
-        settingsCancel.addEventListener('click', () => {
-            settingsOverlay.classList.remove('is-visible');
+        scaleSelect.addEventListener('change', (e) => {
+            pendingSettings.scale = e.target.value;
+        });
+
+        // Theme Circles Click
+        themeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                pendingSettings.theme = e.currentTarget.dataset.theme;
+                updateSettingsUI();
+            });
+        });
+
+        // Color Circles Click
+        colorBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (e.currentTarget.id === 'custom-color-trigger') {
+                    accentPicker.click();
+                } else {
+                    pendingSettings.accentColor = e.currentTarget.dataset.color;
+                    updateSettingsUI();
+                }
+            });
+        });
+
+        // Custom Color Picker Input
+        accentPicker.addEventListener('input', (e) => {
+            pendingSettings.accentColor = e.target.value;
+            customColorTrigger.style.borderColor = pendingSettings.accentColor;
+            updateSettingsUI();
         });
 
         settingsApply.addEventListener('click', () => {
-            body.setAttribute('data-sidebar-mode', elSidebarMode.value);
-            body.setAttribute('data-size', elUiScale.value);
-            autoClose = elAutoClose.checked;
-
-            if (debugMode !== elDebugMode.checked) {
-                debugMode = elDebugMode.checked;
-                document.dispatchEvent(new CustomEvent('debugToggled', { detail: debugMode }));
-            }
-
-            // Notify dynamic settings
-            const dynamicCheckboxes = document.querySelectorAll('.dynamic-setting-cb');
-            dynamicCheckboxes.forEach(cb => {
-                if (cb.dataset.changed === 'true') {
-                    cb.dataset.changed = 'false';
-                    document.dispatchEvent(new CustomEvent(cb.id + '_applied', { detail: cb.checked }));
-                }
-            });
-
-            settingsOverlay.classList.remove('is-visible');
+            currentSettings = { ...pendingSettings };
+            applySettings(currentSettings);
+            settingsPanel.classList.remove('active');
         });
 
-        // Sidebar Search Mechanics
-        sidebarSearch.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.sidebar-item');
-            items.forEach(item => {
-                const textEl = item.querySelector('.sidebar-item-text');
-                const text = textEl ? textEl.textContent.toLowerCase() : '';
-                item.style.display = text.includes(term) ? 'flex' : 'none';
-            });
+        settingsCancel.addEventListener('click', () => {
+            settingsPanel.classList.remove('active');
+            pendingSettings = { ...currentSettings };
+            updateSettingsUI();
         });
 
-        // Theme Toggle
-        function toggleTheme() {
-            const current = body.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', next);
-
-            if (next === 'light') {
-                iconSun.style.display = 'none';
-                iconMoon.style.display = 'block';
-            } else {
-                iconSun.style.display = 'block';
-                iconMoon.style.display = 'none';
-            }
-        }
-        themeToggle.addEventListener('click', toggleTheme);
-
-        // ─────────────────────────────────────────────────────────────
-        // Core API exposed to modules
-        // ─────────────────────────────────────────────────────────────
-        window.CoreUI = {
-            addSidebarItem: function(id, label, svgIconPath, onClickCallback) {
-                const content = document.getElementById('sidebar-content');
-                const el = document.createElement('div');
-                el.className = 'sidebar-item';
-                el.id = id;
-                el.innerHTML = `
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        ${svgIconPath}
-                    </svg>
-                    <span class="sidebar-item-text">${label}</span>
-                `;
-                el.addEventListener('click', () => {
-                    onClickCallback();
-                    if (autoClose) toggleSidebar(false);
-                });
-                content.appendChild(el);
-                return el;
-            },
-            getCanvas: function() {
-                return document.getElementById('app-canvas');
-            },
-            clearCanvas: function() {
-                document.getElementById('app-canvas').innerHTML = '';
-            },
-            isDebugMode: function() {
-                return debugMode;
-            },
-            addSettingToggle: function(id, label, defaultState, onChangeCallback) {
-                const container = document.getElementById('dynamic-settings-container');
-                const row = document.createElement('div');
-                row.className = 'settings-row-inline';
-                row.id = 'setting-container-' + id;
-                row.innerHTML = `
-                    <input type="checkbox" id="${id}" class="dynamic-setting-cb" ${defaultState ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--text-primary);">
-                    <label for="${id}">${label}</label>
-                `;
-
-                const cb = row.querySelector('input');
-                cb.addEventListener('change', () => {
-                    cb.dataset.changed = 'true';
-                });
-
-                document.addEventListener(id + '_applied', (e) => {
-                    if (onChangeCallback) onChangeCallback(e.detail);
-                });
-
-                container.appendChild(row);
-                return row;
-            }
-        };
-
-        // ─────────────────────────────────────────────────────────────
-        // Module bootstrap
-        //
-        // Strategy: fetch a tiny manifest from raw.githubusercontent.com
-        // (no per-IP API rate limit for public repos) listing every module
-        // entry script. Fall back to a hardcoded local module if the fetch
-        // fails (offline dev, or repo structure changed).
-        //
-        // Each module is then loaded from jsDelivr with a cache-busting
-        // query string, so updates to module source are picked up on the
-        // next page load instead of after jsDelivr's 12-hour TTL.
-        // ─────────────────────────────────────────────────────────────
-
-        // Optional manifest format (any of these shapes works):
-        //   { "modules": ["modules/search/search.js", "modules/pins/pins.js"] }
-        //   { "modules": [{ "path": "modules/search/search.js" }, ...] }
-        //   ["modules/search/search.js", ...]
-        //
-        // If you don't want to maintain a manifest file, leave MODULE_MANIFEST_URL
-        // null and instead set the MANUAL_MODULE_LIST below.
-        const MODULE_MANIFEST_URL = null; // e.g. 'resources/manifest/modules.json'
-        const MANUAL_MODULE_LIST = [
-            'modules/search/search.js'
-        ];
-
-        function buildCdnUrl(repoPath) {
-            const cfg = window.__APP_CONFIG__.github;
-            const clean = String(repoPath).replace(/^\/+/, '');
-            return `https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${cfg.branch}/${clean}?${window.__APP_CONFIG__.assetVersion}`;
-        }
-
-        function loadModuleScript(repoPath) {
-            return new Promise((resolve) => {
-                const script = document.createElement('script');
-                script.type = 'module';
-                script.src = buildCdnUrl(repoPath);
-                script.onload = () => resolve({ path: repoPath, ok: true });
-                script.onerror = (err) => {
-                    console.warn(`[Bootstrap] Failed to load ${repoPath}`, err);
-                    resolve({ path: repoPath, ok: false });
-                };
-                document.body.appendChild(script);
-            });
-        }
-
-        async function resolveModuleList() {
-            if (MODULE_MANIFEST_URL) {
-                const url = window.resolveUrl(MODULE_MANIFEST_URL);
-                const data = await window.safeFetchJson(url);
-                if (Array.isArray(data)) return data.filter(x => typeof x === 'string');
-                if (data && Array.isArray(data.modules)) {
-                    return data.modules
-                        .map(m => (typeof m === 'string' ? m : m && m.path))
-                        .filter(Boolean);
-                }
-                console.warn('[Bootstrap] Manifest missing or malformed; falling back to manual list.');
-            }
-            return MANUAL_MODULE_LIST.slice();
-        }
-
-        async function bootstrapModules() {
-            try {
-                const list = await resolveModuleList();
-                if (list.length === 0) {
-                    console.warn('[Bootstrap] No modules to load.');
-                    return;
-                }
-
-                const results = await Promise.all(list.map(loadModuleScript));
-                const failed = results.filter(r => !r.ok).map(r => r.path);
-                if (failed.length) {
-                    console.warn('[Bootstrap] Some modules failed to load:', failed);
+        function updateSettingsUI() {
+            // Update scale dropdown
+            scaleSelect.value = pendingSettings.scale;
+            
+            // Update Theme Circles Selection State
+            themeBtns.forEach(btn => {
+                if (btn.dataset.theme === pendingSettings.theme) {
+                    btn.classList.add('selected');
                 } else {
-                    console.info(`[Bootstrap] Loaded ${results.length} module(s).`);
+                    btn.classList.remove('selected');
                 }
-            } catch (e) {
-                console.error('[Bootstrap] Fatal:', e);
+            });
+
+            // Update Color Circles Selection State
+            let matchedPreset = false;
+            colorBtns.forEach(btn => {
+                if (btn.id !== 'custom-color-trigger') {
+                    if (btn.dataset.color.toLowerCase() === pendingSettings.accentColor.toLowerCase()) {
+                        btn.classList.add('selected');
+                        matchedPreset = true;
+                    } else {
+                        btn.classList.remove('selected');
+                    }
+                }
+            });
+
+            // Handle Custom Color Circle state
+            if (!matchedPreset) {
+                customColorTrigger.classList.add('selected');
+                customColorTrigger.style.boxShadow = `0 0 10px ${pendingSettings.accentColor}`;
+                customColorTrigger.dataset.color = pendingSettings.accentColor; // Save state
+            } else {
+                customColorTrigger.classList.remove('selected');
+                customColorTrigger.style.boxShadow = 'none';
             }
         }
 
-        window.addEventListener('DOMContentLoaded', bootstrapModules);
+        function applyAccentColor(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            document.body.style.setProperty('--accent-color', color);
+            if(window.AppAPI && window.AppAPI.colors) {
+                window.AppAPI.colors.set('--accent-color', color);
+            }
+        }
+
+        function applySettings(settings) {
+            // Apply Scale
+            updateSidebarWidth();
+
+            // Apply Accent Color
+            applyAccentColor(settings.accentColor);
+            
+            // Apply Theme
+            document.body.classList.remove('light-theme', 'midnight-theme');
+            if (settings.theme === 'light') {
+                document.body.classList.add('light-theme');
+            } else if (settings.theme === 'midnight') {
+                document.body.classList.add('midnight-theme');
+            }
+        }
     </script>
 </body>
 </html>

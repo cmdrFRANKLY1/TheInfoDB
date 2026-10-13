@@ -1,0 +1,90 @@
+[
+{
+"word": "kernel",
+"description": "The core component of the Linux operating system that acts as a bridge between the software applications and the hardware."
+},
+{
+"word": "bash",
+"description": "Bourne Again SHell, the default command-line interpreter (CLI) in most Linux distributions."
+},
+{
+"word": "sudo",
+"description": "Stands for 'Superuser DO'. A command that allows permitted users to execute a command as the superuser or another user."
+},
+{
+"word": "root",
+"description": "The administrative user account in Linux that has absolute privileges and access to all files and commands on the system."
+},
+{
+"word": "distro",
+"description": "Short for 'distribution'. A specific version of the Linux operating system packaged with different software, desktop environments, and package managers (e.g., Ubuntu, Fedora, Debian)."
+},
+{
+"word": "daemon",
+"description": "A computer program that runs as a background process, rather than being under the direct control of an interactive user. Usually ends with the letter 'd' (e.g., systemd, sshd)."
+},
+{
+"word": "systemd",
+"description": "A system and service manager for Linux that acts as an init system to bootstrap the user space and manage system processes after booting."
+},
+{
+"word": "apt",
+"description": "Advanced Package Tool. The default package manager used by Debian and Ubuntu-based Linux distributions for installing, updating, and removing software."
+},
+{
+"word": "yum",
+"description": "Yellowdog Updater, Modified. A command-line package-management utility for computers running compatible versions of Linux, mainly RHEL and CentOS."
+},
+{
+"word": "cron",
+"description": "A time-based job scheduler in Unix-like operating systems used to schedule scripts or commands to run automatically at specified intervals."
+},
+{
+"word": "grep",
+"description": "A command-line utility used to search plain-text data sets for lines that match a specific regular expression or string."
+},
+{
+"word": "chmod",
+"description": "Change Mode. A command used to change the access permissions (read, write, execute) of files and directories."
+},
+{
+"word": "chown",
+"description": "Change Owner. A command used to change the user owner and group owner of a file or directory."
+},
+{
+"word": "ssh",
+"description": "Secure Shell. A cryptographic network protocol used to securely access and manage a computer over an unsecured network."
+},
+{
+"word": "inode",
+"description": "A data structure on a Linux filesystem that stores all metadata about a file (permissions, owner, size) except for its actual name and data content."
+},
+{
+"word": "symlink",
+"description": "Symbolic Link. A special type of file that serves as a reference or shortcut to another file or directory, similar to a shortcut in Windows."
+},
+{
+"word": "tar",
+"description": "Tape Archive. A command-line utility used to collect many files into one archive file (a tarball) for easy distribution or backup."
+},
+{
+"word": "cli",
+"description": "Command-Line Interface. A text-based user interface used to view and manage computer files and interact with the operating system."
+},
+{
+"word": "gui",
+"description": "Graphical User Interface. The visual way of interacting with a computer using items such as windows, icons, and menus."
+},
+{
+"word": "pwd",
+"description": "Print Working Directory. A command that outputs the absolute path of the current directory you are in."
+},
+{
+"word": "kill",
+"description": "A command used to send a specific signal to a process, most commonly used to force-stop or terminate an unresponsive application."
+},
+{
+"word": "man",
+"description": "Short for 'manual'. A command used to display the user manual of any command that we can run on the terminal."
+}
+]

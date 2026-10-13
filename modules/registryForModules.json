@@ -1,0 +1,7 @@
+{
+"files": [
+"modules/search/search.js",
+"modules/sql/sql.js",
+"modules/quiz/quiz.js"
+]
+}

@@ -1,0 +1,8 @@
+{
+"files": [
+"pages/information_technology/network/protocols/ipv4.md",
+"pages/information_technology/network/protocols/ipv6.md",
+"pages/information_technology/network/protocols/tcp.md",
+"pages/information_technology/network/protocols/udp.md"
+]
+}

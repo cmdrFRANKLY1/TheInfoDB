@@ -1,0 +1,10 @@
+{
+"files": [
+"pages/information_technology/database/sql/sql.md",
+"pages/information_technology/database/sql/count.md",
+"pages/information_technology/database/sql/from.md",
+"pages/information_technology/database/sql/groupby.md",
+"pages/information_technology/database/sql/orderby.md",
+"pages/information_technology/database/sql/select.md"
+]
+}

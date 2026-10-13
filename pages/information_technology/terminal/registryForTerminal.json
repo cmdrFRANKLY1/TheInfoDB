@@ -1,0 +1,12 @@
+{
+"files": [
+"pages/information_technology/terminal/cat.md",
+"pages/information_technology/terminal/cd.md",
+"pages/information_technology/terminal/grep.md",
+"pages/information_technology/terminal/ls.md",
+"pages/information_technology/terminal/mkdir.md",
+"pages/information_technology/terminal/ping.md",
+"pages/information_technology/terminal/rm.md",
+"pages/information_technology/terminal/shutdown.md"
+]
+}
