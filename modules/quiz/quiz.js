@@ -14,6 +14,10 @@
     // -------------------------------------------------------------------------
     async function loadQuestionsFromRegistry() {
         try {
+            // FIX: Array vor dem Laden leeren, damit sich die Fragen bei
+            // mehrfachem Öffnen des Moduls nicht duplizieren!
+            questionDatabase = [];
+
             const response = await fetch('./modules/quiz/registryForQuestions.json');
             
             if (!response.ok) {
