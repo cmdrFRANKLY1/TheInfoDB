@@ -14,8 +14,7 @@
     // -------------------------------------------------------------------------
     async function loadQuestionsFromRegistry() {
         try {
-            // FIX 1: Lade den exakten Namen deiner neuen JSON-Registry
-            const response = await fetch('./modules/quiz/registryForQuiz_2.json');
+            const response = await fetch('./modules/quiz/registryForQuestions.json');
             
             if (!response.ok) {
                 console.error("Registry JSON konnte nicht geladen werden. HTTP Status:", response.status);
