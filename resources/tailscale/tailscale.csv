@@ -1,0 +1,126 @@
+﻿command,description
+tailscale,Main command-line interface for managing this device's Tailscale connection.
+tailscale version,Show the installed Tailscale client version.
+tailscale status,Show devices in the tailnet and their connection status.
+tailscale status --json,Print status as JSON for scripts; JSON fields can change between versions.
+tailscale status --peers=false,"Show local status without listing peer details, where supported by the installed version."
+tailscale ip,"Print this device's Tailscale IPv4 and IPv6 addresses, if available."
+tailscale ip -4,Print only this device's Tailscale IPv4 address.
+tailscale ip -6,Print only this device's Tailscale IPv6 address.
+tailscale ip -1,"Print one address, preferring IPv4."
+tailscale ip <hostname>,Show the Tailscale IP addresses for another device by its tailnet hostname.
+tailscale ip --assert=<ipAddress>,Check that this device has the specified Tailscale IP; useful in scripts.
+tailscale up,Connect to Tailscale and start authentication if required.
+tailscale up --reset,Connect while resetting unspecified preferences to their defaults; review settings first.
+tailscale up --force-reauth,Require this device to authenticate again.
+tailscale up --hostname=<name>,Set the device hostname used by Tailscale and potentially MagicDNS.
+tailscale up --accept-dns=false,Do not use DNS settings supplied by the tailnet.
+tailscale up --accept-dns=true,Accept DNS settings supplied by the tailnet.
+tailscale up --accept-routes,Accept subnet routes advertised by other devices; availability and defaults vary by OS.
+tailscale up --advertise-routes=<CIDR>,Advertise a local subnet such as 192.168.1.0/24; an administrator may still need to approve it.
+tailscale up --advertise-exit-node,Offer this device as an exit node; enable/approve it in the admin console as required.
+tailscale up --exit-node=<hostnameOrIP>,Route internet traffic through the named exit node; the node must be available and permitted.
+tailscale up --exit-node=,Stop using an exit node by explicitly clearing the setting.
+tailscale up --exit-node-allow-lan-access,Allow access to the client's local LAN while using an exit node.
+tailscale up --shields-up,Block incoming connections from other tailnet devices; outgoing connections can still work.
+tailscale up --ssh,"Enable Tailscale SSH on supported systems, subject to tailnet policy."
+tailscale up --advertise-tags=tag:<tagName>,Assign approved device tags; the policy must authorize this device to use the tag.
+tailscale up --advertise-tags=,Clear advertised tags by passing an explicitly empty value.
+tailscale up --auth-key=<key>,Authenticate using an auth key; avoid exposing the key in shell history or logs.
+tailscale up --auth-key=file:<path>,Read an auth key from a file; protect the file and its permissions.
+tailscale up --login-server=<url>,"Use a custom control server, for example a Headscale server, instead of the default."
+tailscale up --timeout=<duration>,Limit how long the command waits for the daemon to initialize.
+tailscale down,Disconnect this device from the tailnet without uninstalling Tailscale.
+tailscale logout,Log this device out; authentication will be required again before reconnecting.
+tailscale login,Start the login/authentication flow.
+tailscale switch <profile>,"Switch to another saved Tailscale account or profile, if profiles are available."
+tailscale set --accept-dns=false,Change only the DNS acceptance preference without restating all `up` options.
+tailscale set --accept-routes=true,Change whether advertised subnet routes are accepted; platform support may vary.
+tailscale set --exit-node=<hostnameOrIP>,Set the exit node preference without restating every connection option.
+tailscale set --exit-node=,Clear the configured exit node.
+tailscale set --shields-up=true,Block incoming connections from other tailnet devices.
+tailscale set --shields-up=false,"Stop blocking incoming tailnet connections, subject to ACL and firewall rules."
+tailscale ping <hostnameOrIP>,Test reachability to a tailnet device and show whether the path is direct or relayed.
+tailscale ping --verbose <hostnameOrIP>,Show additional details while testing reachability.
+tailscale ping --timeout=10s <hostnameOrIP>,Stop waiting after the specified duration if the peer cannot be reached.
+tailscale ping --until-direct=false <hostnameOrIP>,Do not wait for a direct connection; useful when a relay path is acceptable.
+tailscale netcheck,Diagnose network conditions that can affect direct peer-to-peer connections.
+tailscale bugreport,Generate a bug-report identifier for troubleshooting; share it with support when requested.
+tailscale debug daemon-logs,Stream daemon logs for live troubleshooting; it does not retrieve old logs.
+tailscale debug prefs,Display local preference details for troubleshooting; output may contain sensitive configuration.
+tailscale debug netmap,Show low-level network-map information for troubleshooting; output can be verbose or sensitive.
+tailscale whois <ip[:port]>,Show the tailnet identity associated with a Tailscale IP and optional port.
+tailscale whois --json <ip[:port]>,Return whois information as JSON; put `--json` before the IP argument.
+tailscale nc <hostnameOrIP> <port>,Make a TCP connection test to a peer and port; the service must be listening and allowed.
+tailscale ssh <user>@<hostname>,Open an SSH session using Tailscale SSH where enabled and allowed by policy.
+tailscale ssh <hostname>,"Attempt an SSH connection using the default local username, depending on client and configuration."
+tailscale cert <hostname>,Request or manage a TLS certificate for a tailnet hostname; DNS and policy requirements apply.
+tailscale cert --cert-file=<path> --key-file=<path> <hostname>,Write certificate and key to specified files; protect the private key.
+tailscale dns status,Show DNS configuration and status on supported versions.
+tailscale web,Open or start the local Tailscale web interface where supported.
+tailscale update,Update the Tailscale client where supported; package-manager installs may need the package manager instead.
+tailscale update --yes,Skip interactive confirmation for an update where this flag is supported.
+tailscale version --daemon,Show daemon version information where supported.
+tailscale completion bash,Print shell completion code for Bash; follow the output instructions to enable it.
+tailscale completion zsh,Print shell completion code for Zsh.
+tailscale completion fish,Print shell completion code for Fish.
+tailscale serve status,Show services currently shared privately within the tailnet.
+tailscale serve status --json,Show Serve status as JSON; its schema may differ from the normal status output.
+tailscale serve localhost:<port>,"Expose a local HTTP service to devices in the tailnet, typically through HTTPS and MagicDNS."
+tailscale serve --https=<port> localhost:<port>,Expose a local service over HTTPS to the tailnet on the selected port.
+tailscale serve --http=<port> localhost:<port>,Expose a local service over HTTP to the tailnet; use HTTPS when appropriate.
+tailscale serve --bg localhost:<port>,Run Serve in the background so it persists until disabled or reset.
+tailscale serve <target> off,Disable a previously configured Serve target; flags and target may need to match the original configuration.
+tailscale serve reset,Remove the current Serve configuration from this device.
+tailscale serve get-config --all,Show configuration for all Tailscale Services hosted by this node.
+tailscale funnel status,Show services exposed publicly to the internet through Funnel.
+tailscale funnel status --json,Show Funnel status as JSON; the JSON format can change.
+tailscale funnel localhost:<port>,Expose a local service publicly through Funnel; anyone on the internet may be able to reach it.
+tailscale funnel --bg localhost:<port>,Run Funnel in the background; check status and confirm the service is safe for public access.
+tailscale funnel <target> off,Disable a previously configured Funnel target; required flags may need to match the original configuration.
+tailscale funnel reset,Remove the current Funnel configuration from this device.
+tailscale file cp <source> <hostname>:,Send a file to another tailnet device's Tailscale file inbox.
+tailscale file cp <hostname>:<file> <destination>,Receive a file from another device's Tailscale file inbox; check supported syntax on your client version.
+tailscale file get <directory>,Download incoming Tailscale file transfers to a local directory.
+tailscale file get --wait <directory>,Wait for incoming files and download them as they arrive.
+tailscale file get --loop <directory>,"Continuously receive files as they arrive, where supported."
+tailscale drive,Manage Tailscale Drive features where available; feature support and syntax vary by version.
+tailscale exit-node list,List available exit nodes where supported by the installed version.
+tailscale lock status,Show tailnet lock status where Tailnet Lock is enabled.
+tailscale lock init,Initialize Tailnet Lock where supported; this is a security-sensitive operation.
+tailscale lock add <nodeKey>,Authorize a node key with Tailnet Lock; verify the key carefully before approving.
+tailscale lock remove <nodeKey>,Remove a node key from Tailnet Lock authorization; may affect device connectivity.
+tailscale metrics,Display available Tailscale metrics where supported; output depends on client version.
+tailscale appc-routes,Show app connector route status where app connectors are configured.
+tailscale appc-routes --all,Show learned domains and routes plus extra configured routes.
+sudo systemctl status tailscaled,"On systemd Linux, inspect whether the Tailscale daemon service is running."
+sudo systemctl start tailscaled,Start the Tailscale daemon on systemd Linux.
+sudo systemctl stop tailscaled,Stop the Tailscale daemon; all Tailscale connectivity on this host will stop.
+sudo systemctl restart tailscaled,Restart the Tailscale daemon; active connections may briefly drop.
+sudo systemctl enable --now tailscaled,Enable the daemon at boot and start it now on systemd Linux.
+journalctl -u tailscaled,Show available systemd journal logs for the Tailscale daemon.
+journalctl -u tailscaled -f,Follow live Tailscale daemon logs.
+journalctl -u tailscaled --since='1 hour ago',Show daemon logs from the last hour.
+man tailscale,Open the locally installed manual page if the package provides one.
+tailscale <command> --help,Show help and supported flags for a command on the installed client version.
+tailscale help,Show general CLI help where supported; use `tailscale <command> --help` for command-specific help.
+tailscale up --accept-risk=lose-ssh,Acknowledge the risk of losing SSH access for operations that may interrupt connectivity; use only when intended.
+tailscale up --netfilter-mode=off,Disable Tailscale-managed Linux netfilter rules; you must configure firewall rules securely yourself.
+tailscale up --netfilter-mode=nodivert,Create/manage Tailscale firewall chains without diverting traffic automatically; advanced Linux networking only.
+tailscale up --snat-subnet-routes=false,Disable source NAT for advertised subnet routes on Linux; return routing must be configured correctly.
+tailscale up --stateful-filtering=true,Enable stateful filtering for subnet routers and exit nodes on supported Linux clients.
+tailscale serve --set-path=/app localhost:<port>,Publish a local service under a URL path; ensure the backend supports the path setup.
+tailscale serve https+insecure://localhost:<port>,Proxy to a local HTTPS service with an invalid or self-signed certificate; encryption remains but certificate validation is bypassed.
+tailscale funnel --https=443 localhost:<port>,Publish a local service publicly on an allowed Funnel HTTPS port; verify authentication and data exposure first.
+tailscale funnel --https=8443 localhost:<port>,Publish a local service publicly using Funnel's allowed HTTPS port 8443.
+tailscale funnel --https=10000 localhost:<port>,Publish a local service publicly using Funnel's allowed HTTPS port 10000.
+tailscale up --accept-routes=false,Explicitly reject routes advertised by other devices.
+tailscale up --advertise-routes=,Clear the list of advertised subnet routes by passing an empty value.
+tailscale up --advertise-exit-node=false,Stop offering this device as an exit node.
+tailscale up --ssh=false,Disable Tailscale SSH on this device.
+tailscale up --unattended,"On supported Windows clients, keep Tailscale running after the current user logs out."
+tailscale ip -4 <hostname>,Get only the IPv4 address for a specified peer where supported by the installed version.
+tailscale ping <hostname>,"Use a hostname or Tailscale IP; failure can indicate policy, DNS, device state, or network issues."
+tailscale status --peers=false,"If unsupported by your client version, run `tailscale status --help` to see accepted flags."
+tailscale serve --help,Check exact Serve syntax; Serve/Funnel command syntax changed in Tailscale v1.52.
+tailscale funnel --help,Check exact Funnel syntax; public exposure can require admin settings and an eligible port.

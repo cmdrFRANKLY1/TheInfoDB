@@ -1,0 +1,15 @@
+{
+"version": "2.0",
+"tools": [
+{
+"name": "Tailscale",
+"path": "resources/tailscale/tailscale.csv",
+"categoryTag": "tailscale"
+},
+{
+"name": "SQL",
+"path": "resources/sql/sql.md",
+"categoryTag": "sql"
+}
+]
+}

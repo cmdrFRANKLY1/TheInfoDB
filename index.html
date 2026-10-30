@@ -3,682 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>theInfoDB</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Centered Search</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        discord: {
-                            blurple: 'var(--accent-color)',
-                            dark: 'var(--bg-primary)',
-                            darker: 'var(--bg-secondary)',
-                            darkest: 'var(--bg-tertiary)',
-                            text_normal: 'var(--text-normal)',
-                            interactive_normal: 'var(--interactive-normal)',
-                            interactive_hover: 'var(--interactive-hover)',
-                        }
-                    }
-                }
-            }
+            darkMode: 'class',
         }
     </script>
-    <style>
-        :root {
-            /* Default Dark Theme */
-            --bg-primary: #36393f;
-            --bg-secondary: #2f3136;
-            --bg-tertiary: #202225;
-            --text-normal: #dcddde;
-            --text-muted: #72767d;
-            --interactive-normal: #b9bbbe;
-            --interactive-hover: #dcddde;
-            --border-color: rgba(32, 34, 37, 0.5);
-            --settings-bg: #36393f;
-        }
-
-        .light-theme {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f2f3f5;
-            --bg-tertiary: #e3e5e8;
-            --text-normal: #000000;
-            --text-muted: #747f8d;
-            --interactive-normal: #000000;
-            --interactive-hover: #4f545c;
-            --border-color: rgba(6, 6, 7, 0.08);
-            --settings-bg: #ffffff;
-        }
-
-        .midnight-theme {
-            --bg-primary: #121212;
-            --bg-secondary: #0a0a0a;
-            --bg-tertiary: #000000;
-            --text-normal: #e0e0e0;
-            --text-muted: #6b6b6b;
-            --interactive-normal: #a3a3a3;
-            --interactive-hover: #ffffff;
-            --border-color: rgba(255, 255, 255, 0.05);
-            --settings-bg: #121212;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background-color: var(--bg-primary);
-            color: var(--text-normal);
-        }
-
-        body {
-            transition: background-color 0.3s, color 0.3s;
-            display: flex;
-        }
-
-        #sidebar {
-            transition: width 0.2s ease-in-out, background-color 0.3s;
-            background-color: var(--bg-secondary);
-            border-color: var(--border-color);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 52px; /* Starts collapsed. 52px perfectly houses 32px icons + 10px total left padding */
-            overflow-x: hidden;
-        }
-
-        #sidebar-header {
-            border-color: var(--border-color);
-        }
-
-        /* Fixed text layout with opacity fade for smooth transition */
-        .sidebar-text {
-            white-space: nowrap;
-            transition: opacity 0.15s ease-in-out;
-            opacity: 1;
-        }
-        
-        .collapsed .sidebar-text {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #settings-panel {
-            background-color: var(--settings-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            display: none;
-            color: var(--text-normal);
-            width: 100%;
-            max-width: 420px;
-        }
-        #settings-panel.active { display: block; }
-
-        .setting-row { margin-bottom: 16px; }
-        .setting-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .dropdown-select {
-            width: 100%;
-            padding: 8px 12px;
-            background-color: var(--bg-tertiary);
-            color: var(--text-normal);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            transition: border-color 0.2s ease;
-        }
-        .dropdown-select:focus {
-            border-color: var(--accent-color);
-        }
-
-        /* Settings Color & Theme Circles */
-        .circle-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .circle-btn:hover {
-            transform: scale(1.1);
-        }
-        .circle-btn.selected {
-            border-color: var(--text-normal);
-            transform: scale(1.1);
-        }
-        .circle-btn.selected::after {
-            content: "\f00c"; /* FontAwesome check */
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            color: white;
-            font-size: 12px;
-            text-shadow: 0px 0px 4px rgba(0,0,0,0.8);
-        }
-        .light-theme .circle-btn.selected::after {
-            color: black;
-            text-shadow: 0px 0px 4px rgba(255,255,255,0.8);
-        }
-
-        .custom-color-btn {
-            background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
-        }
-
-        .settings-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-        }
-        .btn {
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.2s, filter 0.2s;
-        }
-        .btn-cancel { background-color: transparent; color: var(--text-normal); }
-        .btn-cancel:hover { text-decoration: underline; }
-        .btn-apply { background-color: var(--accent-color); color: white; }
-        .btn-apply:hover { filter: brightness(1.1); }
-
-        #bottom-area {
-            background-color: var(--bg-tertiary);
-            padding: 8px 6px; /* perfectly matches entries container padding */
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .sidebar-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 4px; /* leaves exactly 32px inner space for the icon when collapsed */
-            gap: 12px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .icon-square {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-tertiary);
-            border-radius: 8px;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .sidebar-btn:hover .icon-square,
-        #sidebar-header:hover .icon-square {
-            background-color: var(--accent-color);
-            color: #ffffff;
-        }
-    </style>
 </head>
-<body>
-    <!-- Sidebar (Starts Collapsed) -->
-    <aside id="sidebar" class="flex-shrink-0 border-r border-discord-dark relative flex flex-col h-full z-20 transition-all duration-200 collapsed">
-        <!-- Sidebar Header (Acts as Toggle) -->
-        <div id="sidebar-header" class="h-12 border-b flex items-center justify-start pl-[10px] flex-shrink-0 transition-all duration-200 cursor-pointer overflow-hidden" title="Toggle Sidebar">
-            <div class="icon-square text-[var(--interactive-normal)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="9" y1="3" x2="9" y2="21"></line>
+<body class="bg-slate-50 dark:bg-slate-900 min-h-screen font-sans antialiased text-slate-900 dark:text-slate-100 transition-colors duration-300 relative overflow-x-hidden">
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="fixed top-6 right-6 z-50 p-2.5 rounded-full bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" aria-label="Toggle Dark Mode">
+        <!-- Sun Icon for Dark Mode -->
+        <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <!-- Moon Icon for Light Mode -->
+        <svg id="theme-toggle-dark-icon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+    </button>
+
+    <!-- Dynamic Container for the search bar (uses absolute positioning for transitions) -->
+    <div id="search-container" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-6 transition-all duration-500 ease-in-out opacity-100 z-40">
+        
+        <!-- The Search Bar wrapper -->
+        <div class="relative flex items-center w-full h-14 rounded-full bg-white dark:bg-slate-800 overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm focus-within:shadow-md focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all duration-300">
+            
+            <!-- Search Icon -->
+            <div class="absolute left-4 flex items-center justify-center text-slate-400 dark:text-slate-500 pointer-events-none">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <span class="sidebar-text font-bold whitespace-nowrap ml-[12px]" style="color: var(--accent-color);">theInfoDB</span>
-        </div>
-        
-        <!-- Dynamic Sidebar Entries Area -->
-        <div id="sidebar-entries-container" class="flex-1 overflow-y-auto overflow-x-hidden py-4 px-[6px] flex flex-col gap-1"></div>
-        
-        <!-- Bottom Area -->
-        <div id="bottom-area" class="flex-shrink-0 border-t border-discord-dark transition-all duration-200">
-            <button id="settings-btn" class="sidebar-btn text-discord-interactive_normal hover:text-discord-interactive_hover hover:bg-gray-700/50 transition-colors group">
-                <div class="icon-square">
-                    <i class="fa-solid fa-gear text-lg"></i>
-                </div>
-                <span class="sidebar-text font-medium text-sm">Settings</span>
-            </button>
-        </div>
-    </aside>
 
-    <!-- Main Content Area (Canvas) -->
-    <main class="flex-1 bg-discord-dark flex items-center justify-center h-full w-full p-6 relative">
-        
-        <!-- Module Canvas Space -->
-        <div id="app-canvas" class="absolute inset-0 p-6 overflow-auto z-0 text-discord-text_normal">
-            <!-- External js modules will populate this area -->
-        </div>
-
-        <!-- Settings Panel in Canvas -->
-        <div id="settings-panel" class="z-50 relative">
-            <h2 class="text-2xl font-bold mb-6">Settings</h2>
+            <!-- Search Input Field -->
+            <input
+                class="w-full h-full bg-transparent outline-none text-base text-slate-700 dark:text-slate-200 pl-12 pr-6 placeholder-slate-400 dark:placeholder-slate-500"
+                type="text"
+                id="search"
+                placeholder="Search registry files..." 
+                autocomplete="off"
+            /> 
             
-            <div class="setting-row">
-                <span class="setting-label">Sidebar Scale</span>
-                <select id="sidebar-scale-select" class="dropdown-select">
-                    <option value="small" selected>Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
-                </select>
-            </div>
+        </div>
+
+    </div>
+
+    <!-- Search Results Container -->
+    <!-- pt-32 ensures the results render below the fixed top search bar without overlapping -->
+    <div id="results-container" class="w-full max-w-4xl mx-auto pt-32 px-6 pb-12 opacity-0 transition-opacity duration-700 hidden z-10">
+        <div class="flex justify-between items-center mb-6">
+            <h2 id="results-header" class="text-xl font-semibold text-slate-900 dark:text-white hidden">Search Results</h2>
             
-            <div class="setting-row mt-6">
-                <span class="setting-label">Appearance</span>
-                <div class="flex gap-4">
-                    <div class="flex flex-col items-center gap-2">
-                        <button class="circle-btn theme-btn" data-theme="dark" style="background-color: #36393f;" title="Dark"></button>
-                        <span class="text-xs text-[var(--text-muted)]">Dark</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <button class="circle-btn theme-btn" data-theme="light" style="background-color: #f2f3f5; border: 1px solid #ccc;" title="Light"></button>
-                        <span class="text-xs text-[var(--text-muted)]">Light</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <button class="circle-btn theme-btn" data-theme="midnight" style="background-color: #0a0a0a;" title="Midnight"></button>
-                        <span class="text-xs text-[var(--text-muted)]">Midnight</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="setting-row mt-6">
-                <span class="setting-label">Accent Color</span>
-                <div class="flex gap-3 flex-wrap">
-                    <button class="circle-btn color-btn" data-color="#5865F2" style="background-color: #5865F2;" title="Blurple"></button>
-                    <button class="circle-btn color-btn" data-color="#ed4245" style="background-color: #ed4245;" title="Red"></button>
-                    <button class="circle-btn color-btn" data-color="#3ba55d" style="background-color: #3ba55d;" title="Green"></button>
-                    <button class="circle-btn color-btn" data-color="#fee75c" style="background-color: #fee75c;" title="Yellow"></button>
-                    <button class="circle-btn color-btn" data-color="#eb459e" style="background-color: #eb459e;" title="Pink"></button>
-                    
-                    <div class="flex items-center ml-2 border-l border-[var(--border-color)] pl-3">
-                        <button class="circle-btn custom-color-btn color-btn" id="custom-color-trigger" title="Custom Color"></button>
-                        <input type="color" id="accent-color-picker" class="opacity-0 absolute w-0 h-0 pointer-events-none">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dynamic Settings Container -->
-            <div id="dynamic-settings-container"></div>
-
-            <div class="settings-footer">
-                <button class="btn btn-cancel" id="settings-cancel">Cancel</button>
-                <button class="btn btn-apply" id="settings-apply">Apply</button>
+            <!-- View Toggle -->
+            <div id="view-toggle" class="hidden flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <button id="view-list" class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center gap-2" aria-label="List View">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    List
+                </button>
+                <button id="view-details" class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-2" aria-label="Details View">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    Details
+                </button>
             </div>
         </div>
-    </main>
+        <div id="results-list" class="space-y-4">
+            <!-- Results will be injected here dynamically -->
+        </div>
+    </div>
 
+    <!-- Script to handle dark mode toggle and search logic -->
     <script>
-        window.AppAPI = {
-            // 1. Canvas API
-            canvas: {
-                getContainer: () => document.getElementById('app-canvas'),
-                setContent: (htmlOrElement) => {
-                    const container = document.getElementById('app-canvas');
-                    if (typeof htmlOrElement === 'string') {
-                        container.innerHTML = htmlOrElement;
-                    } else if (htmlOrElement instanceof HTMLElement) {
-                        container.innerHTML = '';
-                        container.appendChild(htmlOrElement);
-                    }
-                }
-            },
-            
-            // 2. Sidebar API
-            sidebar: {
-                addEntry: (id, text, iconClass, onClick) => {
-                    const container = document.getElementById('sidebar-entries-container');
-                    const btn = document.createElement('button');
-                    btn.className = "sidebar-btn text-discord-interactive_normal hover:text-discord-interactive_hover hover:bg-gray-700/50 transition-colors group";
-                    btn.id = `sidebar-item-${id}`;
-                    
-                    const iconContainer = document.createElement('div');
-                    iconContainer.className = "icon-square";
-                    
-                    const icon = document.createElement('i');
-                    icon.className = `${iconClass} text-lg text-center`;
-                    
-                    iconContainer.appendChild(icon);
-                    
-                    const label = document.createElement('span');
-                    label.className = "sidebar-text font-medium text-sm whitespace-nowrap";
-                    label.textContent = text;
+        // 1. Dark Mode Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+        });
 
-                    btn.appendChild(iconContainer);
-                    btn.appendChild(label);
+        // 2. Search Logic
+        const searchInput = document.getElementById('search');
+        const searchContainer = document.getElementById('search-container');
+        const resultsContainer = document.getElementById('results-container');
+        const resultsList = document.getElementById('results-list');
+        const resultsHeader = document.getElementById('results-header');
+        
+        // View Toggle Elements
+        const viewToggle = document.getElementById('view-toggle');
+        const btnList = document.getElementById('view-list');
+        const btnDetails = document.getElementById('view-details');
+
+        let globalSearchResults = [];
+        let currentQuery = '';
+        let currentView = 'list'; // default view
+
+        // Toggle UI Update
+        function updateToggleUI() {
+            if (currentView === 'list') {
+                btnList.className = 'px-3 py-1.5 text-sm font-medium rounded-md transition-colors bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center gap-2';
+                btnDetails.className = 'px-3 py-1.5 text-sm font-medium rounded-md transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-2';
+            } else {
+                btnDetails.className = 'px-3 py-1.5 text-sm font-medium rounded-md transition-colors bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center gap-2';
+                btnList.className = 'px-3 py-1.5 text-sm font-medium rounded-md transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-2';
+            }
+        }
+
+        btnList.addEventListener('click', () => {
+            currentView = 'list';
+            updateToggleUI();
+            renderResults();
+        });
+
+        btnDetails.addEventListener('click', () => {
+            currentView = 'details';
+            updateToggleUI();
+            renderResults();
+        });
+
+        // Safe DOM Highlighting (avoids breaking HTML tags generated by Markdown)
+        function highlightTextInElement(element, query) {
+            if (!query) return;
+            const regex = new RegExp(`(${query})`, 'gi');
+            
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+            let nodesToReplace = [];
+            let node;
+            while(node = walker.nextNode()) {
+                if (node.nodeValue.match(regex) && node.parentElement.tagName !== 'SCRIPT' && node.parentElement.tagName !== 'STYLE') {
+                    nodesToReplace.push(node);
+                }
+            }
+            
+            nodesToReplace.forEach(node => {
+                const fragment = document.createDocumentFragment();
+                const parts = node.nodeValue.split(regex);
+                parts.forEach(part => {
+                    if (part.toLowerCase() === query.toLowerCase()) {
+                        const span = document.createElement('span');
+                        span.className = 'bg-amber-200 dark:bg-amber-700/60 text-slate-900 dark:text-slate-100 font-bold px-1 rounded-sm';
+                        span.textContent = part;
+                        fragment.appendChild(span);
+                    } else if (part) {
+                        fragment.appendChild(document.createTextNode(part));
+                    }
+                });
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+
+        // Render Function
+        function renderResults() {
+            resultsList.innerHTML = '';
+            resultsHeader.classList.remove('hidden');
+            resultsContainer.classList.remove('hidden');
+            viewToggle.classList.remove('hidden');
+            
+            if (globalSearchResults.length === 0) {
+                viewToggle.classList.add('hidden');
+                resultsList.innerHTML = `
+                    <div class="p-8 text-center bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <p class="text-slate-500 dark:text-slate-400">No results found for "${currentQuery}".</p>
+                    </div>
+                `;
+            } else if (globalSearchResults[0].error) {
+                viewToggle.classList.add('hidden');
+                resultsList.innerHTML = `
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl border border-red-100 dark:border-red-900/50">
+                        <p>${globalSearchResults[0].message}</p>
+                    </div>
+                `;
+            } else {
+                globalSearchResults.forEach((res, index) => {
+                    const cardId = `result-card-${index}`;
+                    let contentHTML = '';
+
+                    if (currentView === 'details') {
+                        // Render full content
+                        if (res.tool.path.endsWith('.md')) {
+                            // Use marked for markdown formatting and Tailwind prose for styling
+                            const parsedMd = marked.parse(res.fullText);
+                            contentHTML = `<div class="prose prose-slate dark:prose-invert max-w-none prose-sm sm:prose-base overflow-x-auto">${parsedMd}</div>`;
+                        } else {
+                            // Plain text/CSV fallback
+                            contentHTML = `<pre class="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300 font-mono bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg overflow-x-auto">${res.fullText}</pre>`;
+                        }
+                    } else {
+                        // Render brief list snippet
+                        contentHTML = `<p class="text-slate-700 dark:text-slate-300 leading-relaxed text-sm snippet-container">${res.snippet}</p>`;
+                    }
+
+                    resultsList.innerHTML += `
+                        <div id="${cardId}" class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                                    ${res.tool.categoryTag}
+                                </span>
+                                <h3 class="text-lg font-medium text-slate-900 dark:text-white">${res.tool.name}</h3>
+                            </div>
+                            <!-- Removed file path display -->
+                            <div class="content-wrapper">
+                                ${contentHTML}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Apply highlighting after rendering HTML to avoid breaking table tags
+                globalSearchResults.forEach((res, index) => {
+                    const card = document.getElementById(`result-card-${index}`);
+                    if (card) {
+                        highlightTextInElement(card.querySelector('.content-wrapper'), currentQuery);
+                    }
+                });
+            }
+        }
+
+        searchInput.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+                currentQuery = searchInput.value.trim().toLowerCase();
+                
+                // 1. Fade out search bar
+                searchContainer.classList.remove('opacity-100');
+                searchContainer.classList.add('opacity-0');
+                
+                // Hide old results if performing another search
+                resultsContainer.classList.remove('opacity-100');
+                resultsContainer.classList.add('opacity-0');
+
+                // 2. Fetch registry and search files concurrently
+                globalSearchResults = [];
+                try {
+                    const regRes = await fetch('registry_2.json');
+                    if (regRes.ok) {
+                        const registry = await regRes.json();
+                        if (registry.tools && Array.isArray(registry.tools)) {
+                            
+                            const filePromises = registry.tools.map(async (tool) => {
+                                try {
+                                    const fileRes = await fetch(tool.path);
+                                    if (fileRes.ok) {
+                                        const text = await fileRes.text();
+                                        const matchesText = text.toLowerCase().includes(currentQuery);
+                                        const matchesMeta = tool.name.toLowerCase().includes(currentQuery) || (tool.categoryTag && tool.categoryTag.toLowerCase().includes(currentQuery));
+                                        
+                                        if (matchesText || matchesMeta) {
+                                            
+                                            // Extract a relevant text snippet for list view
+                                            const index = matchesText ? text.toLowerCase().indexOf(currentQuery) : 0;
+                                            const start = Math.max(0, index - 80);
+                                            const end = Math.min(text.length, index + currentQuery.length + 80);
+                                            let snippet = text.substring(start, end);
+                                            
+                                            if (start > 0) snippet = '...' + snippet;
+                                            if (end < text.length) snippet = snippet + '...';
+                                            
+                                            // Strip out markdown formatting characters for a cleaner short snippet
+                                            snippet = snippet.replace(/[\#\*\_\|`]/g, ' ').trim();
+
+                                            globalSearchResults.push({
+                                                tool: tool,
+                                                fullText: text,
+                                                snippet: snippet
+                                            });
+                                        }
+                                    }
+                                } catch (err) {
+                                    console.error(`Error fetching ${tool.path}:`, err);
+                                }
+                            });
+                            
+                            // Wait for all fetches to finish
+                            await Promise.all(filePromises);
+                        }
+                    } else {
+                        throw new Error("registry_2.json not found");
+                    }
+                } catch (error) {
+                    console.warn("Fetch blocked by CORS or file missing. Using built-in demo data:", error);
                     
-                    btn.addEventListener('click', (e) => {
-                        onClick(e);
-                        // Auto-close sidebar after clicking an entry
-                        if (typeof isCollapsed !== 'undefined' && !isCollapsed) {
-                            isCollapsed = true;
-                            document.getElementById('sidebar').classList.add('collapsed');
-                            if (typeof updateSidebarWidth === 'function') updateSidebarWidth();
+                    // Built-in Demo Fallback so the app works without a local web server
+                    const mockRegistry = {
+                        "version": "2.0",
+                        "tools": [
+                            { "name": "Tailscale", "path": "resources/tailscale/tailscale.csv", "categoryTag": "tailscale" },
+                            { "name": "SQL", "path": "resources/sql/sql.md", "categoryTag": "sql" }
+                        ]
+                    };
+
+                    const mockFiles = {
+                        "resources/sql/sql.md": "# SQL Commands\n\n| Command | Description |\n| --- | --- |\n| SELECT * FROM table_name; | Retrieve all columns and rows from a specified table. |\n| SELECT column1, column2 FROM table_name WHERE condition; | Retrieve specific columns from a table matching a condition. |\n| INSERT INTO table_name (col1, col2) VALUES (val1, val2); | Insert new rows into a database table. |\n| UPDATE table_name SET col1 = val1 WHERE condition; | Modify existing records in a table. |\n| DELETE FROM table_name WHERE condition; | Delete existing records from a table. |\n| CREATE TABLE table_name (col1 datatype, col2 datatype); | Create a new table in the database. |\n| DROP TABLE table_name; | Delete an entire table and its data from the database. |\n| ALTER TABLE table_name ADD col_name datatype; | Modify an existing table structure (e.g., add a column). |\n| SELECT DISTINCT column_name FROM table_name; | Return only distinct (unique) values in a query result. |\n| SELECT * FROM table_name ORDER BY column_name ASC; | Sort query results in ascending (or descending with DESC) order. |\n| SELECT COUNT(*) FROM table_name; | Count the number of rows matching a query. |\n| SELECT col, SUM(col2) FROM table_name GROUP BY col; | Group rows sharing a property to perform aggregate functions. |\n| SELECT * FROM t1 JOIN t2 ON t1.id = t2.id; | Combine rows from two or more tables based on a related column. |\n| BEGIN TRANSACTION; | Start a new database transaction. |\n| COMMIT; | Save all changes made during the current transaction. |\n| ROLLBACK; | Undo changes made during the current transaction in case of an error. |",
+                        "resources/tailscale/tailscale.csv": "Node,IP,Status,Notes\nMacBook-Pro,100.99.98.97,Active,Install: brew install tailscale\nLinux-Server,100.101.102.103,Active,Install: sudo pacman -S tailscale\nWindows-Desktop,100.80.80.80,Offline,Install: choco install tailscale"
+                    };
+
+                    mockRegistry.tools.forEach(tool => {
+                        const text = mockFiles[tool.path] || "";
+                        const matchesText = text.toLowerCase().includes(currentQuery);
+                        const matchesMeta = tool.name.toLowerCase().includes(currentQuery) || (tool.categoryTag && tool.categoryTag.toLowerCase().includes(currentQuery));
+                        
+                        if (matchesText || matchesMeta) {
+                            const index = matchesText ? text.toLowerCase().indexOf(currentQuery) : 0;
+                            const start = Math.max(0, index - 80);
+                            const end = Math.min(text.length, index + currentQuery.length + 80);
+                            let snippet = text.substring(start, end);
+                            
+                            if (start > 0) snippet = '...' + snippet;
+                            if (end < text.length) snippet = snippet + '...';
+                            
+                            // Strip out markdown formatting characters for a cleaner short snippet
+                            snippet = snippet.replace(/[\#\*\_\|`]/g, ' ').trim();
+
+                            globalSearchResults.push({
+                                tool: tool,
+                                fullText: text,
+                                snippet: snippet
+                            });
                         }
                     });
-                    container.appendChild(btn);
+                }
+
+                // 3. Move search bar to top & fade everything back in
+                setTimeout(() => {
+                    // Reposition search container
+                    searchContainer.classList.remove('top-1/2', '-translate-y-1/2');
+                    searchContainer.classList.add('top-8', 'translate-y-0');
                     
-                    // Auto-adjust width if a new module loads while the sidebar is already expanded
-                    if (typeof updateSidebarWidth === 'function') {
-                        updateSidebarWidth();
-                    }
-                    
-                    return btn;
-                },
-                clearEntries: () => {
-                    document.getElementById('sidebar-entries-container').innerHTML = '';
-                }
-            },
-            
-            // 3. Settings API
-            settings: {
-                addEntry: (id, labelText, customHtml) => {
-                    const container = document.getElementById('dynamic-settings-container');
-                    const row = document.createElement('div');
-                    row.className = 'setting-row mt-6 pt-4 border-t border-[var(--border-color)]';
-                    row.id = `setting-item-${id}`;
-                    
-                    const label = document.createElement('span');
-                    label.className = 'setting-label';
-                    label.textContent = labelText;
-                    
-                    const content = document.createElement('div');
-                    content.innerHTML = customHtml;
-                    
-                    row.appendChild(label);
-                    row.appendChild(content);
-                    container.appendChild(row);
-                }
-            },
-            
-            // 4. Color API
-            colors: {
-                get: (varName) => {
-                    return getComputedStyle(document.body).getPropertyValue(varName).trim();
-                },
-                set: (varName, value) => {
-                    document.documentElement.style.setProperty(varName, value);
-                    document.body.style.setProperty(varName, value);
-                }
-            }
-        };
+                    renderResults();
 
-        async function loadModules() {
-            try {
-                const response = await fetch('modules/registryForModules.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                if (data && Array.isArray(data.files)) {
-                    const loadPromises = [];
-                    for (const fileUrl of data.files) {
-                        console.log(`Loading module: ${fileUrl}`);
-                        const p = new Promise((resolve) => {
-                            const script = document.createElement('script');
-                            script.src = fileUrl;
-                            script.async = false; // Maintain execution order
-                            script.onload = resolve;
-                            script.onerror = () => {
-                                console.warn(`Failed to load module script: ${fileUrl}`);
-                                resolve();
-                            };
-                            document.body.appendChild(script);
-                        });
-                        loadPromises.push(p);
-                    }
-                    
-                    // Wait for all scripts to finish loading
-                    await Promise.all(loadPromises);
-                    
-                    // Auto-start the search module once everything is ready
-                    const searchBtn = document.getElementById('sidebar-item-search');
-                    if (searchBtn) {
-                        searchBtn.click();
-                    }
-                }
-            } catch (error) {
-                console.warn('Could not load modules registry. This is expected if running without a local server.', error);
-            }
-        }
+                    // Fade back in slightly after rendering to ensure transitions work smoothly
+                    setTimeout(() => {
+                        searchContainer.classList.remove('opacity-0');
+                        searchContainer.classList.add('opacity-100');
+                        
+                        resultsContainer.classList.remove('opacity-0');
+                        resultsContainer.classList.add('opacity-100');
+                    }, 50);
 
-        // Initialize external modules
-        loadModules();
-
-        const sidebar = document.getElementById('sidebar');
-        const sidebarHeader = document.getElementById('sidebar-header');
-        
-        const settingsBtn = document.getElementById('settings-btn');
-        const settingsPanel = document.getElementById('settings-panel');
-        const settingsCancel = document.getElementById('settings-cancel');
-        const settingsApply = document.getElementById('settings-apply');
-        
-        const scaleSelect = document.getElementById('sidebar-scale-select');
-        const themeBtns = document.querySelectorAll('.theme-btn');
-        const colorBtns = document.querySelectorAll('.color-btn');
-        const customColorTrigger = document.getElementById('custom-color-trigger');
-        const accentPicker = document.getElementById('accent-color-picker');
-        
-        // Start Collapsed
-        let isCollapsed = true;
-
-        // Generate a random hex color on first load
-        function getRandomColor() {
-            return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        }
-        
-        const initialAccentColor = getRandomColor();
-        applyAccentColor(initialAccentColor);
-        
-        // Settings State
-        let currentSettings = {
-            scale: 'small',
-            theme: 'dark',
-            accentColor: initialAccentColor
-        };
-        let pendingSettings = { ...currentSettings };
-
-        // Halved the small sidebar to 100px
-        const sidebarScales = {
-            small: '100px',
-            medium: '240px',
-            large: '300px'
-        };
-
-        function updateSidebarWidth() {
-            if (isCollapsed) {
-                sidebar.style.width = '52px';
-            } else {
-                // Temporarily disable transition and set to max-content to accurately measure natural content width
-                const oldTransition = sidebar.style.transition;
-                sidebar.style.transition = 'none';
-                
-                const currentWidth = sidebar.style.width;
-                sidebar.style.width = 'max-content'; 
-                
-                // Read the unclipped natural width (added 24px buffer to guarantee text isn't cut off)
-                const naturalWidth = sidebar.offsetWidth + 24;
-                const scaleWidth = parseInt(sidebarScales[currentSettings.scale]);
-                
-                // Pick whichever is larger: the chosen scale, or the natural text width
-                const finalWidth = Math.max(naturalWidth, scaleWidth);
-                
-                // Restore width and force browser to process the visual change before animating
-                sidebar.style.width = currentWidth;
-                sidebar.offsetHeight; 
-                
-                // Re-enable transition and set final responsive width
-                sidebar.style.transition = oldTransition;
-                sidebar.style.width = finalWidth + 'px';
-            }
-        }
-        
-        // Ensure initial width is synced on load
-        updateSidebarWidth();
-
-        // Close sidebar when clicking outside of it
-        document.addEventListener('click', (e) => {
-            if (!isCollapsed && !sidebar.contains(e.target)) {
-                isCollapsed = true;
-                sidebar.classList.add('collapsed');
-                updateSidebarWidth();
+                }, 500); 
             }
         });
-
-        // Sidebar Toggle Handler (Header Click)
-        sidebarHeader.addEventListener('click', () => {
-            isCollapsed = !isCollapsed;
-            
-            if (isCollapsed) {
-                sidebar.classList.add('collapsed');
-            } else {
-                sidebar.classList.remove('collapsed');
-            }
-            updateSidebarWidth();
-        });
-
-        settingsBtn.addEventListener('click', () => {
-            settingsPanel.classList.toggle('active');
-            if (settingsPanel.classList.contains('active')) {
-                pendingSettings = { ...currentSettings };
-                updateSettingsUI();
-            }
-            // Auto-close sidebar after clicking Settings
-            if (!isCollapsed) {
-                isCollapsed = true;
-                sidebar.classList.add('collapsed');
-                updateSidebarWidth();
-            }
-        });
-
-        scaleSelect.addEventListener('change', (e) => {
-            pendingSettings.scale = e.target.value;
-        });
-
-        // Theme Circles Click
-        themeBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                pendingSettings.theme = e.currentTarget.dataset.theme;
-                updateSettingsUI();
-            });
-        });
-
-        // Color Circles Click
-        colorBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (e.currentTarget.id === 'custom-color-trigger') {
-                    accentPicker.click();
-                } else {
-                    pendingSettings.accentColor = e.currentTarget.dataset.color;
-                    updateSettingsUI();
-                }
-            });
-        });
-
-        // Custom Color Picker Input
-        accentPicker.addEventListener('input', (e) => {
-            pendingSettings.accentColor = e.target.value;
-            customColorTrigger.style.borderColor = pendingSettings.accentColor;
-            updateSettingsUI();
-        });
-
-        settingsApply.addEventListener('click', () => {
-            currentSettings = { ...pendingSettings };
-            applySettings(currentSettings);
-            settingsPanel.classList.remove('active');
-        });
-
-        settingsCancel.addEventListener('click', () => {
-            settingsPanel.classList.remove('active');
-            pendingSettings = { ...currentSettings };
-            updateSettingsUI();
-        });
-
-        function updateSettingsUI() {
-            // Update scale dropdown
-            scaleSelect.value = pendingSettings.scale;
-            
-            // Update Theme Circles Selection State
-            themeBtns.forEach(btn => {
-                if (btn.dataset.theme === pendingSettings.theme) {
-                    btn.classList.add('selected');
-                } else {
-                    btn.classList.remove('selected');
-                }
-            });
-
-            // Update Color Circles Selection State
-            let matchedPreset = false;
-            colorBtns.forEach(btn => {
-                if (btn.id !== 'custom-color-trigger') {
-                    if (btn.dataset.color.toLowerCase() === pendingSettings.accentColor.toLowerCase()) {
-                        btn.classList.add('selected');
-                        matchedPreset = true;
-                    } else {
-                        btn.classList.remove('selected');
-                    }
-                }
-            });
-
-            // Handle Custom Color Circle state
-            if (!matchedPreset) {
-                customColorTrigger.classList.add('selected');
-                customColorTrigger.style.boxShadow = `0 0 10px ${pendingSettings.accentColor}`;
-                customColorTrigger.dataset.color = pendingSettings.accentColor; // Save state
-            } else {
-                customColorTrigger.classList.remove('selected');
-                customColorTrigger.style.boxShadow = 'none';
-            }
-        }
-
-        function applyAccentColor(color) {
-            document.documentElement.style.setProperty('--accent-color', color);
-            document.body.style.setProperty('--accent-color', color);
-            if(window.AppAPI && window.AppAPI.colors) {
-                window.AppAPI.colors.set('--accent-color', color);
-            }
-        }
-
-        function applySettings(settings) {
-            // Apply Scale
-            updateSidebarWidth();
-
-            // Apply Accent Color
-            applyAccentColor(settings.accentColor);
-            
-            // Apply Theme
-            document.body.classList.remove('light-theme', 'midnight-theme');
-            if (settings.theme === 'light') {
-                document.body.classList.add('light-theme');
-            } else if (settings.theme === 'midnight') {
-                document.body.classList.add('midnight-theme');
-            }
-        }
     </script>
 </body>
 </html>
